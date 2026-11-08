@@ -308,17 +308,53 @@
   </section>
   <section id="more" class="screen hidden">
    <h1 class="page-title">☰ More</h1><div class="list" style="margin-top:15px">
-    <div class="item"><div class="avatar">📢</div><div><strong>Official notices</strong><small>Important workspace announcements</small></div><span class="arrow">›</span></div>
+    <button type="button" class="item" data-screen="notices" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📢</div><div><strong>Official notices</strong><small>Important workspace announcements</small></div><span class="arrow">›</span></button>
     <button type="button" class="item" data-screen="documents" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📄</div><div><strong>Document Studio</strong><small>Tenancy draft, property and party statements</small></div><span class="arrow">›</span></button>
     <button type="button" class="item" data-screen="accounting-ledger" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📚</div><div><strong>General Ledger & Trial Balance</strong><small>Country-wise reports from posted journals</small></div><span class="arrow">›</span></button>
     <button type="button" class="item" data-screen="accounting-statements" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📈</div><div><strong>Financial Statements & Period Close</strong><small>Profit & Loss, Balance Sheet and cash movement</small></div><span class="arrow">›</span></button>
     <button type="button" class="item" data-screen="accounting-subledgers" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">🧩</div><div><strong>Subledgers & Allocations</strong><small>Property, tenant and vendor source registers</small></div><span class="arrow">›</span></button>
     <button type="button" class="item" data-screen="accounting" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📚</div><div><strong>Accounting setup</strong><small>Country books and Chart of Accounts</small></div><span class="arrow">›</span></button>
-    <div class="item"><div class="avatar">⚙️</div><div><strong>Settings</strong><small>Profile, country, currency and language</small></div><span class="arrow">›</span></div>
-    <div class="item"><div class="avatar">❔</div><div><strong>Help & support</strong><small>Learn how Propledger works</small></div><span class="arrow">›</span></div>
-    <div class="item"><div class="avatar">👨‍💻</div><div><strong>Founder & developer</strong><small>Built to make property accounting clearer</small></div><span class="arrow">›</span></div>
+    <button type="button" class="item" data-screen="settings" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">⚙️</div><div><strong>Settings</strong><small>Profile, country, currency and language</small></div><span class="arrow">›</span></button>
+    <button type="button" class="item" data-screen="support" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">❔</div><div><strong>Help & support</strong><small>Learn how Propledger works</small></div><span class="arrow">›</span></button>
+    <button type="button" class="item" data-screen="founder" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">👨‍💻</div><div><strong>Founder & developer</strong><small>About the person behind Propledger</small></div><span class="arrow">›</span></button>
    </div>
    <div class="notice">Cloud authentication, database storage, encrypted document uploads and biometric sign-in are planned for the secure backend milestone. This preview stores only your display preferences on this device.</div>
+  </section>
+  <section id="notices" class="screen hidden">
+   <div class="sectionhead"><div><h1 class="page-title">📢 Official notices</h1><div class="muted">Product updates and important information</div></div></div>
+   <div class="detail-card"><h3>🚀 Propledger preview</h3><p>Stages 1–10 are available in this preview, including property and party records, receipt/payment source vouchers, accounting workspaces, document previews and portfolio analytics.</p><small class="muted">Product information • 8 November 2026</small></div>
+   <div class="detail-card"><h3>🔐 Secure cloud services</h3><p>Cloud accounts, multi-user access, secure document storage, backups and server-side accounting controls are not enabled yet. Avoid entering sensitive identity or banking documents into this prototype.</p><small class="muted">Security notice</small></div>
+   <div class="notice">Notices in this preview are product information, not live regulatory or emergency alerts.</div>
+  </section>
+  <section id="settings" class="screen hidden">
+   <div class="sectionhead"><div><h1 class="page-title">⚙️ Settings</h1><div class="muted">Workspace preferences on this device</div></div></div>
+   <div class="detail-card">
+    <h3>🌐 Language & region</h3>
+    <div class="field"><label for="settingsLanguage">Display language</label><select id="settingsLanguage"><option value="en">English</option><option value="ar">العربية</option><option value="ur">اردو</option></select></div>
+    <div class="field"><label for="settingsCountry">Country workspace</label><select id="settingsCountry"><option value="AE">🇦🇪 UAE — AED</option><option value="PK">🇵🇰 Pakistan — PKR</option></select></div>
+    <p class="muted">UAE and Pakistan accounting books remain separate. Changing this preference does not convert or combine financial records.</p>
+   </div>
+   <div class="detail-card"><h3>🖼️ Company logo</h3><div class="field"><label for="companyLogoUpload">Choose logo image</label><input id="companyLogoUpload" type="file" accept="image/*"></div><div id="companyLogoPreview" class="muted">No company logo selected.</div><small class="muted">Preview only; saved on this device.</small></div>
+   <div class="detail-card"><h3>🔒 Security & session</h3><p>PIN, passkeys, biometric sign-in, account recovery and multi-device sessions will be configured with the secure cloud backend. They are not active in this preview.</p><button type="button" class="secondary" id="previewLogout">↩️ Return to welcome screen</button></div>
+   <div class="notice">Preferences and image previews are stored locally on this device. This is not a secure user account or cloud profile.</div>
+  </section>
+  <section id="support" class="screen hidden">
+   <div class="sectionhead"><div><h1 class="page-title">❔ Help & support</h1><div class="muted">Quick guidance for the current preview</div></div></div>
+   <div class="detail-card"><h3>🏠 Properties, tenants & vendors</h3><p>Add property, tenant and vendor details from their respective workspaces. Uploaded identity documents are not securely stored in this prototype.</p></div>
+   <div class="detail-card"><h3>🧾 Receipts & payments</h3><p>Receipt and payment vouchers are locally saved source records. They do not automatically create posted accounting entries or confirm money received or paid.</p></div>
+   <div class="detail-card"><h3>📚 Accounting reports</h3><p>General Ledger, Trial Balance and financial statements are based on posted journals only. Draft vouchers and unposted journals are excluded.</p></div>
+   <div class="detail-card"><h3>☁️ Data & privacy</h3><p>This preview stores data in browser storage on this device. Clearing browser data may remove it. Secure cloud backup, account access and document controls are future backend work.</p></div>
+   <div class="detail-card"><h3>📩 Contact</h3><p>Support contact details will be published when the official support channel is established.</p></div>
+  </section>
+  <section id="founder" class="screen hidden">
+   <div class="sectionhead"><div><h1 class="page-title">👨‍💻 Founder & developer</h1><div class="muted">The vision behind Propledger</div></div></div>
+   <div class="detail-card" style="text-align:center">
+    <label for="founderPhotoUpload" class="profile-upload" style="display:flex;width:104px;height:104px;margin:4px auto 16px;cursor:pointer;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;background:#eef0f8;color:#6654d9;font-size:34px">👤<input id="founderPhotoUpload" type="file" accept="image/*" style="display:none"></label>
+    <h2 style="margin:0 0 6px">Propledger 2027</h2><p class="muted">Founder & developer profile</p>
+    <p>Building a clearer, more practical workspace for property owners and managers.</p>
+   </div>
+   <div class="detail-card"><h3>✨ Our purpose</h3><p>“Clarity for every property, tenant and transaction.”</p><p>“Designed to bring property operations and accounting into one thoughtful workspace.”</p></div>
+   <div class="notice">Add an approved founder name, biography and official contact details before public launch. The photo selected here is stored only on this device.</div>
   </section>
  </div>
 
@@ -430,6 +466,14 @@ const copy={en:{intro:"A clearer way to manage properties, tenants, vendors and 
 function setLanguage(v){document.documentElement.lang=v;document.documentElement.dir=v==="en"?"ltr":"rtl";$("intro").textContent=copy[v].intro;$("greeting").textContent=copy[v].greeting;$("langQuick").textContent=v.toUpperCase()+"⌄";try{localStorage.setItem("propledger.language",v)}catch(e){}}
 function setCountry(v){const label=v==="AE"?"UAE WORKSPACE • AED":"PAKISTAN WORKSPACE • PKR";$("region").textContent=label;const currency=v==="AE"?"AED":"PKR";$("income").textContent=currency+(v==="AE"?" 18,500":" 185,000");$("expense").textContent=currency+(v==="AE"?" 4,250":" 42,500");try{localStorage.setItem("propledger.country",v)}catch(e){}}
 $("language").addEventListener("change",e=>setLanguage(e.target.value));
+$("settingsLanguage").addEventListener("change",e=>{ $("language").value=e.target.value;setLanguage(e.target.value); });
+$("settingsCountry").addEventListener("change",e=>{ $("country").value=e.target.value;$("dashCountry").value=e.target.value;setCountry(e.target.value);refreshPortfolioDashboard(); });
+$("settings").addEventListener("click",()=>{ $("settingsLanguage").value=$("language").value;$("settingsCountry").value=localStorage.getItem("propledger.country")||"AE"; });
+$("companyLogoUpload").addEventListener("change",e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!file.type.startsWith("image/")){alert("Please choose an image file.");return}const reader=new FileReader();reader.onload=()=>{try{localStorage.setItem("propledger.companyLogoPreview",reader.result);$("companyLogoPreview").innerHTML="";const img=document.createElement("img");img.src=reader.result;img.alt="Company logo preview";img.style="max-width:110px;max-height:90px;object-fit:contain;border-radius:10px";$("companyLogoPreview").appendChild(img)}catch(err){alert("This image is too large to save on this device.")}};reader.readAsDataURL(file)});
+try{const logo=localStorage.getItem("propledger.companyLogoPreview");if(logo){const img=document.createElement("img");img.src=logo;img.alt="Company logo preview";img.style="max-width:110px;max-height:90px;object-fit:contain;border-radius:10px";$("companyLogoPreview").textContent="";$("companyLogoPreview").appendChild(img)}}catch(e){}
+$("founderPhotoUpload").addEventListener("change",e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!file.type.startsWith("image/")){alert("Please choose an image file.");return}const reader=new FileReader();reader.onload=()=>{try{localStorage.setItem("propledger.founderPhoto",reader.result);const img=document.createElement("img");img.src=reader.result;img.alt="Founder profile preview";img.style="width:100%;height:100%;object-fit:cover;border-radius:50%";e.target.parentElement.textContent="";e.target.parentElement.appendChild(img)}catch(err){alert("This image is too large to save on this device.")}};reader.readAsDataURL(file)});
+try{const fp=localStorage.getItem("propledger.founderPhoto");if(fp){const label=$("founderPhotoUpload").parentElement;const img=document.createElement("img");img.src=fp;img.alt="Founder profile preview";img.style="width:100%;height:100%;object-fit:cover;border-radius:50%";label.appendChild(img)}}catch(e){}
+$("previewLogout").addEventListener("click",()=>{showScreen("dashboard");$("app").classList.add("hidden");$("onboarding").classList.remove("hidden")});
 $("country").addEventListener("change",e=>setCountry(e.target.value));
 $("enter").addEventListener("click",()=>{$("onboarding").classList.add("hidden");$("app").classList.remove("hidden");try{localStorage.setItem("propledger.started","yes")}catch(e){}});
 $("langQuick").addEventListener("click",()=>{const n=$("language");n.value=n.value==="en"?"ar":n.value==="ar"?"ur":"en";setLanguage(n.value)});
