@@ -219,9 +219,35 @@
    </div>
    <div class="notice">Backend provider is intentionally undecided. Do not enter sensitive data or rely on this local configuration as an official ledger. Opening balances, journals, posting and reports are later Stage 8 milestones.</div>
   </section>
+  <section id="accounting-ledger" class="screen hidden">
+   <div class="sectionhead"><div><h1 class="page-title">📚 General Ledger</h1><div class="muted">Posted transactions only • selected country book</div></div></div>
+   <div class="detail-card">
+    <div class="field"><label for="ledgerCountry">Country book</label><select id="ledgerCountry"><option value="AE">🇦🇪 UAE — AED</option><option value="PK">🇵🇰 Pakistan — PKR</option></select></div>
+    <div class="field"><label for="ledgerAccount">Account</label><select id="ledgerAccount"><option value="">All accounts</option></select></div>
+    <div class="two">
+     <div class="field"><label for="ledgerFrom">From date</label><input id="ledgerFrom" type="date"></div>
+     <div class="field"><label for="ledgerTo">To date</label><input id="ledgerTo" type="date"></div>
+    </div>
+    <button class="primary" type="button" id="runLedger" style="width:100%">🔎 Run General Ledger</button>
+   </div>
+   <div class="detail-card">
+    <h3>📖 General Ledger activity</h3>
+    <div id="ledgerSummary" class="muted">No posted journals available.</div>
+    <div id="ledgerRows" class="list" style="margin-top:10px"><div class="empty-state">No posted ledger activity for this book.</div></div>
+   </div>
+   <div class="detail-card">
+    <h3>⚖️ Trial Balance</h3>
+    <div class="field"><label for="trialAsOf">As at date</label><input id="trialAsOf" type="date"></div>
+    <button class="soft" type="button" id="runTrialBalance">↻ Calculate Trial Balance</button>
+    <div id="trialSummary" class="muted" style="margin-top:10px">No posted journals available.</div>
+    <div id="trialRows" class="list" style="margin-top:10px"><div class="empty-state">No posted entries. Trial Balance will appear when verified posted journals are available.</div></div>
+   </div>
+   <div class="notice">Stage 8D reporting preview. It reads only records marked Posted in the designated posted-journal data source. Stage 8C creates drafts only, so these reports should remain empty. No opening balances or real financial data are created here. Browser-side reports are not official accounts.</div>
+  </section>
   <section id="more" class="screen hidden">
    <h1 class="page-title">☰ More</h1><div class="list" style="margin-top:15px">
     <div class="item"><div class="avatar">📢</div><div><strong>Official notices</strong><small>Important workspace announcements</small></div><span class="arrow">›</span></div>
+    <button type="button" class="item" data-screen="accounting-ledger" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📚</div><div><strong>General Ledger & Trial Balance</strong><small>Country-wise reports from posted journals</small></div><span class="arrow">›</span></button>
     <button type="button" class="item" data-screen="accounting" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📚</div><div><strong>Accounting setup</strong><small>Country books and Chart of Accounts</small></div><span class="arrow">›</span></button>
     <div class="item"><div class="avatar">⚙️</div><div><strong>Settings</strong><small>Profile, country, currency and language</small></div><span class="arrow">›</span></div>
     <div class="item"><div class="avatar">❔</div><div><strong>Help & support</strong><small>Learn how Propledger works</small></div><span class="arrow">›</span></div>
@@ -519,6 +545,75 @@ $("accountForm").addEventListener("submit",e=>{
  catch(err){alert("Could not save the account on this device.")}
 });
 renderAccountingSetup();
+
+/* Stage 8D — read-only GL and Trial Balance over posted-journal records.
+   Stage 8C does not post. Production reports must be served by the approved backend. */
+const POSTED_JOURNAL_SOURCE_KEY="propledger.postedJournals";
+function postedJournalRecords(){
+ try{const raw=JSON.parse(localStorage.getItem(POSTED_JOURNAL_SOURCE_KEY)||"[]");return Array.isArray(raw)?raw:[]}
+ catch(e){return []}
+}
+function reportCents(value){const n=Number(value);return Number.isFinite(n)?Math.round(n*100):0}
+function reportDateOk(date,from,to){return (!from||date>=from)&&(!to||date<=to)}
+function reportCurrency(country){return country==="PK"?"PKR":"AED"}
+function reportMoney(cents,currency){return currency+" "+(cents/100).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+function reportEsc(value){return String(value??"").replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]))}
+function countryPostedJournals(country,asOf){
+ return postedJournalRecords().filter(j=>j&&j.status==="Posted"&&j.country===country&&typeof j.date==="string"&&(!asOf||j.date<=asOf)&&j.currency===reportCurrency(country)&&Array.isArray(j.lines));
+}
+function refreshLedgerAccounts(){
+ const country=$("ledgerCountry").value,book=ensureBook(country),select=$("ledgerAccount"),prior=select.value;
+ select.innerHTML='<option value="">All accounts</option>';
+ book.accounts.forEach(a=>{const opt=document.createElement("option");opt.value=a.code;opt.textContent=a.code+" · "+a.name;select.appendChild(opt)});
+ if([...select.options].some(o=>o.value===prior))select.value=prior;
+}
+function runGeneralLedger(){
+ const country=$("ledgerCountry").value,currency=reportCurrency(country),account=$("ledgerAccount").value,from=$("ledgerFrom").value,to=$("ledgerTo").value;
+ if(from&&to&&from>to){$("ledgerSummary").textContent="Invalid date range: From date must not be after To date.";$("ledgerRows").innerHTML="";return}
+ const book=ensureBook(country),accounts=new Map(book.accounts.map(a=>[a.code,a])),journals=countryPostedJournals(country,to).slice().sort((a,b)=>a.date.localeCompare(b.date)||String(a.reference||"").localeCompare(String(b.reference||"")));
+ const entries=[];
+ journals.forEach(j=>(j.lines||[]).forEach(line=>{
+  if(!accounts.has(String(line.account)))return;
+  if(account&&String(line.account)!==account)return;
+  const debit=reportCents(line.debit),credit=reportCents(line.credit);
+  if(debit||credit)entries.push({date:j.date,reference:j.reference||"Posted journal",description:j.description||"",account:String(line.account),debit,credit});
+ }));
+ entries.sort((a,b)=>a.date.localeCompare(b.date)||a.reference.localeCompare(b.reference));
+ let running=0,prior=0;entries.forEach(e=>{if(from&&e.date<from)prior+=e.debit-e.credit;else running+=e.debit-e.credit});
+ const visible=entries.filter(e=>reportDateOk(e.date,from,to));
+ let balance=prior;const host=$("ledgerRows");host.innerHTML="";
+ if(!visible.length){host.innerHTML='<div class="empty-state">No posted ledger activity matches this account and date range.</div>'}
+ else visible.forEach(e=>{balance+=e.debit-e.credit;const row=document.createElement("div");row.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const title=document.createElement("strong");title.textContent=e.date+" · "+(e.reference||"Journal");const meta=document.createElement("small");meta.textContent=e.account+" · "+(e.description||"Journal entry");info.append(title,meta);const amount=document.createElement("span");amount.className="receipt-history-value";amount.textContent="Dr "+(e.debit/100).toFixed(2)+" / Cr "+(e.credit/100).toFixed(2)+"\nBal "+(balance/100).toFixed(2);row.append(info,amount);host.appendChild(row)});
+ const periodDebit=visible.reduce((n,e)=>n+e.debit,0),periodCredit=visible.reduce((n,e)=>n+e.credit,0);
+ $("ledgerSummary").textContent=visible.length+" posted lines · "+reportMoney(periodDebit,currency)+" debits · "+reportMoney(periodCredit,currency)+" credits · closing movement "+reportMoney(balance,currency);
+}
+function runTrialBalance(){
+ const country=$("ledgerCountry").value,currency=reportCurrency(country),asOf=$("trialAsOf").value,book=ensureBook(country),accounts=book.accounts.filter(a=>a.type!=="Header");
+ const balances=new Map(accounts.map(a=>[a.code,0]));
+ countryPostedJournals(country,asOf).forEach(j=>j.lines.forEach(line=>{
+  const code=String(line.account);if(!balances.has(code))return;
+  balances.set(code,balances.get(code)+reportCents(line.debit)-reportCents(line.credit));
+ }));
+ const host=$("trialRows");host.innerHTML="";let debitTotal=0,creditTotal=0;
+ accounts.forEach(a=>{const net=balances.get(a.code)||0;if(!net)return;const debit=Math.max(net,0),credit=Math.max(-net,0);debitTotal+=debit;creditTotal+=credit;
+  const row=document.createElement("div");row.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const title=document.createElement("strong");title.textContent=a.code+" · "+a.name;const meta=document.createElement("small");meta.textContent=a.type;info.append(title,meta);const value=document.createElement("span");value.className="receipt-history-value";value.textContent=debit?("Dr "+(debit/100).toFixed(2)):("Cr "+(credit/100).toFixed(2));row.append(info,value);host.appendChild(row);
+ });
+ if(!debitTotal&&!creditTotal)host.innerHTML='<div class="empty-state">No posted balances exist for this country book as at the selected date.</div>';
+ $("trialSummary").textContent="As at "+(asOf||"all dates")+" · Debits "+reportMoney(debitTotal,currency)+" · Credits "+reportMoney(creditTotal,currency)+" · "+(debitTotal===creditTotal?"Balanced":"OUT OF BALANCE");
+}
+function initAccountingReports(){
+ $("ledgerCountry").value=$("bookCountry").value;
+ $("ledgerFrom").value="";$("ledgerTo").value=new Date().toLocaleDateString("en-CA");$("trialAsOf").value=$("ledgerTo").value;
+ refreshLedgerAccounts();runGeneralLedger();runTrialBalance();
+}
+$("ledgerCountry").addEventListener("change",()=>{refreshLedgerAccounts();runGeneralLedger();runTrialBalance()});
+$("ledgerAccount").addEventListener("change",runGeneralLedger);
+$("runLedger").addEventListener("click",runGeneralLedger);
+$("runTrialBalance").addEventListener("click",runTrialBalance);
+$("trialAsOf").addEventListener("change",runTrialBalance);
+$("bookCountry").addEventListener("change",()=>{if($("ledgerCountry")){$("ledgerCountry").value=$("bookCountry").value;refreshLedgerAccounts();runGeneralLedger();runTrialBalance()}});
+document.querySelectorAll('[data-screen="accounting-ledger"]').forEach(b=>b.addEventListener("click",()=>{showScreen("accounting-ledger");initAccountingReports()}));
+
 
 /* Stage 8C — journal validation and local draft workspace only.
    Posting is intentionally disabled until a trusted transactional backend is approved. */
