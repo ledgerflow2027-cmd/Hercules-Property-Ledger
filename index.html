@@ -192,6 +192,31 @@
      <button type="submit" class="primary">＋ Add to selected book</button>
     </form>
    </div>
+   <div class="detail-card">
+    <h3>📒 Journal entry workspace</h3>
+    <p class="muted">Create and validate a balanced journal draft for the selected country book. Saving a draft does not post it or change account balances.</p>
+    <div class="two">
+     <div class="field"><label for="journalDate">Journal date *</label><input id="journalDate" type="date"></div>
+     <div class="field"><label for="journalCurrency">Book currency</label><input id="journalCurrency" readonly></div>
+    </div>
+    <div class="field"><label for="journalDescription">Description *</label><input id="journalDescription" maxlength="160" placeholder="e.g. Opening cash transfer"></div>
+    <div id="journalLines" class="list"></div>
+    <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+     <button type="button" class="soft" id="addJournalLine">＋ Add line</button>
+     <button type="button" class="primary" id="validateJournal">✓ Validate journal</button>
+    </div>
+    <div id="journalValidation" class="notice" aria-live="polite">A journal needs at least two lines and equal debit and credit totals.</div>
+    <div class="two" style="margin-top:10px">
+     <div><small class="muted">Total debits</small><strong id="journalDebits">0.00</strong></div>
+     <div><small class="muted">Total credits</small><strong id="journalCredits">0.00</strong></div>
+    </div>
+    <button type="button" class="primary" id="saveJournalDraft" disabled style="width:100%;margin-top:12px">💾 Save validated draft</button>
+    <p class="muted" id="journalSaveStatus" aria-live="polite">Drafts remain local to this browser. No posting is available in this stage.</p>
+   </div>
+   <div class="detail-card">
+    <h3>🗃️ Saved journal drafts</h3>
+    <div id="journalDraftHistory" class="receipt-history"><p class="muted">No journal drafts saved.</p></div>
+   </div>
    <div class="notice">Backend provider is intentionally undecided. Do not enter sensitive data or rely on this local configuration as an official ledger. Opening balances, journals, posting and reports are later Stage 8 milestones.</div>
   </section>
   <section id="more" class="screen hidden">
@@ -494,6 +519,87 @@ $("accountForm").addEventListener("submit",e=>{
  catch(err){alert("Could not save the account on this device.")}
 });
 renderAccountingSetup();
+
+/* Stage 8C — journal validation and local draft workspace only.
+   Posting is intentionally disabled until a trusted transactional backend is approved. */
+const JOURNAL_DRAFT_KEY="propledger.journalDrafts";
+let journalIsValid=false;
+function journalDrafts(){try{return JSON.parse(localStorage.getItem(JOURNAL_DRAFT_KEY)||"{}")}catch(e){return {}}}
+function journalMoney(n){return (n/100).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+function journalLineMarkup(){
+ const row=document.createElement("div");row.className="detail-card journal-line";row.style.margin="0";
+ const accountWrap=document.createElement("div");accountWrap.className="field";
+ const label=document.createElement("label");label.textContent="Account";
+ const select=document.createElement("select");select.className="journal-account";select.required=true;
+ const blank=document.createElement("option");blank.value="";blank.textContent="Choose account";select.appendChild(blank);
+ const book=ensureBook(currentBookCountry());
+ book.accounts.filter(a=>a.type!=="Header").forEach(a=>{const opt=document.createElement("option");opt.value=a.code;opt.textContent=a.code+" · "+a.name;select.appendChild(opt)});
+ accountWrap.append(label,select);
+ const amounts=document.createElement("div");amounts.className="two";
+ [["Debit","debit"],["Credit","credit"]].forEach(([name,cls])=>{const wrap=document.createElement("div");wrap.className="field";const lab=document.createElement("label");lab.textContent=name;const input=document.createElement("input");input.type="number";input.min="0";input.step="0.01";input.inputMode="decimal";input.placeholder="0.00";input.className="journal-"+cls;wrap.append(lab,input);amounts.appendChild(wrap)});
+ const remove=document.createElement("button");remove.type="button";remove.className="soft";remove.textContent="Remove line";remove.addEventListener("click",()=>{if($("journalLines").children.length<=2){$("journalValidation").textContent="At least two journal lines are required.";return}row.remove();journalIsValid=false;$("saveJournalDraft").disabled=true;$("journalValidation").textContent="Journal changed. Validate it again before saving."});
+ row.append(accountWrap,amounts,remove);return row;
+}
+function addJournalLine(){ $("journalLines").appendChild(journalLineMarkup());journalIsValid=false;$("saveJournalDraft").disabled=true }
+function resetJournalLines(){ $("journalLines").innerHTML="";addJournalLine();addJournalLine() }
+function readJournal(){
+ const lines=[...$("journalLines").querySelectorAll(".journal-line")].map(row=>({
+  account:row.querySelector(".journal-account").value,
+  debitText:row.querySelector(".journal-debit").value,
+  creditText:row.querySelector(".journal-credit").value
+ }));
+ return {country:currentBookCountry(),currency:currentBookCountry()==="PK"?"PKR":"AED",date:$("journalDate").value,description:$("journalDescription").value.trim(),lines};
+}
+function validateJournal(){
+ const j=readJournal(),book=ensureBook(j.country);let debit=0,credit=0,errors=[];
+ if(!j.date)errors.push("Choose a journal date.");
+ if(!j.description)errors.push("Enter a journal description.");
+ if(j.lines.length<2)errors.push("At least two journal lines are required.");
+ j.lines.forEach((line,i)=>{
+  const d=line.debitText===""?0:Number(line.debitText),c=line.creditText===""?0:Number(line.creditText);
+  if(!line.account||!book.accounts.some(a=>a.code===line.account))errors.push("Line "+(i+1)+": choose a valid account.");
+  if(!Number.isFinite(d)||!Number.isFinite(c)||d<0||c<0)errors.push("Line "+(i+1)+": amounts must be valid and non-negative.");
+  const dc=Math.round(d*100),cc=Math.round(c*100);
+  if((dc>0)===(cc>0))errors.push("Line "+(i+1)+": enter an amount on exactly one side (debit or credit).");
+  debit+=dc;credit+=cc;
+ });
+ $("journalDebits").textContent=j.currency+" "+journalMoney(debit);
+ $("journalCredits").textContent=j.currency+" "+journalMoney(credit);
+ if(debit<=0||credit<=0)errors.push("Journal must contain positive debit and credit totals.");
+ if(debit!==credit)errors.push("Debits and credits must be equal.");
+ if(errors.length){journalIsValid=false;$("saveJournalDraft").disabled=true;$("journalValidation").textContent="Not valid: "+errors.join(" ");return false}
+ journalIsValid=true;$("saveJournalDraft").disabled=false;$("journalValidation").textContent="Validated: debits equal credits. This is still an unposted draft.";return true;
+}
+function renderJournalDrafts(){
+ const country=currentBookCountry(),all=journalDrafts(),list=(all[country]||[]),host=$("journalDraftHistory");host.innerHTML="";
+ if(!list.length){host.innerHTML='<p class="muted">No journal drafts saved for this country book.</p>';return}
+ list.slice().reverse().forEach(j=>{const item=document.createElement("div");item.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const title=document.createElement("strong");title.textContent=j.reference+" · "+j.description;const meta=document.createElement("small");meta.textContent=j.date+" · "+j.country+" · "+j.currency+" · UNPOSTED DRAFT";info.append(title,meta);const amount=document.createElement("span");amount.className="receipt-history-value";amount.textContent=j.currency+" "+j.total;item.append(info,amount);host.appendChild(item)});
+}
+function saveJournalDraft(){
+ if(!journalIsValid||!validateJournal())return;
+ const j=readJournal(),all=journalDrafts(),list=all[j.country]||[];
+ const now=new Date(),year=now.getFullYear(),ref="JD-"+year+"-"+String(list.length+1).padStart(4,"0");
+ const total=journalMoney(j.lines.reduce((sum,line)=>sum+Math.round(Number(line.debitText||0)*100),0));
+ const draft={id:"jd-"+Date.now(),reference:ref,date:j.date,description:j.description,country:j.country,currency:j.currency,total,status:"Unposted draft",lines:j.lines.map(line=>({account:line.account,debit:Number(line.debitText||0),credit:Number(line.creditText||0)})),createdAt:now.toISOString()};
+ all[j.country]=list.concat(draft);
+ try{localStorage.setItem(JOURNAL_DRAFT_KEY,JSON.stringify(all));$("journalSaveStatus").textContent=ref+" saved locally as an unposted draft. No account balances changed.";renderJournalDrafts();$("journalDescription").value="";$("journalDate").value=new Date().toLocaleDateString("en-CA");resetJournalLines();journalIsValid=false;$("saveJournalDraft").disabled=true;$("journalValidation").textContent="A journal needs at least two lines and equal debit and credit totals."}
+ catch(e){$("journalSaveStatus").textContent="Could not save this draft on this device."}
+}
+function initJournalWorkspace(){
+ $("journalCurrency").value=currentBookCountry()==="PK"?"PKR":"AED";
+ $("journalDate").value=new Date().toLocaleDateString("en-CA");
+ resetJournalLines();renderJournalDrafts();
+ $("journalDebits").textContent=$("journalCurrency").value+" 0.00";
+ $("journalCredits").textContent=$("journalCurrency").value+" 0.00";
+ $("journalValidation").textContent="A journal needs at least two lines and equal debit and credit totals.";
+ $("journalSaveStatus").textContent="Drafts remain local to this browser. No posting is available in this stage.";
+}
+$("bookCountry").addEventListener("change",()=>{initJournalWorkspace()});
+$("addJournalLine").addEventListener("click",addJournalLine);
+$("validateJournal").addEventListener("click",validateJournal);
+$("saveJournalDraft").addEventListener("click",saveJournalDraft);
+initJournalWorkspace();
+
 
 renderProperties();renderVendors();
 
