@@ -648,7 +648,7 @@ function journalLineMarkup(){
  const select=document.createElement("select");select.className="journal-account";select.required=true;
  const blank=document.createElement("option");blank.value="";blank.textContent="Choose account";select.appendChild(blank);
  const book=ensureBook(currentBookCountry());
- book.accounts.filter(a=>a.type!=="Header").forEach(a=>{const opt=document.createElement("option");opt.value=a.code;opt.textContent=a.code+" · "+a.name;select.appendChild(opt)});
+ book.accounts.filter(a=>a.type!=="Header"&&a.active!==false&&a.postable!==false).forEach(a=>{const opt=document.createElement("option");opt.value=a.code;opt.textContent=a.code+" · "+a.name;select.appendChild(opt)});
  accountWrap.append(label,select);
  const amounts=document.createElement("div");amounts.className="two";
  [["Debit","debit"],["Credit","credit"]].forEach(([name,cls])=>{const wrap=document.createElement("div");wrap.className="field";const lab=document.createElement("label");lab.textContent=name;const input=document.createElement("input");input.type="number";input.min="0";input.step="0.01";input.inputMode="decimal";input.placeholder="0.00";input.className="journal-"+cls;wrap.append(lab,input);amounts.appendChild(wrap)});
