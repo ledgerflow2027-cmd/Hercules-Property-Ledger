@@ -1210,7 +1210,7 @@ const DEMO_DATA_VERSION="propledger.demoData.v2";
    });
    [["propledger.properties",props],["propledger.vendors",vendors],["propledger.receipts",receipts],["propledger.payments",payments],["propledger.rentInvoices",rentInvoices],["propledger.vendorBills",vendorBills],[POSTED_JOURNAL_SOURCE_KEY,journals]].forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));
    localStorage.setItem(DEMO_DATA_VERSION,"1");
-   const books=readAccountingSetup();["AE","PK"].forEach(c=>{const b=ensureBook(c);b.yearStart="01-01"});writeAccountingSetup(readAccountingSetup());
+   ["AE","PK"].forEach(c=>{ensureBook(c);const bookData=readAccountingSetup();bookData[c].yearStart="01-01";writeAccountingSetup(bookData)});
    renderProperties();renderVendors();receiptRenderHistory();paymentRenderHistory();refreshPortfolioDashboard();
    if($("subledgerCountry")){refreshSubledgerParties();runSubledger()}if($("ledgerCountry")){refreshLedgerAccounts();runGeneralLedger();runTrialBalance()}if($("statementCountry"))runFinancialStatements();
    $("demoDataStatus").textContent="Seeded Jan 1, 2025–Nov 8, 2026: country-matched names, 5 properties/tenants/vendors, rent invoices and mixed collections, vendor bills with on-time/late/unpaid status, balanced demo journals. Jan–Dec financial years; no pictures.";
