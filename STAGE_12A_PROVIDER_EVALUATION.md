@@ -175,3 +175,20 @@ The following must be approved:
 - Pakistan Ministry of IT legislation: https://www.moitt.gov.pk/Legislations
 
 **Next milestone after approval:** Stage 12B — identity and organisation access design. No provider provisioning or production migration should begin until the owner approves the outstanding items above.
+
+
+---
+
+## Owner decision update — 8 November 2026
+
+The provisional Azure recommendation above has been superseded by the owner's explicit budget and platform decision:
+
+- **Selected plan:** Firebase Spark, strictly USD 0.
+- **Selected Firestore location:** Doha, `me-central1`.
+- **Billing:** Do not link a billing account.
+- **Paid services:** Do not activate.
+- **Provider status:** Firebase is approved for architecture planning only; no project or database has been provisioned.
+
+The controlling implementation plan is now [STAGE_12A_FIREBASE_SPARK_ARCHITECTURE.md](STAGE_12A_FIREBASE_SPARK_ARCHITECTURE.md).
+
+The Azure comparison remains in this document as historical research, not as the current recommendation. The Firebase Spark plan's limitations—particularly no Firebase Cloud Storage, no Cloud Functions and no paid backup/PITR features—must be respected. Doha is not UAE or Pakistan data residency. Do not create the Firestore database until its location is confirmed as `me-central1` and the owner separately authorises provisioning.
