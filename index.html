@@ -69,6 +69,7 @@
  #receiptPrintArea,#paymentPrintArea,#documentPrintArea{position:absolute!important;left:0!important;top:0!important;width:100%!important;border:0!important;box-shadow:none!important;margin:0!important;padding:24px!important}
  .receipt-modal,.receipt-sheet{position:static!important;display:block!important;background:#fff!important;padding:0!important;min-height:0!important;overflow:visible!important}
  .receipt-sheet>*:not(#receiptPrintArea):not(#paymentPrintArea):not(#documentPrintArea){display:none!important}
+ #app{display:block!important}#documents{display:block!important;visibility:visible!important;position:static!important}#documents .detail-card{display:block!important;visibility:visible!important}#documents #documentPrintArea{display:block!important;visibility:visible!important;position:static!important;width:100%!important;margin:0!important}
 }
 
 </style>
@@ -500,7 +501,7 @@ function receiptClose(){$("receiptModal").classList.remove("open");document.body
 function receiptEscape(v){return detailEscape(v)}
 function receiptBuildPreview(r){
  const host=$("receiptPrintArea");
- host.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px;align-items:start"><div><h3>🧾 PAYMENT RECEIPT</h3><div class="receipt-meta">PROPLE DGER 2027 • INCOME VOUCHER<br>Receipt acknowledgement preview</div></div><div style="text-align:right;font-size:11px"><strong>'+receiptEscape(r.number)+'</strong><br>'+receiptEscape(r.date)+'</div></div>'+
+ host.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px;align-items:start"><div><h3>🧾 PAYMENT RECEIPT</h3><div class="receipt-meta">PROPLEDGER 2027 • INCOME VOUCHER<br>Receipt acknowledgement preview</div></div><div style="text-align:right;font-size:11px"><strong>'+receiptEscape(r.number)+'</strong><br>'+receiptEscape(r.date)+'</div></div>'+
  '<div class="receipt-amount">'+receiptEscape(r.currency)+' '+Number(r.amount).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+'</div>'+
  '<div class="receipt-line"><span>Received from</span><strong>'+receiptEscape(r.tenant)+'</strong></div>'+
  '<div class="receipt-line"><span>Property</span><strong>'+receiptEscape(r.property)+'</strong></div>'+
