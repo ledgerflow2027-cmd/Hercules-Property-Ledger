@@ -135,38 +135,8 @@
     <button class="tile pulse" data-go="activity"><span>📥</span>Record income<small>Receipt vouchers</small></button>
     <button class="tile" data-go="activity"><span>📤</span>Record expense<small>Payment vouchers</small></button>
    </div>
-   <div class="carousel-wrap">
-    <div class="carousel-heading"><h2>🏘️ Properties</h2><span class="muted">Your portfolio</span></div>
-    <div class="carousel-track" aria-label="Property carousel">
-     <div class="mini-card"><div class="mini-art">🏢</div><strong>City residence</strong><small>Dubai • 3 units</small></div>
-     <div class="mini-card"><div class="mini-art">🏡</div><strong>Garden villa</strong><small>Sharjah • 1 unit</small></div>
-     <div class="mini-card"><div class="mini-art">🏬</div><strong>Retail centre</strong><small>Ajman • 4 units</small></div>
-     <div class="mini-card"><div class="mini-art">🏙️</div><strong>Office suites</strong><small>Dubai • 6 units</small></div>
-     <div class="mini-card"><div class="mini-art">🏘️</div><strong>Town homes</strong><small>Abu Dhabi • 2 units</small></div>
-    </div>
-   </div>
-   <div class="carousel-wrap">
-    <div class="carousel-heading"><h2>⏰ Rent follow-up</h2><span class="muted">Demo late payments</span></div>
-    <div class="carousel-track late-track" aria-label="Tenants with late rent">
-     <div class="mini-card"><div class="mini-art">👩🏻</div><strong>Tenant A</strong><small>Rent follow-up • Demo</small></div>
-     <div class="mini-card"><div class="mini-art">👨🏽</div><strong>Tenant B</strong><small>Rent follow-up • Demo</small></div>
-     <div class="mini-card"><div class="mini-art">👨🏻‍🦱</div><strong>Tenant C</strong><small>Rent follow-up • Demo</small></div>
-     <div class="mini-card"><div class="mini-art">👩🏽</div><strong>Tenant D</strong><small>Rent follow-up • Demo</small></div>
-     <div class="mini-card"><div class="mini-art">👨🏿</div><strong>Tenant E</strong><small>Rent follow-up • Demo</small></div>
-    </div>
-   </div>
-   <div class="carousel-wrap">
-    <div class="carousel-heading"><h2>🧰 Vendors</h2><span class="muted">Service partners</span></div>
-    <div class="carousel-track" aria-label="Vendor carousel">
-     <div class="mini-card"><div class="mini-art">🔧</div><strong>Maintenance</strong><small>Repairs • Demo</small></div>
-     <div class="mini-card"><div class="mini-art">🧹</div><strong>Cleaning team</strong><small>Property care • Demo</small></div>
-     <div class="mini-card"><div class="mini-art">⚡</div><strong>Electrical</strong><small>Technical • Demo</small></div>
-     <div class="mini-card"><div class="mini-art">🚰</div><strong>Plumbing</strong><small>Technical • Demo</small></div>
-     <div class="mini-card"><div class="mini-art">🎨</div><strong>Painting</strong><small>Finishing • Demo</small></div>
-    </div>
-   </div>
-   <div class="sectionhead" style="margin-top:22px"><h2>🔔 Recent updates</h2><span class="muted">View all</span></div>
-   <div class="panel muted">Your workspace is ready for the next setup stage. No real financial records are stored in this preview.</div>
+   <div class="sectionhead" style="margin-top:22px"><h2>🔔 Recent saved activity</h2></div>
+   <div id="dashboardRecent" class="list"><div class="empty-state">No local voucher activity yet.</div></div>
   </section>
   <section id="properties" class="screen hidden">
    <div class="sectionhead"><div><h1 class="page-title">🏠 Properties</h1><div class="muted">Your property portfolio</div></div><button class="primary" id="addProperty">＋ Add</button></div>
@@ -1079,6 +1049,11 @@ function refreshPortfolioDashboard(){
  if(!vendors.length){const empty=document.createElement("div");empty.className="empty-state";empty.textContent="No saved vendors for this country yet.";vendorHost.appendChild(empty)}
  vendors.forEach(v=>dashCard(vendorHost,"🧰",v.name||"Vendor",(v.category||"Service provider")+" · "+(v.phone||"No phone")));
  $("dashboardDataNote").textContent="Updated from this device's saved "+(country==="PK"?"Pakistan":"UAE")+" records. Local-only preview; not cloud-synced. Switch country in workspace settings to view the other separate book.";
+ const recentHost=$("dashboardRecent");recentHost.innerHTML="";
+ const recentRows=[...getReceipts().filter(r=>propertyIds.has(r.propertyId)).map(r=>({kind:"Receipt",number:r.number||"Receipt",date:r.date||"",party:r.tenant||"Tenant",amount:dashCents(r.amount)})),...getPayments().filter(p=>propertyIds.has(p.propertyId)).map(p=>({kind:"Payment",number:p.number||"Payment",date:p.date||"",party:p.vendor||"Vendor",amount:dashCents(p.amount)}))].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,5);
+ if(!recentRows.length){const empty=document.createElement("div");empty.className="empty-state";empty.textContent="No local receipt or payment vouchers saved for this country yet.";recentHost.appendChild(empty)}
+ recentRows.forEach(x=>{const row=document.createElement("div");row.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const title=document.createElement("strong");title.textContent=(x.kind==="Receipt"?"🧾 ":"💸 ")+x.number+" · "+x.party;const meta=document.createElement("small");meta.textContent=x.date+" · "+x.kind+" · Unposted source voucher";info.append(title,meta);const amount=document.createElement("span");amount.className="receipt-history-value";amount.textContent=dashMoney(x.amount,currency);row.append(info,amount);recentHost.appendChild(row)});
+
 }
 
 $("enter").addEventListener("click",()=>setTimeout(refreshPortfolioDashboard,0));
