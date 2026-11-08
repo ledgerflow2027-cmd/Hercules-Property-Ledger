@@ -12,6 +12,35 @@
 @media(min-width:600px){body{padding:20px 0}.app{border-radius:28px;overflow:hidden;min-height:calc(100dvh - 40px);box-shadow:0 20px 70px #17255418}.bottom{bottom:20px;border-radius:0 0 28px 28px}}
 
 .property-form{display:grid;gap:10px}.property-form .field{margin:3px 0}.property-form input,.property-form select,.property-form textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit}.property-form textarea{min-height:72px;resize:vertical}.modal-backdrop{position:fixed;inset:0;background:#11182799;z-index:20;display:none;align-items:flex-end;justify-content:center;padding:12px}.modal-backdrop.open{display:flex}.modal-sheet{width:min(520px,100%);max-height:92dvh;overflow:auto;background:#f8f9fc;border-radius:24px 24px 18px 18px;padding:18px;box-shadow:0 20px 70px #0004}.modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.modal-head h2{font-size:19px;margin:0}.close-btn{border:0;background:#e9ebf2;border-radius:50%;width:36px;height:36px;font-size:20px}.form-section{font-size:12px;font-weight:800;color:#6654d9;margin:8px 0 2px}.upload-hint{font-size:10px;color:var(--muted);line-height:1.4}.saved-photo{width:58px;height:58px;object-fit:cover;border-radius:13px;border:1px solid var(--line)}.empty-state{padding:20px;text-align:center;background:#fff;border:1px dashed #cbd2df;border-radius:16px;color:var(--muted);font-size:12px}
+
+.profile-detail{position:fixed;inset:0;background:#f5f7fb;z-index:30;display:none;overflow:auto}
+.profile-detail.open{display:block}
+.profile-detail-inner{max-width:520px;min-height:100dvh;margin:auto;background:#f8f9fc;padding:18px 16px 35px}
+.detail-top{display:flex;align-items:center;gap:12px;margin:4px 0 16px}
+.detail-back{border:0;border-radius:13px;background:#fff;padding:10px 13px;font-weight:800}
+.detail-hero{background:linear-gradient(135deg,#172554,#43358f 65%,#087e83);color:#fff;border-radius:22px;padding:18px;margin-bottom:13px}
+.detail-hero h2{font-size:21px;margin:0 0 5px}.detail-hero p{font-size:12px;opacity:.85;margin:0}
+.detail-gallery{display:flex;gap:8px;overflow-x:auto;margin-top:13px}
+.detail-gallery img{width:118px;height:88px;object-fit:cover;border-radius:13px;flex:0 0 auto}
+.detail-card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px;margin:10px 0;box-shadow:var(--shadow)}
+.detail-card h3{font-size:14px;margin:0 0 10px}
+.detail-kv{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.detail-kv div{background:#f7f8fc;border-radius:11px;padding:9px;min-width:0}
+.detail-kv small{display:block;color:var(--muted);font-size:10px;margin-bottom:4px}
+.detail-kv strong{font-size:12px;overflow-wrap:anywhere}
+.demo-tag{display:inline-block;border-radius:20px;background:#fff1d8;color:#805812;padding:5px 8px;font-size:10px;font-weight:800;margin-bottom:9px}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.chart-box{border:1px solid var(--line);border-radius:13px;padding:10px;min-width:0}
+.chart-box strong{font-size:11px;display:block}.chart-box small{font-size:9px;color:var(--muted)}
+.donut{width:86px;height:86px;border-radius:50%;margin:12px auto;background:conic-gradient(#6654d9 0 62%,#18a999 62% 82%,#f0b84b 82% 100%);position:relative}
+.donut:after{content:"DEMO";position:absolute;inset:19px;background:white;border-radius:50%;display:grid;place-items:center;font-size:9px;font-weight:800;color:#697386}
+.bars{height:83px;display:flex;align-items:end;gap:6px;margin-top:12px;padding:0 3px}
+.bars i{display:block;flex:1;border-radius:6px 6px 2px 2px;background:linear-gradient(#18a999,#6654d9);min-height:8px}
+.line-chart{height:83px;margin-top:12px;width:100%}
+.contract-note{font-size:11px;line-height:1.55;color:var(--muted)}
+.profile-detail .notice{margin-top:10px}
+@media(max-width:360px){.detail-kv{grid-template-columns:1fr}.chart-grid{gap:6px}.chart-box{padding:8px}}
+
 </style>
 </head>
 <body>
@@ -157,7 +186,14 @@
  <div class="field"><label for="vPhoto">📷 Vendor / company photo</label><input id="vPhoto" type="file" accept="image/*"><div id="vPhotoPreview"></div></div>
  <div class="field"><label id="vDocumentLabel" for="vDocument">📄 Emirates ID / trade document</label><input id="vDocument" type="file" accept="image/*,.pdf"><div class="upload-hint">Only the selected filename is saved in this preview. Do not store sensitive identity documents until secure cloud storage is implemented.</div></div>
  <div class="notice">Preview storage only: vendor details and compressed photo are saved in this browser on this device. They are not synced, backed up, or protected by a cloud account.</div>
- <button class="primary" type="submit">💾 Save vendor preview</button></form></div></div> <nav class="bottom" aria-label="Main navigation">
+ <button class="primary" type="submit">💾 Save vendor preview</button></form></div></div> 
+<div id="profileDetail" class="profile-detail" role="dialog" aria-modal="true" aria-label="Property or vendor profile">
+ <div class="profile-detail-inner">
+  <div class="detail-top"><button class="detail-back" id="closeProfile">← Back</button><span class="muted">PROFILE DETAILS</span></div>
+  <div id="profileDetailContent"></div>
+ </div>
+</div>
+<nav class="bottom" aria-label="Main navigation">
   <button class="navbtn active" data-screen="dashboard"><b>⌂</b>Dashboard</button>
   <button class="navbtn" data-screen="properties"><b>🏘️</b>Properties</button>
   <button class="navbtn" data-screen="vendors"><b>🧰</b>Vendors</button>
@@ -205,6 +241,56 @@ $("vPhoto").addEventListener("change",()=>previewFile($("vPhoto"),"vPhotoPreview
 $("vendorForm").addEventListener("submit",async e=>{e.preventDefault();const photo=await compressImage($("vPhoto").files[0]),doc=$("vDocument").files[0],vendor={id:"v"+Date.now(),name:$("vName").value.trim(),category:$("vType").value,country:$("vCountry").value,address:$("vAddress").value.trim(),phone:$("vPhone").value.trim(),email:$("vEmail").value.trim(),identity:$("vIdentity").value.trim(),identityType:$("vCountry").value==="PK"?"CNIC":"Emirates ID",photo,documentName:doc?doc.name:""};try{const all=getVendors();all.push(vendor);localStorage.setItem("propledger.vendors",JSON.stringify(all));renderVendors();$("vendorForm").reset();$("vPhotoPreview").innerHTML="";$("vCountry").dispatchEvent(new Event("change"));closeVendor();alert("Vendor saved in this device's local preview. It is not uploaded to cloud storage.")}catch(err){alert("Could not save this vendor on this device. Try a smaller photo. No cloud copy was created.")}});
 
 renderProperties();renderVendors();
+
+function detailEscape(value){return String(value??"—").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]))}
+function detailCurrency(country){return country==="PK"?"PKR":"AED"}
+function detailPhotoGallery(photos){const valid=(photos||[]).filter(Boolean);return valid.length?'<div class="detail-gallery">'+valid.map(src=>'<img src="'+src+'" alt="Property photo">').join("")+'</div>':'<div class="empty-state">📷 No photos added yet</div>'}
+function detailCharts(kind){
+ const titles=kind==="property"?["Income vs expenses","Monthly rent trend","Occupancy trend","Expense categories"]:["Service spend mix","Monthly service trend","Vendor activity","Category distribution"];
+ return '<div class="chart-grid">'+
+ '<div class="chart-box"><strong>◉ '+titles[0]+'</strong><small>Illustrative split • not ledger data</small><div class="donut"></div></div>'+
+ '<div class="chart-box"><strong>▥ '+titles[1]+'</strong><small>Illustrative monthly values</small><div class="bars"><i style="height:38%"></i><i style="height:58%"></i><i style="height:48%"></i><i style="height:78%"></i><i style="height:64%"></i><i style="height:90%"></i></div></div>'+
+ '<div class="chart-box"><strong>⌁ '+titles[2]+'</strong><small>Illustrative trend</small><svg class="line-chart" viewBox="0 0 160 82" role="img" aria-label="Illustrative trend chart"><path d="M4 68 L34 54 L62 59 L91 30 L121 38 L156 12" fill="none" stroke="#6654d9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 68 L34 54 L62 59 L91 30 L121 38 L156 12 L156 80 L4 80Z" fill="#6654d9" opacity=".10"/></svg></div>'+
+ '<div class="chart-box"><strong>▤ '+titles[3]+'</strong><small>Illustrative categories</small><div class="bars"><i style="height:72%"></i><i style="height:45%"></i><i style="height:84%"></i><i style="height:32%"></i></div></div>'+
+ '</div>';
+}
+function openProfile(kind,id,row){
+ const isProperty=kind==="property";
+ const records=isProperty?getProperties():getVendors();
+ const record=records.find(x=>x.id===id);
+ const demo=!record;
+ const name=record?record.name:(row.querySelector("strong")?.textContent||"Demo record");
+ const country=record?.country||"AE";
+ const currency=detailCurrency(country);
+ const host=$("profileDetailContent");
+ let htmlOut="";
+ if(isProperty){
+  const tenant=record?.tenant||{};
+  const photos=record?.photos||[];
+  htmlOut='<div class="detail-hero"><span class="demo-tag">'+(demo?"DEMO RECORD":"LOCAL PREVIEW RECORD")+'</span><h2>🏠 '+detailEscape(name)+'</h2><p>'+detailEscape(record?.type||"Property portfolio item")+' • '+detailEscape(record?.city||"Sample location")+'</p>'+detailPhotoGallery(photos)+'</div>'+
+  '<div class="detail-card"><h3>🏢 Property information</h3><div class="detail-kv">'+
+  '<div><small>Property type</small><strong>'+detailEscape(record?.type||"Residential")+'</strong></div>'+
+  '<div><small>Country / currency</small><strong>'+detailEscape(country==="PK"?"Pakistan / PKR":"UAE / AED")+'</strong></div>'+
+  '<div><small>Address</small><strong>'+detailEscape(record?.address||"Demo address")+'</strong></div>'+
+  '<div><small>Units</small><strong>'+detailEscape(record?.units||"3")+'</strong></div>'+
+  '<div><small>Reference</small><strong>'+detailEscape(record?.reference||"—")+'</strong></div>'+
+  '<div><small>Record status</small><strong>'+(demo?"Illustrative demo":"Saved on this device")+'</strong></div></div></div>'+
+  '<div class="detail-card"><h3>👤 Associated tenant</h3><div class="detail-kv"><div><small>Tenant name</small><strong>'+detailEscape(tenant.name||"Not added")+'</strong></div><div><small>Phone / WhatsApp</small><strong>'+detailEscape(tenant.phone||"—")+'</strong></div><div><small>Identity type</small><strong>'+detailEscape(tenant.identityType||"—")+'</strong></div><div><small>Identity number</small><strong>'+detailEscape(tenant.identity||"Not provided")+'</strong></div></div>'+(tenant.photo?'<div class="detail-gallery"><img src="'+tenant.photo+'" alt="Tenant photo"></div>':'')+'</div>'+
+  '<div class="detail-card"><h3>📑 Tenancy contract</h3><p class="contract-note">Contract workspace preview: tenant/landlord details, lease term, rent schedule, deposit, terms and signatures will be assembled in a later document milestone. This is not a legal contract and is not ready for signing.</p><span class="demo-tag">TEMPLATE SECTION • NOT LEGAL DOCUMENT</span></div>'+
+  '<div class="detail-card"><h3>📊 Property statement of account & P&amp;L</h3><p class="contract-note">No transactions are connected yet. Values and charts below are illustrative placeholders only.</p><div class="detail-kv"><div><small>Rental income</small><strong>'+currency+' 18,500 (demo)</strong></div><div><small>Expenses</small><strong>'+currency+' 4,250 (demo)</strong></div><div><small>Net operating result</small><strong>'+currency+' 14,250 (demo)</strong></div><div><small>Tenant balance</small><strong>Not calculated</strong></div></div></div>'+detailCharts("property");
+ }else{
+  htmlOut='<div class="detail-hero"><span class="demo-tag">'+(demo?"DEMO RECORD":"LOCAL PREVIEW RECORD")+'</span><h2>🧰 '+detailEscape(name)+'</h2><p>'+detailEscape(record?.category||"Service provider")+' • '+detailEscape(record?.country==="PK"?"Pakistan":"UAE")+'</p>'+(record?.photo?'<div class="detail-gallery"><img src="'+record.photo+'" alt="Vendor photo"></div>':'')+'</div>'+
+  '<div class="detail-card"><h3>🧰 Vendor information</h3><div class="detail-kv"><div><small>Service category</small><strong>'+detailEscape(record?.category||"General services")+'</strong></div><div><small>Country / currency</small><strong>'+detailEscape(country==="PK"?"Pakistan / PKR":"UAE / AED")+'</strong></div><div><small>Address</small><strong>'+detailEscape(record?.address||"Demo location")+'</strong></div><div><small>Phone / WhatsApp</small><strong>'+detailEscape(record?.phone||"Not provided")+'</strong></div><div><small>Email</small><strong>'+detailEscape(record?.email||"—")+'</strong></div><div><small>Identity type</small><strong>'+detailEscape(record?.identityType||"—")+'</strong></div><div><small>Identity number</small><strong>'+detailEscape(record?.identity||"Not provided")+'</strong></div><div><small>Record status</small><strong>'+(demo?"Illustrative demo":"Saved on this device")+'</strong></div></div></div>'+
+  '<div class="detail-card"><h3>📑 Vendor agreement</h3><p class="contract-note">Agreement workspace preview: business details, service scope, rates, payment terms, insurance/licence references and signatures will be prepared in a later document milestone. This is not a legal contract and is not ready for signing.</p><span class="demo-tag">TEMPLATE SECTION • NOT LEGAL DOCUMENT</span></div>'+
+  '<div class="detail-card"><h3>📊 Vendor statement of account & P&amp;L</h3><p class="contract-note">No posted transactions are connected yet. Values and charts below are illustrative placeholders only.</p><div class="detail-kv"><div><small>Service spend</small><strong>'+currency+' 4,250 (demo)</strong></div><div><small>Payments made</small><strong>'+currency+' 3,000 (demo)</strong></div><div><small>Outstanding</small><strong>'+currency+' 1,250 (demo)</strong></div><div><small>Account status</small><strong>Not calculated</strong></div></div></div>'+detailCharts("vendor");
+ }
+ host.innerHTML=htmlOut+'<div class="notice">Preview only: these profiles use local device records and illustrative demo figures. No cloud sync, secure document storage, real accounting, or legal contract generation is active yet.</div>';
+ $("profileDetail").classList.add("open");document.body.style.overflow="hidden";window.scrollTo({top:0,behavior:"smooth"});
+}
+$("closeProfile").addEventListener("click",()=>{$("profileDetail").classList.remove("open");document.body.style.overflow=""});
+$("propertyList").addEventListener("click",e=>{const row=e.target.closest(".item");if(!row)return;openProfile("property",row.dataset.savedProperty,row)});
+$("vendorList").addEventListener("click",e=>{const row=e.target.closest(".item");if(!row)return;openProfile("vendor",row.dataset.savedVendor,row)});
+
 
 try{const l=localStorage.getItem("propledger.language")||"en",c=localStorage.getItem("propledger.country")||"AE";$("language").value=l;$("country").value=c;setLanguage(l);setCountry(c);if(localStorage.getItem("propledger.started")==="yes"){$("onboarding").classList.add("hidden");$("app").classList.remove("hidden")}}catch(e){setLanguage("en");setCountry("AE")}
 </script>
