@@ -65,10 +65,10 @@
 .receipt-history-item .receipt-history-value{font-weight:800;font-size:12px}
 @media print{
  body *{visibility:hidden!important}
- #receiptPrintArea,#receiptPrintArea *{visibility:visible!important}
- #receiptPrintArea{position:absolute!important;left:0!important;top:0!important;width:100%!important;border:0!important;box-shadow:none!important;margin:0!important;padding:24px!important}
+ #receiptPrintArea,#receiptPrintArea *,#paymentPrintArea,#paymentPrintArea *{visibility:visible!important}
+ #receiptPrintArea,#paymentPrintArea{position:absolute!important;left:0!important;top:0!important;width:100%!important;border:0!important;box-shadow:none!important;margin:0!important;padding:24px!important}
  .receipt-modal,.receipt-sheet{position:static!important;display:block!important;background:#fff!important;padding:0!important;min-height:0!important;overflow:visible!important}
- .receipt-sheet>*:not(#receiptPrintArea){display:none!important}
+ .receipt-sheet>*:not(#receiptPrintArea):not(#paymentPrintArea){display:none!important}
 }
 
 </style>
@@ -160,7 +160,7 @@
    <h1 class="page-title">📚 Activity</h1><p class="muted">Income and expense workflows will connect to the accounting ledger in a later milestone.</p>
    <div class="grid"><button class="tile" id="receipt"><span>🧾</span>New receipt<small>Income voucher</small></button><button class="tile" id="payment"><span>💳</span>New payment<small>Expense voucher</small></button></div>
    <div class="notice">Receipt previews are stored only on this device. They do not post to a general ledger or create a cloud backup. Do not use this preview as your official accounting record.</div>
-   <div class="detail-card"><h3>🧾 Saved receipt history</h3><div id="receiptHistory" class="receipt-history"><p class="muted">No receipts saved yet.</p></div></div>
+   <div class="detail-card"><h3>🧾 Saved receipt history</h3><div id="receiptHistory" class="receipt-history"><p class="muted">No receipts saved yet.</p></div></div><div class="detail-card"><h3>💳 Saved payment history</h3><div id="paymentHistory" class="receipt-history"><p class="muted">No payments saved yet.</p></div></div>
   </section>
   <section id="more" class="screen hidden">
    <h1 class="page-title">☰ More</h1><div class="list" style="margin-top:15px">
@@ -248,6 +248,20 @@
   </div>
  </div>
 </div>
+<div id="paymentModal" class="receipt-modal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle"><div class="receipt-sheet">
+<div class="modal-head"><div><div class="eyebrow" style="color:#6654d9">EXPENSE WORKSPACE</div><h2 id="paymentModalTitle">💳 New payment voucher</h2></div><button type="button" class="close-btn" id="closePayment" aria-label="Close">×</button></div>
+<form id="paymentForm" class="receipt-form">
+<div class="two"><div class="field"><label for="payNumber">Voucher number</label><input id="payNumber" readonly></div><div class="field"><label for="payDate">Payment date *</label><input id="payDate" type="date" required></div></div>
+<div class="field"><label for="payProperty">Property *</label><select id="payProperty" required><option value="">Choose property</option></select></div>
+<div class="field"><label for="payVendor">Payee / vendor *</label><select id="payVendor" required><option value="">Choose vendor</option></select></div>
+<div class="two"><div class="field"><label for="payCategory">Expense category *</label><select id="payCategory" required><option value="">Choose category</option><option>Maintenance & repairs</option><option>Utilities</option><option>Cleaning</option><option>Security</option><option>Insurance</option><option>Management fees</option><option>Government fees</option><option>Supplies</option><option>Other</option></select></div><div class="field"><label for="payCurrency">Currency</label><select id="payCurrency" required><option value="AED">AED</option><option value="PKR">PKR</option></select></div></div>
+<div class="two"><div class="field"><label for="payAmount">Amount *</label><input id="payAmount" type="number" min="0.01" step="0.01" required placeholder="0.00"></div><div class="field"><label for="payMethod">Payment method *</label><select id="payMethod" required><option value="">Choose method</option><option>Cash</option><option>Bank transfer</option><option>Card</option><option>Cheque</option><option>Other</option></select></div></div>
+<div class="field"><label for="payReference">Payment reference</label><input id="payReference" maxlength="80" placeholder="Optional"></div>
+<div class="field"><label for="payDescription">Description / purpose *</label><textarea id="payDescription" required maxlength="240" placeholder="Describe the expense"></textarea></div>
+<div class="field"><label for="payDocument">📎 Supporting document (optional)</label><input id="payDocument" type="file" accept=".pdf,image/*"><small class="muted">Only the selected filename is recorded; the file itself is not uploaded or stored.</small></div>
+<div class="notice">Local preview only. Saving does not post a journal entry, update balances, or sync to cloud storage. Avoid entering sensitive payment details.</div><button class="primary" type="submit">👁️ Preview payment</button></form>
+<div id="paymentPreviewWrap" hidden><div id="paymentPrintArea" class="receipt-preview"></div><div class="receipt-actions"><button type="button" class="secondary" id="editPayment">✏️ Edit</button><button type="button" class="primary" id="savePayment">💾 Save preview</button></div><div class="receipt-actions"><button type="button" class="secondary" id="printPayment">🖨️ Print / Save PDF</button></div></div>
+</div></div>
 <div id="profileDetail" class="profile-detail" role="dialog" aria-modal="true" aria-label="Property or vendor profile">
  <div class="profile-detail-inner">
   <div class="detail-top"><button class="detail-back" id="closeProfile">← Back</button><span class="muted">PROFILE DETAILS</span></div>
@@ -373,6 +387,25 @@ $("saveReceipt").addEventListener("click",()=>{
 });
 $("printReceipt").addEventListener("click",()=>window.print());
 receiptRenderHistory();
+
+
+function getPayments(){try{return JSON.parse(localStorage.getItem("propledger.payments")||"[]")}catch(e){return []}}
+function paymentNextNumber(){return "PV-"+new Date().getFullYear()+"-"+String(getPayments().length+1).padStart(4,"0")}
+function paymentSelectedProperty(){return getProperties().find(p=>p.id===$("payProperty").value)}
+function paymentPopulateProperties(){const s=$("payProperty");s.innerHTML='<option value="">Choose property</option>';getProperties().forEach(p=>{const o=document.createElement("option");o.value=p.id;o.textContent=p.name+" • "+p.country;s.appendChild(o)})}
+function paymentPopulateVendors(){const s=$("payVendor"),p=paymentSelectedProperty();s.innerHTML='<option value="">Choose vendor</option>';if(!p)return;getVendors().filter(v=>v.country===p.country).forEach(v=>{const o=document.createElement("option");o.value=v.id;o.textContent=v.name+" • "+v.category;s.appendChild(o)})}
+function paymentRenderHistory(){const host=$("paymentHistory");if(!host)return;const list=getPayments().slice().reverse();host.innerHTML="";if(!list.length){host.innerHTML='<p class="muted">No payments saved yet.</p>';return}list.forEach(p=>{const b=document.createElement("button");b.type="button";b.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const name=document.createElement("strong");name.textContent=p.number+" • "+p.vendor;const meta=document.createElement("small");meta.textContent=p.date+" • "+p.property+" • "+p.category;info.append(name,meta);const val=document.createElement("span");val.className="receipt-history-value";val.textContent=p.currency+" "+Number(p.amount).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});b.append(info,val);b.addEventListener("click",()=>paymentShowSaved(p));host.appendChild(b)})}
+function paymentBuildPreview(p){$("paymentPrintArea").innerHTML='<div style="display:flex;justify-content:space-between;gap:12px;align-items:start"><div><h3>💳 PAYMENT VOUCHER</h3><div class="receipt-meta">PROPLE DGER 2027 • EXPENSE VOUCHER<br>Payment acknowledgement preview</div></div><div style="text-align:right;font-size:11px"><strong>'+detailEscape(p.number)+'</strong><br>'+detailEscape(p.date)+'</div></div><div class="receipt-amount">'+detailEscape(p.currency)+' '+Number(p.amount).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+'</div><div class="receipt-line"><span>Paid to</span><strong>'+detailEscape(p.vendor)+'</strong></div><div class="receipt-line"><span>Property</span><strong>'+detailEscape(p.property)+'</strong></div><div class="receipt-line"><span>Category</span><strong>'+detailEscape(p.category)+'</strong></div><div class="receipt-line"><span>Payment method</span><strong>'+detailEscape(p.method)+'</strong></div><div class="receipt-line"><span>Payment reference</span><strong>'+detailEscape(p.reference||"—")+'</strong></div><div class="receipt-line"><span>Description</span><strong>'+detailEscape(p.description)+'</strong></div><div class="receipt-line"><span>Supporting file name</span><strong>'+detailEscape(p.documentName||"—")+'</strong></div><p class="receipt-meta" style="margin-top:18px">Local preview only. This voucher is not a bank confirmation, posted accounting transaction, or tax document.</p><div style="display:flex;justify-content:space-between;margin-top:28px;font-size:11px"><span>Paid by: __________________</span><span>Received by: ______________</span></div>'}
+function paymentShowSaved(p){$("paymentForm").hidden=true;$("paymentPreviewWrap").hidden=false;paymentBuildPreview(p);$("savePayment").hidden=true;$("editPayment").hidden=true;$("paymentModal").classList.add("open");document.body.style.overflow="hidden"}
+let paymentDraft=null;
+function paymentOpen(){$("paymentModal").classList.add("open");document.body.style.overflow="hidden";$("paymentForm").reset();$("paymentForm").hidden=false;$("paymentPreviewWrap").hidden=true;$("payNumber").value=paymentNextNumber();$("payDate").value=new Date().toLocaleDateString("en-CA");paymentPopulateProperties();paymentPopulateVendors();$("payDocument").value=""}
+function paymentClose(){$("paymentModal").classList.remove("open");document.body.style.overflow=""}
+$("payment").addEventListener("click",paymentOpen);$("closePayment").addEventListener("click",paymentClose);$("paymentModal").addEventListener("click",e=>{if(e.target===$("paymentModal"))paymentClose()});
+$("payProperty").addEventListener("change",()=>{const p=paymentSelectedProperty();paymentPopulateVendors();if(p)$("payCurrency").value=p.country==="PK"?"PKR":"AED"});
+$("paymentForm").addEventListener("submit",e=>{e.preventDefault();const p=paymentSelectedProperty(),v=getVendors().find(x=>x.id===$("payVendor").value);if(!p){alert("Please register and select a property first.");return}if(!v){alert("Please register and select a vendor first.");return}if(v.country!==p.country){alert("The vendor and property must be in the same country for this voucher. Check their country records.");return}const amount=Number($("payAmount").value);if(!Number.isFinite(amount)||amount<=0){alert("Enter an amount greater than zero.");return}if((p.country==="PK"?"PKR":"AED")!==$("payCurrency").value){alert("Payment currency must match the selected property's country.");return}const file=$("payDocument").files[0];paymentDraft={id:"py"+Date.now(),number:$("payNumber").value,date:$("payDate").value,propertyId:p.id,property:p.name,vendorId:v.id,vendor:v.name,category:$("payCategory").value,currency:$("payCurrency").value,amount,method:$("payMethod").value,reference:$("payReference").value.trim(),description:$("payDescription").value.trim(),documentName:file?file.name:"",status:"Local preview"};paymentBuildPreview(paymentDraft);$("paymentForm").hidden=true;$("paymentPreviewWrap").hidden=false;$("savePayment").hidden=false;$("editPayment").hidden=false});
+$("editPayment").addEventListener("click",()=>{$("paymentPreviewWrap").hidden=true;$("paymentForm").hidden=false});
+$("savePayment").addEventListener("click",()=>{if(!paymentDraft)return;try{const list=getPayments();list.push(paymentDraft);localStorage.setItem("propledger.payments",JSON.stringify(list));paymentRenderHistory();$("savePayment").hidden=true;$("editPayment").hidden=true;alert("Payment voucher preview saved on this device only. No accounting entries or cloud records were created.")}catch(e){alert("Could not save this payment on this device. No cloud record was created.")}});
+$("printPayment").addEventListener("click",()=>window.print());paymentRenderHistory();
 
 renderProperties();renderVendors();
 
