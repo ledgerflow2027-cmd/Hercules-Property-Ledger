@@ -521,6 +521,13 @@ function ensureBook(country){
   all[country]={entityCode:country==="AE"?"UAE-01":"PAK-01",name:"",currency:country==="PK"?"PKR":"AED",yearStart:"01-01",journalPrefix:"JV",nextJournalNumber:1,periods:[],accounts};writeAccountingSetup(all);
  }else{
   const book=all[country];book.accounts=(book.accounts||[]).map(normalizeAccount);book.periods=Array.isArray(book.periods)?book.periods:[];
+  /* Upgrade earlier Stage 8B local templates without discarding user-created accounts. */
+  const legacyGroups={"1000":"Assets","2000":"Liabilities","3000":"Equity"};
+  book.accounts.forEach(a=>{if(a.system&&legacyGroups[a.code]){a.name=legacyGroups[a.code];a.type="Header";a.postable=false;a.normalBalance="Debit"}});
+  const extraGroups=[["4GRP","Income"],["5GRP","Direct/property costs"],["6GRP","Operating expenses"],["7GRP","Finance and other"]];
+  extraGroups.forEach(([code,name])=>{if(!book.accounts.some(a=>a.type==="Header"&&(a.name===name||a.code===code)))book.accounts.push(normalizeAccount({code,name,type:"Header",system:true,postable:false}))});
+  const parentByType={"Asset":"1000","Liability":"2000","Equity":"3000","Income":"4GRP","Direct Expense":"5GRP","Operating Expense":"6GRP","Finance / Other":"7GRP"};
+  book.accounts.forEach(a=>{if(a.type!=="Header"&&!a.parentCode){const p=parentByType[a.type];if(p&&book.accounts.some(x=>x.code===p&&x.type==="Header"))a.parentCode=p}});
   book.entityCode=book.entityCode||(country==="AE"?"UAE-01":"PAK-01");book.journalPrefix=book.journalPrefix||"JV";book.nextJournalNumber=Number(book.nextJournalNumber)||1;
   if(!book.currency)book.currency=country==="PK"?"PKR":"AED";all[country]=book;writeAccountingSetup(all);
  }
