@@ -96,8 +96,8 @@
  </header>
  <div class="content">
   <section id="dashboard" class="screen">
-   <div class="dashboard-welcome"><div class="eyebrow" id="region">UAE WORKSPACE • AED</div><h1 id="greeting">Good day, property owner 👋</h1><p>Your property business, organised in one place.</p></div>
-   <div class="sectionhead"><div><h2>👋 Your property business</h2><div class="muted">Choose one simple task to get started.</div></div><div class="field" style="margin:0;min-width:145px"><label for="dashCountry">Country</label><select id="dashCountry"><option value="AE">🇦🇪 UAE · AED</option><option value="PK">🇵🇰 Pakistan · PKR</option></select></div></div>
+   <div class="dashboard-welcome"><div class="eyebrow" id="region">UAE WORKSPACE • AED</div><h1 id="greeting">Good day, property owner 👋</h1></div>
+   
    <div class="grid dashboard-legacy">
     <div class="stat"><span class="ico">🏠</span><div class="label">Saved properties</div><strong id="dashProperties">0</strong></div>
     <div class="stat"><span class="ico">🧑‍🤝‍🧑</span><div class="label">Named tenants</div><strong id="dashTenants">0</strong></div>
@@ -120,18 +120,18 @@
     <div id="dashboardVendorStatus" class="muted">Vendor payment vouchers are source records only. Payables require posted bills and allocations, which are not yet implemented.</div>
    </div>
    <div class="carousel-wrap">
-    <div class="carousel-heading"><h2>🏘️ Properties</h2><span class="muted">Swipe left to right · 5 visual examples + your records</span></div>
+    <div class="carousel-heading"><h2>🏘️ Properties</h2><span class="muted">Five sample slides · repeating</span></div>
     <div id="dashboardProperties" class="carousel-track picture-track" aria-label="Property picture slides"></div>
    </div>
    <div class="carousel-wrap">
-    <div class="carousel-heading"><h2>🧑‍🤝‍🧑 Tenants</h2><span class="muted">Right to left · overdue status requires verified rent records</span></div>
+    <div class="carousel-heading"><h2>🧑‍🤝‍🧑 Tenants</h2><span class="muted">Five sample profiles · no rent status assumed</span></div>
     <div id="dashboardTenants" class="carousel-track picture-track late-track" aria-label="Tenant picture slides"></div>
    </div>
    <div class="carousel-wrap">
     <div class="carousel-heading"><h2>🧰 Vendors</h2><span class="muted">Swipe left to right · 5 visual examples + your records</span></div>
     <div id="dashboardVendors" class="carousel-track picture-track" aria-label="Vendor picture slides"></div>
    </div>
-   <div class="panel muted" id="dashboardDataNote">These slides use this device's saved records. No cloud sync is active.</div>
+   
    <div class="sectionhead" style="margin-top:20px"><h2>✨ What would you like to do?</h2></div>
    <div class="grid dashboard-actions" aria-label="Main actions">
     <button type="button" class="tile" id="dashIncome" aria-label="Income: create receipt voucher"><span>💰</span>Income<small>Create receipt voucher</small></button>
@@ -1125,7 +1125,7 @@ function refreshPortfolioDashboard(){
  const payments=getPayments().filter(p=>propertyIds.has(p.propertyId)&&String(p.date||"").slice(0,7)===month);
  const receiptTotal=receipts.reduce((s,r)=>s+dashCents(r.amount),0),paymentTotal=payments.reduce((s,p)=>s+dashCents(p.amount),0);
  const posted=countryPostedJournals(country);
- $("dashCountry").value=country;
+ 
  $("dashProperties").textContent=String(properties.length);
  $("dashTenants").textContent=String(tenants.length);
  $("income").textContent=dashMoney(receiptTotal,currency);
@@ -1137,15 +1137,15 @@ function refreshPortfolioDashboard(){
  $("dashboardVendorStatus").textContent=vendors.length+" vendor profile(s) saved. "+payments.length+" payment voucher(s) recorded this month; this is not a payable balance. Vendor bills and approved allocations are not yet available.";
  const propertyHost=$("dashboardProperties");propertyHost.innerHTML="";
  dashPropertySamples.forEach(item=>dashPictureCard(propertyHost,item,"property",""));
- properties.forEach(p=>dashPictureCard(propertyHost,{title:p.name||"Saved property",note:(p.city||p.address||"Location not provided")+" · "+(Number(p.units)||1)+" unit(s) · Tap to open",photo:p.photos&&p.photos[0],emoji:"🏠"},"property",p.id));
+ 
  const tenantHost=$("dashboardTenants");tenantHost.innerHTML="";
  dashTenantSamples.forEach(item=>dashPictureCard(tenantHost,item,"tenant",""));
- tenants.forEach((p,i)=>dashPictureCard(tenantHost,{title:p.tenant.name||"Saved tenant",note:(p.name||"Property")+" · Rent status not verified",photo:p.tenant.photo||p.tenant.profilePhoto,emoji:["🧑","👩","🧕","👨","👩‍💼"][i%5]},"tenant",p.id));
+ 
  const vendorHost=$("dashboardVendors");vendorHost.innerHTML="";
  dashVendorSamples.forEach(item=>dashPictureCard(vendorHost,item,"vendor",""));
- vendors.forEach(v=>dashPictureCard(vendorHost,{title:v.name||"Saved vendor",note:(v.category||"Service provider")+" · "+(v.phone||"No phone")+" · Tap to open",photo:v.photo,emoji:"🧰"},"vendor",v.id));
+ 
  enableSlowPictureLoop(propertyHost);enableSlowPictureLoop(tenantHost);enableSlowPictureLoop(vendorHost);
- $("dashboardDataNote").textContent="Updated from this device's saved "+(country==="PK"?"Pakistan":"UAE")+" records. Local-only preview; not cloud-synced. Switch country in workspace settings to view the other separate book.";
+ 
  const recentHost=$("dashboardRecent");recentHost.innerHTML="";
  const recentRows=[...getReceipts().filter(r=>propertyIds.has(r.propertyId)).map(r=>({kind:"Receipt",number:r.number||"Receipt",date:r.date||"",party:r.tenant||"Tenant",amount:dashCents(r.amount)})),...getPayments().filter(p=>propertyIds.has(p.propertyId)).map(p=>({kind:"Payment",number:p.number||"Payment",date:p.date||"",party:p.vendor||"Vendor",amount:dashCents(p.amount)}))].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,5);
  if(!recentRows.length){const empty=document.createElement("div");empty.className="empty-state";empty.textContent="No local receipt or payment vouchers saved for this country yet.";recentHost.appendChild(empty)}
@@ -1156,7 +1156,7 @@ function refreshPortfolioDashboard(){
 $("enter").addEventListener("click",()=>setTimeout(refreshPortfolioDashboard,0));
 document.querySelectorAll('[data-screen="dashboard"]').forEach(b=>b.addEventListener("click",refreshPortfolioDashboard));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener("click",()=>setTimeout(refreshPortfolioDashboard,0)));
-$("dashCountry").addEventListener("change",e=>{setCountry(e.target.value);refreshPortfolioDashboard();renderProperties();renderVendors()});
+
 try{refreshPortfolioDashboard()}catch(e){console.warn("Dashboard refresh deferred",e)}
 
 /* Stage 11A — safe, removable demo dataset for bookkeeping walkthroughs.
