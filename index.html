@@ -162,9 +162,42 @@
    <div class="notice">Receipt previews are stored only on this device. They do not post to a general ledger or create a cloud backup. Do not use this preview as your official accounting record.</div>
    <div class="detail-card"><h3>🧾 Saved receipt history</h3><div id="receiptHistory" class="receipt-history"><p class="muted">No receipts saved yet.</p></div></div><div class="detail-card"><h3>💳 Saved payment history</h3><div id="paymentHistory" class="receipt-history"><p class="muted">No payments saved yet.</p></div></div>
   </section>
+  <section id="accounting" class="screen hidden">
+   <div class="sectionhead"><div><h1 class="page-title">📚 Accounting setup</h1><div class="muted">Separate books for UAE and Pakistan</div></div></div>
+   <div class="notice">Stage 8B setup workspace. These account templates are saved only on this device. No journals are posted, no balances are calculated, and this is not a production accounting ledger.</div>
+   <div class="detail-card">
+    <h3>🌍 Select accounting book</h3>
+    <div class="field"><label for="bookCountry">Country / entity book</label><select id="bookCountry"><option value="AE">🇦🇪 UAE — AED</option><option value="PK">🇵🇰 Pakistan — PKR</option></select></div>
+    <div class="field"><label for="bookName">Book / legal entity display name</label><input id="bookName" maxlength="100" placeholder="Enter legal entity name"></div>
+    <div class="two">
+     <div class="field"><label for="bookCurrency">Functional currency</label><input id="bookCurrency" readonly></div>
+     <div class="field"><label for="bookYearStart">Financial year starts</label><select id="bookYearStart"><option value="01-01">1 January</option><option value="04-01">1 April</option><option value="07-01">1 July</option><option value="10-01">1 October</option></select></div>
+    </div>
+    <button type="button" class="primary" id="saveBookSetup">💾 Save book setup</button>
+    <p class="muted" id="bookSaveStatus" aria-live="polite">No local setup saved for this book yet.</p>
+   </div>
+   <div class="detail-card">
+    <div class="sectionhead"><h3>🗂️ Chart of Accounts</h3><span class="muted" id="accountCount">0 accounts</span></div>
+    <p class="muted">Starter account groups are configurable. Codes and account names must be reviewed for the entity's local accounting requirements.</p>
+    <div id="accountList" class="list"></div>
+   </div>
+   <div class="detail-card">
+    <h3>➕ Add account</h3>
+    <form id="accountForm" class="receipt-form">
+     <div class="two">
+      <div class="field"><label for="accountCode">Account code *</label><input id="accountCode" required maxlength="12" pattern="[0-9A-Za-z.-]+" placeholder="e.g. 1010"></div>
+      <div class="field"><label for="accountType">Account type *</label><select id="accountType" required><option value="">Choose type</option><option>Asset</option><option>Liability</option><option>Equity</option><option>Income</option><option>Direct Expense</option><option>Operating Expense</option><option>Finance / Other</option></select></div>
+     </div>
+     <div class="field"><label for="accountName">Account name *</label><input id="accountName" required maxlength="80" placeholder="e.g. Operating bank account"></div>
+     <button type="submit" class="primary">＋ Add to selected book</button>
+    </form>
+   </div>
+   <div class="notice">Backend provider is intentionally undecided. Do not enter sensitive data or rely on this local configuration as an official ledger. Opening balances, journals, posting and reports are later Stage 8 milestones.</div>
+  </section>
   <section id="more" class="screen hidden">
    <h1 class="page-title">☰ More</h1><div class="list" style="margin-top:15px">
     <div class="item"><div class="avatar">📢</div><div><strong>Official notices</strong><small>Important workspace announcements</small></div><span class="arrow">›</span></div>
+    <button type="button" class="item" data-screen="accounting" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📚</div><div><strong>Accounting setup</strong><small>Country books and Chart of Accounts</small></div><span class="arrow">›</span></button>
     <div class="item"><div class="avatar">⚙️</div><div><strong>Settings</strong><small>Profile, country, currency and language</small></div><span class="arrow">›</span></div>
     <div class="item"><div class="avatar">❔</div><div><strong>Help & support</strong><small>Learn how Propledger works</small></div><span class="arrow">›</span></div>
     <div class="item"><div class="avatar">👨‍💻</div><div><strong>Founder & developer</strong><small>Built to make property accounting clearer</small></div><span class="arrow">›</span></div>
@@ -406,6 +439,61 @@ $("paymentForm").addEventListener("submit",e=>{e.preventDefault();const p=paymen
 $("editPayment").addEventListener("click",()=>{$("paymentPreviewWrap").hidden=true;$("paymentForm").hidden=false});
 $("savePayment").addEventListener("click",()=>{if(!paymentDraft)return;try{const list=getPayments();list.push(paymentDraft);localStorage.setItem("propledger.payments",JSON.stringify(list));paymentRenderHistory();$("savePayment").hidden=true;$("editPayment").hidden=true;alert("Payment voucher preview saved on this device only. No accounting entries or cloud records were created.")}catch(e){alert("Could not save this payment on this device. No cloud record was created.")}});
 $("printPayment").addEventListener("click",()=>window.print());paymentRenderHistory();
+
+
+/* Stage 8B — country-separated accounting setup prototype.
+   Local configuration only; no journal posting or production ledger. */
+const ACCOUNT_SETUP_KEY="propledger.accountingSetup";
+const ACCOUNT_TEMPLATES={
+ AE:[
+  ["1000","Assets","Asset"],["1010","Cash on hand","Asset"],["1020","Bank accounts","Asset"],["1100","Tenant receivables","Asset"],["1200","Prepaid expenses","Asset"],["1500","Property and equipment","Asset"],["2000","Liabilities","Liability"],["2010","Vendor payables","Liability"],["2100","Tenant advances","Liability"],["2200","Security deposits payable","Liability"],["3000","Equity","Equity"],["3100","Owner capital","Equity"],["3200","Retained earnings","Equity"],["4000","Rental income","Income"],["4100","Other property income","Income"],["5000","Repairs and maintenance","Direct Expense"],["5100","Utilities and property costs","Direct Expense"],["6000","Management and administration","Operating Expense"],["6100","Insurance and professional fees","Operating Expense"],["7000","Bank charges and finance costs","Finance / Other"]
+ ],
+ PK:[
+  ["1000","Assets","Asset"],["1010","Cash on hand","Asset"],["1020","Bank accounts","Asset"],["1100","Tenant receivables","Asset"],["1200","Prepaid expenses","Asset"],["1500","Property and equipment","Asset"],["2000","Liabilities","Liability"],["2010","Vendor payables","Liability"],["2100","Tenant advances","Liability"],["2200","Security deposits payable","Liability"],["3000","Equity","Equity"],["3100","Owner capital","Equity"],["3200","Retained earnings","Equity"],["4000","Rental income","Income"],["4100","Other property income","Income"],["5000","Repairs and maintenance","Direct Expense"],["5100","Utilities and property costs","Direct Expense"],["6000","Management and administration","Operating Expense"],["6100","Insurance and professional fees","Operating Expense"],["7000","Bank charges and finance costs","Finance / Other"]
+ ]
+};
+function readAccountingSetup(){try{return JSON.parse(localStorage.getItem(ACCOUNT_SETUP_KEY)||"{}")}catch(e){return {}}}
+function writeAccountingSetup(data){localStorage.setItem(ACCOUNT_SETUP_KEY,JSON.stringify(data))}
+function currentBookCountry(){return $("bookCountry").value}
+function ensureBook(country){
+ const all=readAccountingSetup();
+ if(!all[country]){all[country]={name:"",currency:country==="PK"?"PKR":"AED",yearStart:"01-01",accounts:ACCOUNT_TEMPLATES[country].map(a=>({code:a[0],name:a[1],type:a[2],system:true}))};writeAccountingSetup(all)}
+ return all[country];
+}
+function renderAccountingSetup(){
+ const country=currentBookCountry(),book=ensureBook(country);
+ $("bookCurrency").value=book.currency;
+ $("bookName").value=book.name||"";
+ $("bookYearStart").value=book.yearStart||"01-01";
+ $("bookSaveStatus").textContent=book.name?"Local book setup saved on this device.":"No local setup saved for this book yet.";
+ const host=$("accountList");host.innerHTML="";
+ book.accounts.forEach(a=>{
+  const row=document.createElement("div");row.className="item";
+  const ico=document.createElement("div");ico.className="avatar";ico.textContent=({Asset:"🏦",Liability:"📌",Equity:"🏛️",Income:"💰","Direct Expense":"🧾","Operating Expense":"⚙️","Finance / Other":"📉"})[a.type]||"📁";
+  const info=document.createElement("div");info.style.flex="1";
+  const title=document.createElement("strong");title.textContent=a.code+" · "+a.name;
+  const meta=document.createElement("small");meta.textContent=a.type+(a.system?" · Starter template":" · Custom account");
+  info.append(title,meta);row.append(ico,info);host.appendChild(row);
+ });
+ $("accountCount").textContent=book.accounts.length+" accounts";
+}
+$("bookCountry").addEventListener("change",renderAccountingSetup);
+$("saveBookSetup").addEventListener("click",()=>{
+ const all=readAccountingSetup(),country=currentBookCountry(),book=ensureBook(country);
+ book.name=$("bookName").value.trim();book.yearStart=$("bookYearStart").value;all[country]=book;
+ try{writeAccountingSetup(all);$("bookSaveStatus").textContent="Saved locally for "+(country==="AE"?"UAE":"Pakistan")+". No cloud record created."}
+ catch(e){$("bookSaveStatus").textContent="Could not save on this device."}
+});
+$("accountForm").addEventListener("submit",e=>{
+ e.preventDefault();const country=currentBookCountry(),book=ensureBook(country);
+ const code=$("accountCode").value.trim(),name=$("accountName").value.trim(),type=$("accountType").value;
+ if(book.accounts.some(a=>a.code.toLowerCase()===code.toLowerCase())){alert("That account code already exists in this country book.");return}
+ book.accounts.push({code,name,type,system:false});
+ const all=readAccountingSetup();all[country]=book;
+ try{writeAccountingSetup(all);$("accountForm").reset();renderAccountingSetup()}
+ catch(err){alert("Could not save the account on this device.")}
+});
+renderAccountingSetup();
 
 renderProperties();renderVendors();
 
