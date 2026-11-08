@@ -168,13 +168,20 @@
    <div class="detail-card">
     <h3>🌍 Select accounting book</h3>
     <div class="field"><label for="bookCountry">Country / entity book</label><select id="bookCountry"><option value="AE">🇦🇪 UAE — AED</option><option value="PK">🇵🇰 Pakistan — PKR</option></select></div>
-    <div class="field"><label for="bookName">Book / legal entity display name</label><input id="bookName" maxlength="100" placeholder="Enter legal entity name"></div>
+    <div class="two"><div class="field"><label for="bookEntityCode">Entity code *</label><input id="bookEntityCode" maxlength="20" placeholder="e.g. UAE-01"></div><div class="field"><label for="bookName">Legal entity name *</label><input id="bookName" maxlength="100" placeholder="Registered entity name"></div></div>
     <div class="two">
      <div class="field"><label for="bookCurrency">Functional currency</label><input id="bookCurrency" readonly></div>
      <div class="field"><label for="bookYearStart">Financial year starts</label><select id="bookYearStart"><option value="01-01">1 January</option><option value="04-01">1 April</option><option value="07-01">1 July</option><option value="10-01">1 October</option></select></div>
     </div>
     <button type="button" class="primary" id="saveBookSetup">💾 Save book setup</button>
     <p class="muted" id="bookSaveStatus" aria-live="polite">No local setup saved for this book yet.</p>
+   </div>
+   <div class="detail-card">
+    <h3>🗓️ Accounting periods & numbering</h3>
+    <div class="two"><div class="field"><label for="periodStart">Period starts *</label><input id="periodStart" type="date"></div><div class="field"><label for="periodEnd">Period ends *</label><input id="periodEnd" type="date"></div></div>
+    <div class="two"><div class="field"><label for="periodStatus">Period status</label><select id="periodStatus"><option>Open</option><option>Closed</option><option>Locked</option></select></div><div class="field"><label for="journalPrefix">Journal prefix</label><input id="journalPrefix" maxlength="12" value="JV"></div></div>
+    <div class="field"><label for="nextJournalNumber">Next journal number</label><input id="nextJournalNumber" type="number" min="1" step="1" value="1"></div>
+    <button type="button" class="soft" id="addAccountingPeriod">＋ Add accounting period</button><div id="periodList" class="list" style="margin-top:10px"></div><p class="muted" id="periodStatusMessage">Local setup only; posting remains disabled.</p>
    </div>
    <div class="detail-card">
     <div class="sectionhead"><h3>🗂️ Chart of Accounts</h3><span class="muted" id="accountCount">0 accounts</span></div>
@@ -189,6 +196,8 @@
       <div class="field"><label for="accountType">Account type *</label><select id="accountType" required><option value="">Choose type</option><option>Asset</option><option>Liability</option><option>Equity</option><option>Income</option><option>Direct Expense</option><option>Operating Expense</option><option>Finance / Other</option></select></div>
      </div>
      <div class="field"><label for="accountName">Account name *</label><input id="accountName" required maxlength="80" placeholder="e.g. Operating bank account"></div>
+     <div class="two"><div class="field"><label for="accountParent">Parent group</label><select id="accountParent"><option value="">No parent</option></select></div><div class="field"><label for="accountNormalBalance">Normal balance</label><select id="accountNormalBalance"><option>Debit</option><option>Credit</option></select></div></div>
+     <div class="two"><label class="muted"><input id="accountActive" type="checkbox" checked> Active</label><label class="muted"><input id="accountPostable" type="checkbox" checked> Allow posting</label></div>
      <button type="submit" class="primary">＋ Add to selected book</button>
     </form>
    </div>
@@ -496,53 +505,64 @@ $("printPayment").addEventListener("click",()=>window.print());paymentRenderHist
    Local configuration only; no journal posting or production ledger. */
 const ACCOUNT_SETUP_KEY="propledger.accountingSetup";
 const ACCOUNT_TEMPLATES={
- AE:[
-  ["1000","Assets","Asset"],["1010","Cash on hand","Asset"],["1020","Bank accounts","Asset"],["1100","Tenant receivables","Asset"],["1200","Prepaid expenses","Asset"],["1500","Property and equipment","Asset"],["2000","Liabilities","Liability"],["2010","Vendor payables","Liability"],["2100","Tenant advances","Liability"],["2200","Security deposits payable","Liability"],["3000","Equity","Equity"],["3100","Owner capital","Equity"],["3200","Retained earnings","Equity"],["4000","Rental income","Income"],["4100","Other property income","Income"],["5000","Repairs and maintenance","Direct Expense"],["5100","Utilities and property costs","Direct Expense"],["6000","Management and administration","Operating Expense"],["6100","Insurance and professional fees","Operating Expense"],["7000","Bank charges and finance costs","Finance / Other"]
- ],
- PK:[
-  ["1000","Assets","Asset"],["1010","Cash on hand","Asset"],["1020","Bank accounts","Asset"],["1100","Tenant receivables","Asset"],["1200","Prepaid expenses","Asset"],["1500","Property and equipment","Asset"],["2000","Liabilities","Liability"],["2010","Vendor payables","Liability"],["2100","Tenant advances","Liability"],["2200","Security deposits payable","Liability"],["3000","Equity","Equity"],["3100","Owner capital","Equity"],["3200","Retained earnings","Equity"],["4000","Rental income","Income"],["4100","Other property income","Income"],["5000","Repairs and maintenance","Direct Expense"],["5100","Utilities and property costs","Direct Expense"],["6000","Management and administration","Operating Expense"],["6100","Insurance and professional fees","Operating Expense"],["7000","Bank charges and finance costs","Finance / Other"]
- ]
+ AE:[["1000","Assets","Header"],["1010","Cash on hand","Asset"],["1020","Bank accounts","Asset"],["1100","Tenant receivables","Asset"],["1200","Prepaid expenses","Asset"],["1500","Property and equipment","Asset"],["2000","Liabilities","Header"],["2010","Vendor payables","Liability"],["2100","Tenant advances","Liability"],["2200","Security deposits payable","Liability"],["3000","Equity","Header"],["3100","Owner capital","Equity"],["3200","Retained earnings","Equity"],["4000","Income","Header"],["4010","Rental income","Income"],["4100","Other property income","Income"],["5000","Direct/property costs","Header"],["5010","Repairs and maintenance","Direct Expense"],["5100","Utilities and property costs","Direct Expense"],["6000","Operating expenses","Header"],["6010","Management and administration","Operating Expense"],["6100","Insurance and professional fees","Operating Expense"],["7000","Finance and other","Header"],["7010","Bank charges and finance costs","Finance / Other"]],
+ PK:[["1000","Assets","Header"],["1010","Cash on hand","Asset"],["1020","Bank accounts","Asset"],["1100","Tenant receivables","Asset"],["1200","Prepaid expenses","Asset"],["1500","Property and equipment","Asset"],["2000","Liabilities","Header"],["2010","Vendor payables","Liability"],["2100","Tenant advances","Liability"],["2200","Security deposits payable","Liability"],["3000","Equity","Header"],["3100","Owner capital","Equity"],["3200","Retained earnings","Equity"],["4000","Income","Header"],["4010","Rental income","Income"],["4100","Other property income","Income"],["5000","Direct/property costs","Header"],["5010","Repairs and maintenance","Direct Expense"],["5100","Utilities and property costs","Direct Expense"],["6000","Operating expenses","Header"],["6010","Management and administration","Operating Expense"],["6100","Insurance and professional fees","Operating Expense"],["7000","Finance and other","Header"],["7010","Bank charges and finance costs","Finance / Other"]]
 };
+function normalBalanceFor(type){return ["Liability","Equity","Income"].includes(type)?"Credit":"Debit"}
+function normalizeAccount(a){return {...a,parentCode:a.parentCode||"",normalBalance:a.normalBalance||normalBalanceFor(a.type),active:a.active!==false,postable:a.type==="Header"?false:a.postable!==false}}
 function readAccountingSetup(){try{return JSON.parse(localStorage.getItem(ACCOUNT_SETUP_KEY)||"{}")}catch(e){return {}}}
 function writeAccountingSetup(data){localStorage.setItem(ACCOUNT_SETUP_KEY,JSON.stringify(data))}
 function currentBookCountry(){return $("bookCountry").value}
 function ensureBook(country){
  const all=readAccountingSetup();
- if(!all[country]){all[country]={name:"",currency:country==="PK"?"PKR":"AED",yearStart:"01-01",accounts:ACCOUNT_TEMPLATES[country].map(a=>({code:a[0],name:a[1],type:a[2],system:true}))};writeAccountingSetup(all)}
+ if(!all[country]){
+  const accounts=ACCOUNT_TEMPLATES[country].map(a=>normalizeAccount({code:a[0],name:a[1],type:a[2],system:true}));
+  accounts.forEach(a=>{if(a.type!=="Header"){const parent=a.code[0]+"000";if(accounts.some(x=>x.code===parent&&x.type==="Header"))a.parentCode=parent}});
+  all[country]={entityCode:country==="AE"?"UAE-01":"PAK-01",name:"",currency:country==="PK"?"PKR":"AED",yearStart:"01-01",journalPrefix:"JV",nextJournalNumber:1,periods:[],accounts};writeAccountingSetup(all);
+ }else{
+  const book=all[country];book.accounts=(book.accounts||[]).map(normalizeAccount);book.periods=Array.isArray(book.periods)?book.periods:[];
+  book.entityCode=book.entityCode||(country==="AE"?"UAE-01":"PAK-01");book.journalPrefix=book.journalPrefix||"JV";book.nextJournalNumber=Number(book.nextJournalNumber)||1;
+  if(!book.currency)book.currency=country==="PK"?"PKR":"AED";all[country]=book;writeAccountingSetup(all);
+ }
  return all[country];
 }
 function renderAccountingSetup(){
  const country=currentBookCountry(),book=ensureBook(country);
- $("bookCurrency").value=book.currency;
- $("bookName").value=book.name||"";
- $("bookYearStart").value=book.yearStart||"01-01";
- $("bookSaveStatus").textContent=book.name?"Local book setup saved on this device.":"No local setup saved for this book yet.";
+ $("bookCurrency").value=country==="PK"?"PKR":"AED";$("bookEntityCode").value=book.entityCode||"";$("bookName").value=book.name||"";$("bookYearStart").value=book.yearStart||"01-01";
+ $("journalPrefix").value=book.journalPrefix||"JV";$("nextJournalNumber").value=book.nextJournalNumber||1;
+ $("bookSaveStatus").textContent=book.name?"Local entity setup saved on this device.":"Complete the entity details and save this local setup.";
+ const groups=book.accounts.filter(a=>a.type==="Header"),parent=$("accountParent"),prior=parent.value;parent.innerHTML='<option value="">No parent</option>';
+ groups.forEach(a=>{const o=document.createElement("option");o.value=a.code;o.textContent=a.code+" · "+a.name;parent.appendChild(o)});if([...parent.options].some(o=>o.value===prior))parent.value=prior;
  const host=$("accountList");host.innerHTML="";
- book.accounts.forEach(a=>{
-  const row=document.createElement("div");row.className="item";
-  const ico=document.createElement("div");ico.className="avatar";ico.textContent=({Asset:"🏦",Liability:"📌",Equity:"🏛️",Income:"💰","Direct Expense":"🧾","Operating Expense":"⚙️","Finance / Other":"📉"})[a.type]||"📁";
-  const info=document.createElement("div");info.style.flex="1";
-  const title=document.createElement("strong");title.textContent=a.code+" · "+a.name;
-  const meta=document.createElement("small");meta.textContent=a.type+(a.system?" · Starter template":" · Custom account");
-  info.append(title,meta);row.append(ico,info);host.appendChild(row);
- });
+ book.accounts.forEach(a=>{const row=document.createElement("div");row.className="item";const ico=document.createElement("div");ico.className="avatar";ico.textContent=({Header:"🗂️",Asset:"🏦",Liability:"📌",Equity:"🏛️",Income:"💰","Direct Expense":"🧾","Operating Expense":"⚙️","Finance / Other":"📉"})[a.type]||"📁";const info=document.createElement("div");info.style.flex="1";const title=document.createElement("strong");title.textContent=a.code+" · "+a.name;const parentName=book.accounts.find(x=>x.code===a.parentCode)?.name;const meta=document.createElement("small");meta.textContent=a.type+" · "+a.normalBalance+" normal · "+(a.postable?"Postable":"Non-postable")+" · "+(a.active?"Active":"Inactive")+(parentName?" · Under "+parentName:"")+(a.system?" · Starter":" · Custom");info.append(title,meta);row.append(ico,info);host.appendChild(row)});
  $("accountCount").textContent=book.accounts.length+" accounts";
+ const periods=$("periodList");periods.innerHTML="";if(!book.periods.length)periods.innerHTML='<div class="empty-state">No periods configured yet. Add the first accounting period.</div>';
+ book.periods.forEach(p=>{const row=document.createElement("div");row.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const title=document.createElement("strong");title.textContent=p.start+" to "+p.end;const meta=document.createElement("small");meta.textContent=p.status+" · "+country+" book";info.append(title,meta);const val=document.createElement("span");val.className="receipt-history-value";val.textContent=p.status;row.append(info,val);periods.appendChild(row)});
 }
 $("bookCountry").addEventListener("change",renderAccountingSetup);
 $("saveBookSetup").addEventListener("click",()=>{
- const all=readAccountingSetup(),country=currentBookCountry(),book=ensureBook(country);
- book.name=$("bookName").value.trim();book.yearStart=$("bookYearStart").value;all[country]=book;
- try{writeAccountingSetup(all);$("bookSaveStatus").textContent="Saved locally for "+(country==="AE"?"UAE":"Pakistan")+". No cloud record created."}
- catch(e){$("bookSaveStatus").textContent="Could not save on this device."}
+ const all=readAccountingSetup(),country=currentBookCountry(),book=ensureBook(country),entityCode=$("bookEntityCode").value.trim(),name=$("bookName").value.trim();
+ if(!entityCode||!name){$("bookSaveStatus").textContent="Enter both an entity code and legal entity name.";return}
+ if(!/^[A-Za-z0-9._-]{2,20}$/.test(entityCode)){$("bookSaveStatus").textContent="Entity code must be 2–20 letters, numbers, dots, underscores or hyphens.";return}
+ const next=Number($("nextJournalNumber").value);if(!Number.isSafeInteger(next)||next<1){$("bookSaveStatus").textContent="Next journal number must be a whole number greater than zero.";return}
+ book.entityCode=entityCode;book.name=name;book.yearStart=$("bookYearStart").value;book.journalPrefix=$("journalPrefix").value.trim().toUpperCase().replace(/[^A-Z0-9-]/g,"").slice(0,12)||"JV";book.nextJournalNumber=next;all[country]=book;
+ try{writeAccountingSetup(all);$("bookSaveStatus").textContent="Saved locally for "+(country==="AE"?"UAE / AED":"Pakistan / PKR")+". No cloud record created."}catch(e){$("bookSaveStatus").textContent="Could not save on this device."}
+});
+$("addAccountingPeriod").addEventListener("click",()=>{
+ const start=$("periodStart").value,end=$("periodEnd").value,status=$("periodStatus").value,country=currentBookCountry(),all=readAccountingSetup(),book=ensureBook(country);
+ if(!start||!end||start>end){$("periodStatusMessage").textContent="Enter valid dates; end date cannot precede start date.";return}
+ if(book.periods.some(p=>!(end<p.start||start>p.end))){$("periodStatusMessage").textContent="This period overlaps an existing period in this country book.";return}
+ book.periods.push({id:"period-"+start+"-"+end,start,end,status});book.periods.sort((a,b)=>a.start.localeCompare(b.start));all[country]=book;
+ try{writeAccountingSetup(all);$("periodStatusMessage").textContent="Period saved locally. This does not activate posting.";renderAccountingSetup()}catch(e){$("periodStatusMessage").textContent="Could not save the period on this device."}
 });
 $("accountForm").addEventListener("submit",e=>{
- e.preventDefault();const country=currentBookCountry(),book=ensureBook(country);
- const code=$("accountCode").value.trim(),name=$("accountName").value.trim(),type=$("accountType").value;
+ e.preventDefault();const country=currentBookCountry(),book=ensureBook(country),code=$("accountCode").value.trim(),name=$("accountName").value.trim(),type=$("accountType").value,parentCode=$("accountParent").value,normalBalance=$("accountNormalBalance").value;
  if(book.accounts.some(a=>a.code.toLowerCase()===code.toLowerCase())){alert("That account code already exists in this country book.");return}
- book.accounts.push({code,name,type,system:false});
- const all=readAccountingSetup();all[country]=book;
- try{writeAccountingSetup(all);$("accountForm").reset();renderAccountingSetup()}
- catch(err){alert("Could not save the account on this device.")}
+ if(!/^[0-9A-Za-z.-]{2,12}$/.test(code)||!name){alert("Enter a valid account code and name.");return}
+ if(parentCode&&!book.accounts.some(a=>a.code===parentCode&&a.type==="Header")){alert("Choose a valid parent account group.");return}
+ const active=$("accountActive").checked,postable=$("accountPostable").checked;if(postable&&!active){alert("An inactive account cannot be postable.");return}
+ book.accounts.push({code,name,type,parentCode,normalBalance,active,postable,system:false});const all=readAccountingSetup();all[country]=book;
+ try{writeAccountingSetup(all);$("accountForm").reset();$("accountActive").checked=true;$("accountPostable").checked=true;renderAccountingSetup()}catch(err){alert("Could not save the account on this device.")}
 });
 renderAccountingSetup();
 
