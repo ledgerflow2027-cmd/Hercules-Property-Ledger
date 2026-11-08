@@ -254,6 +254,23 @@
    </div>
    <div class="notice">Stage 8D reporting preview. It reads only records marked Posted in the designated posted-journal data source. Stage 8C creates drafts only, so these reports should remain empty. No opening balances or real financial data are created here. Browser-side reports are not official accounts.</div>
   </section>
+  <section id="accounting-statements" class="screen hidden">
+   <div class="sectionhead"><div><h1 class="page-title">📈 Financial Statements & Period Close</h1><div class="muted">Read-only statements from posted journals in the selected country book</div></div></div>
+   <div class="detail-card">
+    <div class="field"><label for="statementCountry">Country book</label><select id="statementCountry"><option value="AE">🇦🇪 UAE — AED</option><option value="PK">🇵🇰 Pakistan — PKR</option></select></div>
+    <div class="two"><div class="field"><label for="statementFrom">From date</label><input id="statementFrom" type="date"></div><div class="field"><label for="statementTo">To / as at date</label><input id="statementTo" type="date"></div></div>
+    <button class="primary" type="button" id="runStatements" style="width:100%">🔎 Generate statements</button>
+   </div>
+   <div class="detail-card"><h3>📊 Profit & Loss</h3><div id="statementPL" class="list"><div class="empty-state">Generate statements to view posted income and expenses.</div></div></div>
+   <div class="detail-card"><h3>🏦 Balance Sheet</h3><div id="statementBS" class="list"><div class="empty-state">Generate statements to view posted assets, liabilities and equity.</div></div></div>
+   <div class="detail-card"><h3>💧 Cash Flow</h3><div id="statementCF" class="list"><div class="empty-state">Generate statements to view posted cash and bank movements.</div></div></div>
+   <div class="detail-card">
+    <h3>🗓️ Period-close readiness</h3><div id="periodCloseSummary" class="muted">Run statements to calculate the readiness checklist.</div>
+    <div id="periodCloseChecklist" class="list" style="margin-top:10px"></div>
+    <div class="notice" style="margin-top:12px">Read-only close preview. This checklist does not close or lock a period, stop posting, create closing journals, or certify accounts. Those controls require an approved secure backend and authorized roles. Statements are not official financial reports.</div>
+   </div>
+   <div class="notice">Stage 8F preview. Only valid records marked Posted in the separate country book are considered. Draft journals and local receipt/payment vouchers are excluded. UAE (AED) and Pakistan (PKR) remain separate; no currency conversion or consolidation is performed.</div>
+  </section>
   <section id="accounting-subledgers" class="screen hidden">
    <div class="sectionhead"><div><h1 class="page-title">🧩 Subledgers & Allocations</h1><div class="muted">Country-separated property, tenant and vendor activity</div></div></div>
    <div class="detail-card">
@@ -276,6 +293,7 @@
    <h1 class="page-title">☰ More</h1><div class="list" style="margin-top:15px">
     <div class="item"><div class="avatar">📢</div><div><strong>Official notices</strong><small>Important workspace announcements</small></div><span class="arrow">›</span></div>
     <button type="button" class="item" data-screen="accounting-ledger" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📚</div><div><strong>General Ledger & Trial Balance</strong><small>Country-wise reports from posted journals</small></div><span class="arrow">›</span></button>
+    <button type="button" class="item" data-screen="accounting-statements" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📈</div><div><strong>Financial Statements & Period Close</strong><small>Profit & Loss, Balance Sheet and cash movement</small></div><span class="arrow">›</span></button>
     <button type="button" class="item" data-screen="accounting-subledgers" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">🧩</div><div><strong>Subledgers & Allocations</strong><small>Property, tenant and vendor source registers</small></div><span class="arrow">›</span></button>
     <button type="button" class="item" data-screen="accounting" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📚</div><div><strong>Accounting setup</strong><small>Country books and Chart of Accounts</small></div><span class="arrow">›</span></button>
     <div class="item"><div class="avatar">⚙️</div><div><strong>Settings</strong><small>Profile, country, currency and language</small></div><span class="arrow">›</span></div>
@@ -898,6 +916,51 @@ $("subledgerType").addEventListener("change",()=>{refreshSubledgerParties();runS
 $("subledgerParty").addEventListener("change",runSubledger);
 $("runSubledger").addEventListener("click",runSubledger);
 document.querySelectorAll('[data-screen="accounting-subledgers"]').forEach(b=>b.addEventListener("click",()=>{showScreen("accounting-subledgers");initSubledgers()}));
+
+/* Stage 8F — read-only financial statements and period-close readiness. */
+function statementRow(label,value,currency,emphasis){const row=document.createElement("div");row.className="receipt-history-item";const name=document.createElement("span");name.className="receipt-history-info";const title=document.createElement("strong");title.textContent=label;name.appendChild(title);const amount=document.createElement("span");amount.className="receipt-history-value";amount.textContent=reportMoney(value,currency);if(emphasis)title.style.fontWeight="800";row.append(name,amount);return row}
+function renderStatementList(host,items,currency,empty){host.innerHTML="";if(!items.length){host.innerHTML='<div class="empty-state">'+empty+'</div>';return}items.forEach(x=>host.appendChild(statementRow(x.label,x.value,currency,x.emphasis)))}
+function runFinancialStatements(){
+ const country=$("statementCountry").value,currency=reportCurrency(country),from=$("statementFrom").value,to=$("statementTo").value;
+ const pl=$("statementPL"),bs=$("statementBS"),cf=$("statementCF"),check=$("periodCloseChecklist");
+ if(from&&to&&from>to){$("periodCloseSummary").textContent="Invalid date range: From date must not be after To date.";
+  [pl,bs,cf,check].forEach(h=>h.innerHTML='<div class="empty-state">Correct the date range and run again.</div>');return}
+ const book=ensureBook(country),accounts=book.accounts.filter(a=>a.type!=="Header"),accountMap=new Map(accounts.map(a=>[String(a.code),a]));
+ const all=countryPostedJournals(country,to).filter(j=>!from||j.date>=from);
+ const balances=new Map(accounts.map(a=>[String(a.code),0]));
+ all.forEach(j=>(j.lines||[]).forEach(l=>{const k=String(l.account);if(!balances.has(k))return;balances.set(k,balances.get(k)+reportCents(l.debit)-reportCents(l.credit))}));
+ const totals={income:0,expense:0,assets:0,liabilities:0,equity:0};
+ const plItems=[],assetItems=[],liabilityItems=[],equityItems=[];
+ accounts.forEach(a=>{const net=balances.get(String(a.code))||0;let value=0;
+  if(a.type==="Income"){value=-net;totals.income+=value;if(value)plItems.push({label:a.code+" · "+a.name,value})}
+  else if(["Direct Expense","Operating Expense","Finance / Other"].includes(a.type)){value=net;totals.expense+=value;if(value)plItems.push({label:a.code+" · "+a.name,value})}
+  else if(a.type==="Asset"){value=net;totals.assets+=value;if(value)assetItems.push({label:a.code+" · "+a.name,value})}
+  else if(a.type==="Liability"){value=-net;totals.liabilities+=value;if(value)liabilityItems.push({label:a.code+" · "+a.name,value})}
+  else if(a.type==="Equity"){value=-net;totals.equity+=value;if(value)equityItems.push({label:a.code+" · "+a.name,value})}
+ });
+ const profit=totals.income-totals.expense;const bsEquity=totals.equity+profit;const difference=totals.assets-totals.liabilities-bsEquity;
+ plItems.push({label:"Total income",value:totals.income,emphasis:true},{label:"Total expenses",value:totals.expense,emphasis:true},{label:"Net profit / (loss)",value:profit,emphasis:true});
+ renderStatementList(pl,plItems,currency,"No posted income or expense entries for this country and date range.");
+ const bsItems=[...assetItems,{label:"Total assets",value:totals.assets,emphasis:true},...liabilityItems,{label:"Total liabilities",value:totals.liabilities,emphasis:true},...equityItems,{label:"Current-period net profit / (loss)",value:profit},{label:"Total equity including current result",value:bsEquity,emphasis:true},{label:"Balance check (assets less liabilities and equity)",value:difference,emphasis:true}];
+ renderStatementList(bs,bsItems,currency,"No posted balance-sheet entries for this country book as at the selected date.");
+ const cashAccounts=accounts.filter(a=>a.type==="Asset"&&/cash|bank|petty|wallet/i.test(a.name+" "+a.code));let cashNet=0;
+ all.forEach(j=>(j.lines||[]).forEach(l=>{if(cashAccounts.some(a=>String(a.code)===String(l.account)))cashNet+=reportCents(l.debit)-reportCents(l.credit)}));
+ const cashItems=cashAccounts.map(a=>({label:a.code+" · "+a.name+" net movement",value:balances.get(String(a.code))||0}));
+ cashItems.push({label:"Net cash / bank movement",value:cashNet,emphasis:true});
+ if(!cashAccounts.length)cashItems.push({label:"Cash-flow classification",value:0});
+ renderStatementList(cf,cashItems,currency,cashAccounts.length?"No cash/bank movement recorded in posted journals.":"No cash or bank accounts were identified in this chart of accounts.");
+ const dr=all.reduce((n,j)=>n+(j.lines||[]).reduce((m,l)=>m+reportCents(l.debit),0),0),cr=all.reduce((n,j)=>n+(j.lines||[]).reduce((m,l)=>m+reportCents(l.credit),0),0);
+ const drafts=(()=>{try{const raw=JSON.parse(localStorage.getItem("propledger.journalDrafts")||"{}");return Array.isArray(raw[country])?raw[country].length:0}catch(e){return 0}})();
+ const checks=[{label:"Country book and functional currency",ok:true,detail:country+" · "+currency},{label:"Posted journal debit / credit totals agree",ok:dr===cr,detail:reportMoney(dr,currency)+" debits / "+reportMoney(cr,currency)+" credits"},{label:"Balance Sheet equation balances",ok:Math.abs(difference)<1,detail:"Difference: "+reportMoney(difference,currency)},{label:"Cash / bank accounts identified",ok:cashAccounts.length>0,detail:cashAccounts.length+" matching account(s)"},{label:"Unposted journal drafts reviewed",ok:drafts===0,detail:drafts+" local draft(s) remain unposted"},{label:"Accounting period reviewed by authorized approver",ok:false,detail:"Manual review required; no approval workflow exists yet"}];
+ check.innerHTML="";checks.forEach(c=>{const row=document.createElement("div");row.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const title=document.createElement("strong");title.textContent=(c.ok?"✅ ":"⚠️ ")+c.label;const meta=document.createElement("small");meta.textContent=c.detail;info.append(title,meta);row.appendChild(info);check.appendChild(row)});
+ $("periodCloseSummary").textContent=all.length+" posted journal(s) included · "+(checks.filter(c=>c.ok).length)+"/"+checks.length+" readiness checks passed · "+(Math.abs(difference)<1?"Balance Sheet balances":"Balance Sheet does not balance");
+}
+function initFinancialStatements(){ $("statementCountry").value=$("bookCountry").value;$("statementFrom").value="";$("statementTo").value=new Date().toLocaleDateString("en-CA");runFinancialStatements() }
+$("statementCountry").addEventListener("change",runFinancialStatements);
+$("statementFrom").addEventListener("change",runFinancialStatements);
+$("statementTo").addEventListener("change",runFinancialStatements);
+$("runStatements").addEventListener("click",runFinancialStatements);
+document.querySelectorAll('[data-screen="accounting-statements"]').forEach(b=>b.addEventListener("click",()=>{showScreen("accounting-statements");initFinancialStatements()}));
 </script>
 </body>
 </html>
