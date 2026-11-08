@@ -1085,8 +1085,7 @@ function dashPictureCard(host,item,kind,id){
  if(item.photo){const img=document.createElement("img");img.src=item.photo;img.alt="";img.loading="lazy";img.style.cssText="width:100%;height:100%;object-fit:cover;border-radius:12px";art.appendChild(img)}else art.textContent=item.emoji||"✨";
  const copy=document.createElement("div");copy.className="picture-card-copy";
  const title=document.createElement("strong");title.textContent=item.title;
- const note=document.createElement("small");note.textContent=item.note||"Illustrative preview";
- copy.append(title,note);card.append(art,copy);host.appendChild(card);
+ copy.append(title);card.append(art,copy);host.appendChild(card);
 }
 const dashPropertySamples=[
  {title:"Modern apartment",note:"Residential · Sample",emoji:"🏢"},
