@@ -254,10 +254,29 @@
    </div>
    <div class="notice">Stage 8D reporting preview. It reads only records marked Posted in the designated posted-journal data source. Stage 8C creates drafts only, so these reports should remain empty. No opening balances or real financial data are created here. Browser-side reports are not official accounts.</div>
   </section>
+  <section id="accounting-subledgers" class="screen hidden">
+   <div class="sectionhead"><div><h1 class="page-title">🧩 Subledgers & Allocations</h1><div class="muted">Country-separated property, tenant and vendor activity</div></div></div>
+   <div class="detail-card">
+    <div class="field"><label for="subledgerCountry">Country book</label><select id="subledgerCountry"><option value="AE">🇦🇪 UAE — AED</option><option value="PK">🇵🇰 Pakistan — PKR</option></select></div>
+    <div class="field"><label for="subledgerType">Register</label><select id="subledgerType"><option value="all">All source vouchers</option><option value="tenant">Tenant receipts</option><option value="vendor">Vendor payments</option></select></div>
+    <div class="field"><label for="subledgerParty">Property / party</label><select id="subledgerParty"><option value="">All properties and parties</option></select></div>
+    <button class="primary" type="button" id="runSubledger" style="width:100%">🔎 Refresh subledger</button>
+   </div>
+   <div class="detail-card">
+    <h3>📊 Register summary</h3><div id="subledgerSummary" class="muted">No local vouchers found.</div>
+    <div id="subledgerRows" class="list" style="margin-top:10px"><div class="empty-state">Saved receipts and payments will appear here.</div></div>
+   </div>
+   <div class="detail-card">
+    <h3>🔗 Allocation readiness</h3>
+    <div id="allocationSummary" class="muted">Allocation checks will appear here.</div>
+    <div class="notice" style="margin-top:10px">Stage 8E source-register preview only. Existing receipt and payment vouchers are local, unposted source documents. They are not automatically matched to invoices or bills, and they do not change receivables, payables, or account balances. Invoice/bill records, allocation approval, and trusted server-side posting require the approved cloud backend.</div>
+   </div>
+  </section>
   <section id="more" class="screen hidden">
    <h1 class="page-title">☰ More</h1><div class="list" style="margin-top:15px">
     <div class="item"><div class="avatar">📢</div><div><strong>Official notices</strong><small>Important workspace announcements</small></div><span class="arrow">›</span></div>
     <button type="button" class="item" data-screen="accounting-ledger" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📚</div><div><strong>General Ledger & Trial Balance</strong><small>Country-wise reports from posted journals</small></div><span class="arrow">›</span></button>
+    <button type="button" class="item" data-screen="accounting-subledgers" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">🧩</div><div><strong>Subledgers & Allocations</strong><small>Property, tenant and vendor source registers</small></div><span class="arrow">›</span></button>
     <button type="button" class="item" data-screen="accounting" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📚</div><div><strong>Accounting setup</strong><small>Country books and Chart of Accounts</small></div><span class="arrow">›</span></button>
     <div class="item"><div class="avatar">⚙️</div><div><strong>Settings</strong><small>Profile, country, currency and language</small></div><span class="arrow">›</span></div>
     <div class="item"><div class="avatar">❔</div><div><strong>Help & support</strong><small>Learn how Propledger works</small></div><span class="arrow">›</span></div>
@@ -825,6 +844,60 @@ $("vendorList").addEventListener("click",e=>{const row=e.target.closest(".item")
 
 
 try{const l=localStorage.getItem("propledger.language")||"en",c=localStorage.getItem("propledger.country")||"AE";$("language").value=l;$("country").value=c;setLanguage(l);setCountry(c);if(localStorage.getItem("propledger.started")==="yes"){$("onboarding").classList.add("hidden");$("app").classList.remove("hidden")}}catch(e){setLanguage("en");setCountry("AE")}
+
+/* Stage 8E — country-filtered subledger source registers.
+   Saved vouchers remain unposted; this screen never creates accounting allocations. */
+function subledgerSources(country){
+ const properties=getProperties(),vendors=getVendors();
+ const propertyById=new Map(properties.map(p=>[p.id,p]));
+ const vendorById=new Map(vendors.map(v=>[v.id,v]));
+ const receipts=getReceipts().map(r=>{
+  const property=propertyById.get(r.propertyId);
+  return {kind:"tenant",number:r.number||"Receipt",date:r.date||"",propertyId:r.propertyId||"",property:r.property||property?.name||"Unknown property",party:r.tenant||"Unspecified tenant",amount:Number(r.amount)||0,currency:r.currency||"",status:r.status||"Local preview",country:property?.country||""};
+ }).filter(x=>x.country===country);
+ const payments=getPayments().map(p=>{
+  const property=propertyById.get(p.propertyId),vendor=vendorById.get(p.vendorId);
+  return {kind:"vendor",number:p.number||"Payment",date:p.date||"",propertyId:p.propertyId||"",property:p.property||property?.name||"Unknown property",party:p.vendor||vendor?.name||"Unspecified vendor",amount:Number(p.amount)||0,currency:p.currency||"",status:p.status||"Local preview",country:property?.country||vendor?.country||""};
+ }).filter(x=>x.country===country);
+ return receipts.concat(payments).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+}
+function refreshSubledgerParties(){
+ const country=$("subledgerCountry").value,type=$("subledgerType").value,select=$("subledgerParty"),prior=select.value;
+ const sources=subledgerSources(country).filter(x=>type==="all"||x.kind===type);
+ const options=new Map();sources.forEach(x=>options.set(x.propertyId,x.property));
+ select.innerHTML='<option value="">All properties and parties</option>';
+ options.forEach((name,id)=>{const o=document.createElement("option");o.value=id;o.textContent=name;select.appendChild(o)});
+ if([...select.options].some(o=>o.value===prior))select.value=prior;
+}
+function runSubledger(){
+ const country=$("subledgerCountry").value,type=$("subledgerType").value,propertyId=$("subledgerParty").value,currency=country==="PK"?"PKR":"AED";
+ const all=subledgerSources(country),rows=all.filter(x=>(type==="all"||x.kind===type)&&(!propertyId||x.propertyId===propertyId));
+ const host=$("subledgerRows");host.innerHTML="";
+ if(!rows.length)host.innerHTML='<div class="empty-state">No saved local source vouchers match this country and filter. Unposted journal drafts are not included.</div>';
+ rows.forEach(x=>{
+  const row=document.createElement("div");row.className="receipt-history-item";
+  const info=document.createElement("span");info.className="receipt-history-info";
+  const title=document.createElement("strong");title.textContent=(x.kind==="tenant"?"🧾 ":"💸 ")+x.number+" · "+x.party;
+  const meta=document.createElement("small");meta.textContent=x.date+" · "+x.property+" · "+(x.kind==="tenant"?"Tenant receipt":"Vendor payment")+" · Unposted source";
+  info.append(title,meta);const value=document.createElement("span");value.className="receipt-history-value";value.textContent=(x.currency||currency)+" "+x.amount.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+  row.append(info,value);host.appendChild(row);
+ });
+ const receipts=rows.filter(x=>x.kind==="tenant"),payments=rows.filter(x=>x.kind==="vendor");
+ const total=list=>list.reduce((sum,x)=>sum+Math.round(x.amount*100),0)/100;
+ $("subledgerSummary").textContent=rows.length+" local source vouchers · "+receipts.length+" receipts ("+currency+" "+total(receipts).toFixed(2)+") · "+payments.length+" payments ("+currency+" "+total(payments).toFixed(2)+"). These are not posted balances.";
+ const posted=countryPostedJournals(country);
+ const tagged=posted.filter(j=>(j.lines||[]).some(l=>l.propertyId||l.tenantId||l.vendorId)).length;
+ $("allocationSummary").textContent="Saved source vouchers awaiting future invoice/bill allocation: "+rows.length+". Posted journals carrying property/tenant/vendor dimensions: "+tagged+". No allocation records or receivable/payable balances are generated by this preview.";
+}
+function initSubledgers(){
+ $("subledgerCountry").value=$("bookCountry").value;
+ refreshSubledgerParties();runSubledger();
+}
+$("subledgerCountry").addEventListener("change",()=>{refreshSubledgerParties();runSubledger()});
+$("subledgerType").addEventListener("change",()=>{refreshSubledgerParties();runSubledger()});
+$("subledgerParty").addEventListener("change",runSubledger);
+$("runSubledger").addEventListener("click",runSubledger);
+document.querySelectorAll('[data-screen="accounting-subledgers"]').forEach(b=>b.addEventListener("click",()=>{showScreen("accounting-subledgers");initSubledgers()}));
 </script>
 </body>
 </html>
