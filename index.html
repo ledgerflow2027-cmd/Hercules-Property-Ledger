@@ -95,7 +95,7 @@
   </section>
   <section id="vendors" class="screen hidden">
    <div class="sectionhead"><div><h1 class="page-title">🧰 Vendors</h1><div class="muted">Your trusted service providers</div></div><button class="primary" id="addVendor">＋ Add</button></div>
-   <div class="list"><div class="item"><div class="avatar">🔧</div><div><strong>Maintenance services</strong><small>General repairs • Demo record</small></div><span class="arrow">›</span></div><div class="item"><div class="avatar">🧹</div><div><strong>Cleaning services</strong><small>Property care • Demo record</small></div><span class="arrow">›</span></div></div>
+   <div id="vendorList" class="list"><div class="item"><div class="avatar">🔧</div><div><strong>Maintenance services</strong><small>General repairs • Demo record</small></div><span class="arrow">›</span></div><div class="item"><div class="avatar">🧹</div><div><strong>Cleaning services</strong><small>Property care • Demo record</small></div><span class="arrow">›</span></div></div><div class="notice">Vendors you add are local preview records, separate from the illustrative demo vendors.</div>
   </section>
   <section id="activity" class="screen hidden">
    <h1 class="page-title">📚 Activity</h1><p class="muted">Income and expense workflows will connect to the accounting ledger in a later milestone.</p>
@@ -144,7 +144,20 @@
   </div>
  </div>
 
- <nav class="bottom" aria-label="Main navigation">
+
+ <div id="vendorModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="vendorModalTitle"><div class="modal-sheet">
+ <div class="modal-head"><div><div class="eyebrow" style="color:#6654d9">SERVICE PROVIDER SETUP</div><h2 id="vendorModalTitle">🧰 Register vendor</h2></div><button type="button" class="close-btn" id="closeVendor" aria-label="Close">×</button></div>
+ <form id="vendorForm" class="property-form">
+ <div class="form-section">🧰 VENDOR DETAILS</div>
+ <div class="field"><label for="vName">Vendor / business name *</label><input id="vName" required maxlength="100" placeholder="e.g. Al Noor Maintenance"></div>
+ <div class="two"><div class="field"><label for="vType">Service category *</label><select id="vType" required><option value="">Choose service</option><option>Maintenance & repairs</option><option>Cleaning</option><option>Plumbing</option><option>Electrical</option><option>Painting</option><option>Landscaping</option><option>Security</option><option>Property management</option><option>Other</option></select></div><div class="field"><label for="vCountry">Country *</label><select id="vCountry" required><option value="AE">UAE</option><option value="PK">Pakistan</option></select></div></div>
+ <div class="field"><label for="vAddress">Address / location</label><textarea id="vAddress" maxlength="240" placeholder="Area, city, country"></textarea></div>
+ <div class="two"><div class="field"><label for="vPhone">Phone / WhatsApp *</label><input id="vPhone" type="tel" required maxlength="30" placeholder="+971… / +92…"></div><div class="field"><label for="vEmail">Email</label><input id="vEmail" type="email" maxlength="120" placeholder="Optional"></div></div>
+ <div class="field"><label id="vIdentityLabel" for="vIdentity">Emirates ID number</label><input id="vIdentity" maxlength="40" placeholder="Enter ID number"></div>
+ <div class="field"><label for="vPhoto">📷 Vendor / company photo</label><input id="vPhoto" type="file" accept="image/*"><div id="vPhotoPreview"></div></div>
+ <div class="field"><label id="vDocumentLabel" for="vDocument">📄 Emirates ID / trade document</label><input id="vDocument" type="file" accept="image/*,.pdf"><div class="upload-hint">Only the selected filename is saved in this preview. Do not store sensitive identity documents until secure cloud storage is implemented.</div></div>
+ <div class="notice">Preview storage only: vendor details and compressed photo are saved in this browser on this device. They are not synced, backed up, or protected by a cloud account.</div>
+ <button class="primary" type="submit">💾 Save vendor preview</button></form></div></div> <nav class="bottom" aria-label="Main navigation">
   <button class="navbtn active" data-screen="dashboard"><b>⌂</b>Dashboard</button>
   <button class="navbtn" data-screen="properties"><b>🏘️</b>Properties</button>
   <button class="navbtn" data-screen="vendors"><b>🧰</b>Vendors</button>
@@ -166,7 +179,7 @@ try{const savedPhoto=localStorage.getItem("propledger.profilePreview");if(savedP
 document.querySelectorAll("[data-screen],[data-go]").forEach(b=>b.addEventListener("click",()=>showScreen(b.dataset.screen||b.dataset.go)));
 function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("hidden",s.id!==id));document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.screen===id));window.scrollTo({top:0,behavior:"smooth"})}
 
-["addVendor","receipt","payment","updates"].forEach(id=>$(id).addEventListener("click",()=>alert("This feature is scheduled for a later Propledger milestone. This preview does not save business records.")));
+["receipt","payment","updates"].forEach(id=>$(id).addEventListener("click",()=>alert("This feature is scheduled for a later Propledger milestone. This preview does not save business records.")));
 const propertyModal=$("propertyModal");
 function openProperty(){propertyModal.classList.add("open");document.body.style.overflow="hidden"}
 function closeProperty(){propertyModal.classList.remove("open");document.body.style.overflow=""}
@@ -182,7 +195,16 @@ function compressImage(file){return new Promise(resolve=>{if(!file||!file.type.s
 function getProperties(){try{return JSON.parse(localStorage.getItem("propledger.properties")||"[]")}catch(e){return []}}
 function renderProperties(){const list=$("propertyList");getProperties().forEach(()=>{});const saved=getProperties();list.querySelectorAll("[data-saved-property]").forEach(n=>n.remove());saved.forEach(p=>{const row=document.createElement("div");row.className="item";row.dataset.savedProperty=p.id;const avatar=document.createElement("div");avatar.className="avatar";if(p.photos&&p.photos[0]){const img=document.createElement("img");img.src=p.photos[0];img.alt="";img.style.cssText="width:46px;height:46px;object-fit:cover;border-radius:15px";avatar.textContent="";avatar.appendChild(img)}else avatar.textContent="🏠";const info=document.createElement("div");const name=document.createElement("strong");name.textContent=p.name;const detail=document.createElement("small");detail.textContent=p.city+" • "+p.units+" unit(s) • "+p.country+" • Local preview";info.append(name,detail);const arrow=document.createElement("span");arrow.className="arrow";arrow.textContent="›";row.append(avatar,info,arrow);list.appendChild(row)})}
 $("propertyForm").addEventListener("submit",async e=>{e.preventDefault();const files=[...$("pPhotos").files].slice(0,3);const photos=[];for(const file of files){const data=await compressImage(file);if(data)photos.push(data)}const tenantPhoto=await compressImage($("tPhoto").files[0]);const doc=$("tDocument").files[0];const property={id:"p"+Date.now(),name:$("pName").value.trim(),type:$("pType").value,country:$("pCountry").value,address:$("pAddress").value.trim(),city:$("pAddress").value.trim().split(",").slice(-1)[0].trim(),units:Math.max(1,Number($("pUnits").value)||1),reference:$("pRef").value.trim(),photos,tenant:{name:$("tName").value.trim(),phone:$("tPhone").value.trim(),country:$("tCountry").value,identity:$("tIdentity").value.trim(),identityType:$("tCountry").value==="PK"?"CNIC":"Emirates ID",photo:tenantPhoto,documentName:doc?doc.name:""}};try{const all=getProperties();all.push(property);localStorage.setItem("propledger.properties",JSON.stringify(all));renderProperties();$("propertyForm").reset();$("pPhotoPreview").innerHTML="";$("tPhotoPreview").innerHTML="";$("tCountry").dispatchEvent(new Event("change"));closeProperty();alert("Property saved in this device's local preview. It is not uploaded to cloud storage.");}catch(err){alert("Could not save this record on this device. Try fewer or smaller photos. No cloud copy was created.")}});
-renderProperties();
+
+function getVendors(){try{return JSON.parse(localStorage.getItem("propledger.vendors")||"[]")}catch(e){return []}}
+function renderVendors(){const list=$("vendorList"),saved=getVendors();list.querySelectorAll("[data-saved-vendor]").forEach(n=>n.remove());saved.forEach(v=>{const row=document.createElement("div");row.className="item";row.dataset.savedVendor=v.id;const avatar=document.createElement("div");avatar.className="avatar";if(v.photo){const img=document.createElement("img");img.src=v.photo;img.alt="";img.style.cssText="width:46px;height:46px;object-fit:cover;border-radius:15px";avatar.textContent="";avatar.appendChild(img)}else avatar.textContent="🧰";const info=document.createElement("div"),name=document.createElement("strong"),detail=document.createElement("small");name.textContent=v.name;detail.textContent=v.category+" • "+v.phone+" • "+v.country+" • Local preview";info.append(name,detail);const arrow=document.createElement("span");arrow.className="arrow";arrow.textContent="›";row.append(avatar,info,arrow);list.appendChild(row)})}
+const vendorModal=$("vendorModal");function openVendor(){vendorModal.classList.add("open");document.body.style.overflow="hidden"}function closeVendor(){vendorModal.classList.remove("open");document.body.style.overflow=""}
+$("addVendor").addEventListener("click",openVendor);$("closeVendor").addEventListener("click",closeVendor);vendorModal.addEventListener("click",e=>{if(e.target===vendorModal)closeVendor()});
+$("vCountry").addEventListener("change",e=>{const pk=e.target.value==="PK";$("vIdentityLabel").textContent=pk?"CNIC number":"Emirates ID number";$("vDocumentLabel").textContent=pk?"📄 CNIC / business registration document":"📄 Emirates ID / trade document";$("vIdentity").placeholder=pk?"Enter CNIC number":"Enter Emirates ID number"});
+$("vPhoto").addEventListener("change",()=>previewFile($("vPhoto"),"vPhotoPreview"));
+$("vendorForm").addEventListener("submit",async e=>{e.preventDefault();const photo=await compressImage($("vPhoto").files[0]),doc=$("vDocument").files[0],vendor={id:"v"+Date.now(),name:$("vName").value.trim(),category:$("vType").value,country:$("vCountry").value,address:$("vAddress").value.trim(),phone:$("vPhone").value.trim(),email:$("vEmail").value.trim(),identity:$("vIdentity").value.trim(),identityType:$("vCountry").value==="PK"?"CNIC":"Emirates ID",photo,documentName:doc?doc.name:""};try{const all=getVendors();all.push(vendor);localStorage.setItem("propledger.vendors",JSON.stringify(all));renderVendors();$("vendorForm").reset();$("vPhotoPreview").innerHTML="";$("vCountry").dispatchEvent(new Event("change"));closeVendor();alert("Vendor saved in this device's local preview. It is not uploaded to cloud storage.")}catch(err){alert("Could not save this vendor on this device. Try a smaller photo. No cloud copy was created.")}});
+
+renderProperties();renderVendors();
 
 try{const l=localStorage.getItem("propledger.language")||"en",c=localStorage.getItem("propledger.country")||"AE";$("language").value=l;$("country").value=c;setLanguage(l);setCountry(c);if(localStorage.getItem("propledger.started")==="yes"){$("onboarding").classList.add("hidden");$("app").classList.remove("hidden")}}catch(e){setLanguage("en");setCountry("AE")}
 </script>
