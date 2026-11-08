@@ -338,6 +338,7 @@
     <div class="field"><label for="settingsCountry">Country workspace</label><select id="settingsCountry"><option value="AE">🇦🇪 UAE — AED</option><option value="PK">🇵🇰 Pakistan — PKR</option></select></div>
     <p class="muted">UAE and Pakistan accounting books remain separate. Changing this preference does not convert or combine financial records.</p>
    </div>
+   <div class="detail-card"><h3>🧪 Sample bookkeeping data</h3><p class="muted">Add five demonstration properties, five linked tenants and five vendors, with sample receipts, payments and balanced demonstration journals. No pictures are included. Existing records are preserved.</p><div class="two"><button type="button" class="primary" id="seedDemoData">🌱 Seed sample data</button><button type="button" class="soft" id="removeDemoData">🗑️ Remove sample data</button></div><p id="demoDataStatus" class="muted" style="margin:10px 0 0">Sample data is stored locally on this device and is clearly marked as demonstration-only.</p></div>
    <div class="detail-card"><h3>🖼️ Company logo</h3><div class="field"><label for="companyLogoUpload">Choose logo image</label><input id="companyLogoUpload" type="file" accept="image/*"></div><div id="companyLogoPreview" class="muted">No company logo selected.</div><small class="muted">Preview only; saved on this device.</small></div>
    <div class="detail-card"><h3>🔒 Security & session</h3><p>PIN, passkeys, biometric sign-in, account recovery and multi-device sessions will be configured with the secure cloud backend. They are not active in this preview.</p><button type="button" class="secondary" id="previewLogout">↩️ Return to welcome screen</button></div>
    <div class="notice">Preferences and image previews are stored locally on this device. This is not a secure user account or cloud profile.</div>
@@ -1148,6 +1149,83 @@ document.querySelectorAll('[data-screen="dashboard"]').forEach(b=>b.addEventList
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener("click",()=>setTimeout(refreshPortfolioDashboard,0)));
 $("dashCountry").addEventListener("change",e=>{setCountry(e.target.value);refreshPortfolioDashboard()});
 try{refreshPortfolioDashboard()}catch(e){console.warn("Dashboard refresh deferred",e)}
+
+/* Stage 11A — safe, removable demo dataset for bookkeeping walkthroughs.
+   Five sample properties, five linked tenants, five vendors, source vouchers and
+   balanced demonstration journals. All records remain local and carry demo markers. */
+const DEMO_DATA_VERSION="propledger.demoData.v1";
+const DEMO_PROPERTY_ROWS=[
+ {id:"demo-property-uae-01",name:"Marina View Apartment 101",type:"Apartment",country:"AE",address:"Dubai Marina, Dubai",city:"Dubai",units:1,reference:"DEMO-AE-001",tenant:{name:"Amira Hassan",phone:"+971 50 000 0101",country:"AE",identity:"",identityType:"Emirates ID",photo:"",documentName:""},photos:[]},
+ {id:"demo-property-uae-02",name:"Palm Garden Villa",type:"Villa",country:"AE",address:"Al Barsha, Dubai",city:"Dubai",units:1,reference:"DEMO-AE-002",tenant:{name:"Omar Khalid",phone:"+971 50 000 0102",country:"AE",identity:"",identityType:"Emirates ID",photo:"",documentName:""},photos:[]},
+ {id:"demo-property-uae-03",name:"Creekside Residences",type:"Building",country:"AE",address:"Al Jaddaf, Dubai",city:"Dubai",units:4,reference:"DEMO-AE-003",tenant:{name:"Sara Mahmood",phone:"+971 50 000 0103",country:"AE",identity:"",identityType:"Emirates ID",photo:"",documentName:""},photos:[]},
+ {id:"demo-property-pk-01",name:"Gulberg Family Apartment",type:"Apartment",country:"PK",address:"Gulberg III, Lahore",city:"Lahore",units:1,reference:"DEMO-PK-001",tenant:{name:"Hamza Raza",phone:"+92 300 000 0104",country:"PK",identity:"",identityType:"CNIC",photo:"",documentName:""},photos:[]},
+ {id:"demo-property-pk-02",name:"Clifton Corner House",type:"House",country:"PK",address:"Clifton, Karachi",city:"Karachi",units:1,reference:"DEMO-PK-002",tenant:{name:"Ayesha Noor",phone:"+92 300 000 0105",country:"PK",identity:"",identityType:"CNIC",photo:"",documentName:""},photos:[]}
+].map(x=>({...x,demoSample:true}));
+const DEMO_VENDOR_ROWS=[
+ {id:"demo-vendor-uae-01",name:"BrightFix Maintenance LLC",category:"Maintenance",country:"AE",address:"Al Quoz, Dubai",phone:"+971 4 555 0101",email:"service@example.test",identity:"",identityType:"Emirates ID",photo:"",documentName:""},
+ {id:"demo-vendor-uae-02",name:"ClearSpace Cleaning Services",category:"Cleaning",country:"AE",address:"Business Bay, Dubai",phone:"+971 4 555 0102",email:"hello@example.test",identity:"",identityType:"Emirates ID",photo:"",documentName:""},
+ {id:"demo-vendor-uae-03",name:"Gulf Electric Works",category:"Electrical",country:"AE",address:"Deira, Dubai",phone:"+971 4 555 0103",email:"support@example.test",identity:"",identityType:"Emirates ID",photo:"",documentName:""},
+ {id:"demo-vendor-pk-01",name:"Lahore Plumbing Co.",category:"Plumbing",country:"PK",address:"Gulberg, Lahore",phone:"+92 42 555 0104",email:"info@example.test",identity:"",identityType:"CNIC",photo:"",documentName:""},
+ {id:"demo-vendor-pk-02",name:"Karachi Property Care",category:"Maintenance",country:"PK",address:"Clifton, Karachi",phone:"+92 21 555 0105",email:"care@example.test",identity:"",identityType:"CNIC",photo:"",documentName:""}
+].map(x=>({...x,demoSample:true}));
+function seedPropledgerDemoData(force=false){
+ const already=localStorage.getItem(DEMO_DATA_VERSION);
+ if(already&&!force){$("demoDataStatus").textContent="Five sample properties, five tenants and five vendors are already seeded on this device. No duplicates were added.";return false}
+ try{
+  const props=getProperties(),vendors=getVendors(),receipts=getReceipts(),payments=getPayments(),journals=postedJournalRecords();
+  const hasId=(list,id)=>list.some(x=>x.id===id);
+  DEMO_PROPERTY_ROWS.forEach(p=>{if(!hasId(props,p.id))props.push({...p})});
+  DEMO_VENDOR_ROWS.forEach(v=>{if(!hasId(vendors,v.id))vendors.push({...v})});
+  const demoProperties=DEMO_PROPERTY_ROWS, demoVendors=DEMO_VENDOR_ROWS;
+  const receiptAmounts=[6200,5800,7100,125000,145000],paymentAmounts=[650,920,1100,18500,24000];
+  const demoDate="2026-11-05";
+  demoProperties.forEach((p,i)=>{
+   const currency=p.country==="PK"?"PKR":"AED",tenant=p.tenant.name,vendor=demoVendors[i];
+   const rid="demo-receipt-"+String(i+1).padStart(2,"0"),pid="demo-payment-"+String(i+1).padStart(2,"0");
+   if(!hasId(receipts,rid))receipts.push({id:rid,number:"PR-2026-9"+String(i+1).padStart(3,"0"),date:demoDate,propertyId:p.id,property:p.name,tenant,currency,amount:receiptAmounts[i],method:"Bank transfer",reference:"DEMO-RENT-"+(i+1),description:"Demonstration monthly rent receipt",status:"Local preview",demoSample:true});
+   if(!hasId(payments,pid))payments.push({id:pid,number:"PV-2026-9"+String(i+1).padStart(3,"0"),date:demoDate,propertyId:p.id,property:p.name,vendorId:vendor.id,vendor:vendor.name,category:vendor.category,currency,amount:paymentAmounts[i],method:"Bank transfer",reference:"DEMO-EXP-"+(i+1),description:"Demonstration property maintenance expense",documentName:"",status:"Local preview",demoSample:true});
+   const debitIncome={id:"demo-journal-receipt-"+(i+1),reference:"DEMO-JR-"+(i+1),date:demoDate,description:"DEMO SAMPLE — rent received for "+p.name,country:p.country,currency,status:"Posted",demoSample:true,lines:[{account:"1020",debit:receiptAmounts[i],credit:0},{account:"4010",debit:0,credit:receiptAmounts[i]}]};
+   const debitExpense={id:"demo-journal-payment-"+(i+1),reference:"DEMO-JP-"+(i+1),date:demoDate,description:"DEMO SAMPLE — property maintenance paid for "+p.name,country:p.country,currency,status:"Posted",demoSample:true,lines:[{account:"5010",debit:paymentAmounts[i],credit:0},{account:"1020",debit:0,credit:paymentAmounts[i]}]};
+   [debitIncome,debitExpense].forEach(j=>{if(!hasId(journals,j.id))journals.push(j)});
+  });
+  localStorage.setItem("propledger.properties",JSON.stringify(props));
+  localStorage.setItem("propledger.vendors",JSON.stringify(vendors));
+  localStorage.setItem("propledger.receipts",JSON.stringify(receipts));
+  localStorage.setItem("propledger.payments",JSON.stringify(payments));
+  localStorage.setItem(POSTED_JOURNAL_SOURCE_KEY,JSON.stringify(journals));
+  localStorage.setItem(DEMO_DATA_VERSION,"1");
+  ["AE","PK"].forEach(c=>ensureBook(c));
+  renderProperties();renderVendors();receiptRenderHistory();paymentRenderHistory();
+  refreshPortfolioDashboard();
+  if($("subledgerCountry")){refreshSubledgerParties();runSubledger()}
+  if($("ledgerCountry")){refreshLedgerAccounts();runGeneralLedger();runTrialBalance()}
+  if($("statementCountry"))runFinancialStatements();
+  $("demoDataStatus").textContent="Seeded: 5 demonstration properties, 5 linked tenants, 5 vendors, 5 receipts, 5 payments and 10 balanced demonstration journals. UAE/AED and Pakistan/PKR remain separate. No pictures were added.";
+  return true;
+ }catch(err){
+  $("demoDataStatus").textContent="Sample data could not be fully saved on this device. Check available browser storage and try again.";
+  console.error("Demo data seed failed",err);return false;
+ }
+}
+function removePropledgerDemoData(){
+ try{
+  const keep=(list)=>list.filter(x=>!x.demoSample&&!String(x.id||"").startsWith("demo-"));
+  localStorage.setItem("propledger.properties",JSON.stringify(keep(getProperties())));
+  localStorage.setItem("propledger.vendors",JSON.stringify(keep(getVendors())));
+  localStorage.setItem("propledger.receipts",JSON.stringify(keep(getReceipts())));
+  localStorage.setItem("propledger.payments",JSON.stringify(keep(getPayments())));
+  localStorage.setItem(POSTED_JOURNAL_SOURCE_KEY,JSON.stringify(keep(postedJournalRecords())));
+  localStorage.removeItem(DEMO_DATA_VERSION);
+  renderProperties();renderVendors();receiptRenderHistory();paymentRenderHistory();refreshPortfolioDashboard();
+  if($("subledgerCountry")){refreshSubledgerParties();runSubledger()}
+  if($("ledgerCountry")){refreshLedgerAccounts();runGeneralLedger();runTrialBalance()}
+  if($("statementCountry"))runFinancialStatements();
+  $("demoDataStatus").textContent="Demonstration records were removed. Your non-demo records were preserved.";
+ }catch(err){$("demoDataStatus").textContent="Could not remove all demonstration records on this device."}
+}
+$("seedDemoData").addEventListener("click",()=>seedPropledgerDemoData());
+$("removeDemoData").addEventListener("click",()=>{if(confirm("Remove only Propledger demonstration records from this device? Your other records will be preserved."))removePropledgerDemoData()});
+try{seedPropledgerDemoData()}catch(e){console.warn("Demo data will be available from Settings",e)}
 </script>
 </body>
 </html>
