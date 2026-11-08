@@ -1155,61 +1155,67 @@ try{refreshPortfolioDashboard()}catch(e){console.warn("Dashboard refresh deferre
 /* Stage 11A — safe, removable demo dataset for bookkeeping walkthroughs.
    Five sample properties, five linked tenants, five vendors, source vouchers and
    balanced demonstration journals. All records remain local and carry demo markers. */
-const DEMO_DATA_VERSION="propledger.demoData.v1";
-const DEMO_PROPERTY_ROWS=[
+const DEMO_DATA_VERSION="propledger.demoData.v2";
+ const DEMO_PROPERTY_ROWS=[
  {id:"demo-property-uae-01",name:"Marina View Apartment 101",type:"Apartment",country:"AE",address:"Dubai Marina, Dubai",city:"Dubai",units:1,reference:"DEMO-AE-001",tenant:{name:"Amira Hassan",phone:"+971 50 000 0101",country:"AE",identity:"",identityType:"Emirates ID",photo:"",documentName:""},photos:[]},
  {id:"demo-property-uae-02",name:"Palm Garden Villa",type:"Villa",country:"AE",address:"Al Barsha, Dubai",city:"Dubai",units:1,reference:"DEMO-AE-002",tenant:{name:"Omar Khalid",phone:"+971 50 000 0102",country:"AE",identity:"",identityType:"Emirates ID",photo:"",documentName:""},photos:[]},
  {id:"demo-property-uae-03",name:"Creekside Residences",type:"Building",country:"AE",address:"Al Jaddaf, Dubai",city:"Dubai",units:4,reference:"DEMO-AE-003",tenant:{name:"Sara Mahmood",phone:"+971 50 000 0103",country:"AE",identity:"",identityType:"Emirates ID",photo:"",documentName:""},photos:[]},
  {id:"demo-property-pk-01",name:"Gulberg Family Apartment",type:"Apartment",country:"PK",address:"Gulberg III, Lahore",city:"Lahore",units:1,reference:"DEMO-PK-001",tenant:{name:"Hamza Raza",phone:"+92 300 000 0104",country:"PK",identity:"",identityType:"CNIC",photo:"",documentName:""},photos:[]},
  {id:"demo-property-pk-02",name:"Clifton Corner House",type:"House",country:"PK",address:"Clifton, Karachi",city:"Karachi",units:1,reference:"DEMO-PK-002",tenant:{name:"Ayesha Noor",phone:"+92 300 000 0105",country:"PK",identity:"",identityType:"CNIC",photo:"",documentName:""},photos:[]}
-].map(x=>({...x,demoSample:true}));
-const DEMO_VENDOR_ROWS=[
+ ].map(x=>({...x,demoSample:true}));
+ const DEMO_VENDOR_ROWS=[
  {id:"demo-vendor-uae-01",name:"BrightFix Maintenance LLC",category:"Maintenance",country:"AE",address:"Al Quoz, Dubai",phone:"+971 4 555 0101",email:"service@example.test",identity:"",identityType:"Emirates ID",photo:"",documentName:""},
  {id:"demo-vendor-uae-02",name:"ClearSpace Cleaning Services",category:"Cleaning",country:"AE",address:"Business Bay, Dubai",phone:"+971 4 555 0102",email:"hello@example.test",identity:"",identityType:"Emirates ID",photo:"",documentName:""},
  {id:"demo-vendor-uae-03",name:"Gulf Electric Works",category:"Electrical",country:"AE",address:"Deira, Dubai",phone:"+971 4 555 0103",email:"support@example.test",identity:"",identityType:"Emirates ID",photo:"",documentName:""},
  {id:"demo-vendor-pk-01",name:"Lahore Plumbing Co.",category:"Plumbing",country:"PK",address:"Gulberg, Lahore",phone:"+92 42 555 0104",email:"info@example.test",identity:"",identityType:"CNIC",photo:"",documentName:""},
  {id:"demo-vendor-pk-02",name:"Karachi Property Care",category:"Maintenance",country:"PK",address:"Clifton, Karachi",phone:"+92 21 555 0105",email:"care@example.test",identity:"",identityType:"CNIC",photo:"",documentName:""}
-].map(x=>({...x,demoSample:true}));
-function seedPropledgerDemoData(force=false){
- const already=localStorage.getItem(DEMO_DATA_VERSION);
- if(already&&!force){$("demoDataStatus").textContent="Five sample properties, five tenants and five vendors are already seeded on this device. No duplicates were added.";return false}
- try{
-  const props=getProperties(),vendors=getVendors(),receipts=getReceipts(),payments=getPayments(),journals=postedJournalRecords();
-  const hasId=(list,id)=>list.some(x=>x.id===id);
-  DEMO_PROPERTY_ROWS.forEach(p=>{if(!hasId(props,p.id))props.push({...p})});
-  DEMO_VENDOR_ROWS.forEach(v=>{if(!hasId(vendors,v.id))vendors.push({...v})});
-  const demoProperties=DEMO_PROPERTY_ROWS, demoVendors=DEMO_VENDOR_ROWS;
-  const receiptAmounts=[6200,5800,7100,125000,145000],paymentAmounts=[650,920,1100,18500,24000];
-  const demoDate="2026-11-05";
-  demoProperties.forEach((p,i)=>{
-   const currency=p.country==="PK"?"PKR":"AED",tenant=p.tenant.name,vendor=demoVendors[i];
-   const rid="demo-receipt-"+String(i+1).padStart(2,"0"),pid="demo-payment-"+String(i+1).padStart(2,"0");
-   if(!hasId(receipts,rid))receipts.push({id:rid,number:"PR-2026-9"+String(i+1).padStart(3,"0"),date:demoDate,propertyId:p.id,property:p.name,tenant,currency,amount:receiptAmounts[i],method:"Bank transfer",reference:"DEMO-RENT-"+(i+1),description:"Demonstration monthly rent receipt",status:"Local preview",demoSample:true});
-   if(!hasId(payments,pid))payments.push({id:pid,number:"PV-2026-9"+String(i+1).padStart(3,"0"),date:demoDate,propertyId:p.id,property:p.name,vendorId:vendor.id,vendor:vendor.name,category:vendor.category,currency,amount:paymentAmounts[i],method:"Bank transfer",reference:"DEMO-EXP-"+(i+1),description:"Demonstration property maintenance expense",documentName:"",status:"Local preview",demoSample:true});
-   const debitIncome={id:"demo-journal-receipt-"+(i+1),reference:"DEMO-JR-"+(i+1),date:demoDate,description:"DEMO SAMPLE — rent received for "+p.name,country:p.country,currency,status:"Posted",demoSample:true,lines:[{account:"1020",debit:receiptAmounts[i],credit:0},{account:"4010",debit:0,credit:receiptAmounts[i]}]};
-   const debitExpense={id:"demo-journal-payment-"+(i+1),reference:"DEMO-JP-"+(i+1),date:demoDate,description:"DEMO SAMPLE — property maintenance paid for "+p.name,country:p.country,currency,status:"Posted",demoSample:true,lines:[{account:"5010",debit:paymentAmounts[i],credit:0},{account:"1020",debit:0,credit:paymentAmounts[i]}]};
-   [debitIncome,debitExpense].forEach(j=>{if(!hasId(journals,j.id))journals.push(j)});
-  });
-  localStorage.setItem("propledger.properties",JSON.stringify(props));
-  localStorage.setItem("propledger.vendors",JSON.stringify(vendors));
-  localStorage.setItem("propledger.receipts",JSON.stringify(receipts));
-  localStorage.setItem("propledger.payments",JSON.stringify(payments));
-  localStorage.setItem(POSTED_JOURNAL_SOURCE_KEY,JSON.stringify(journals));
-  localStorage.setItem(DEMO_DATA_VERSION,"1");
-  ["AE","PK"].forEach(c=>ensureBook(c));
-  renderProperties();renderVendors();receiptRenderHistory();paymentRenderHistory();
-  refreshPortfolioDashboard();
-  if($("subledgerCountry")){refreshSubledgerParties();runSubledger()}
-  if($("ledgerCountry")){refreshLedgerAccounts();runGeneralLedger();runTrialBalance()}
-  if($("statementCountry"))runFinancialStatements();
-  $("demoDataStatus").textContent="Seeded: 5 demonstration properties, 5 linked tenants, 5 vendors, 5 receipts, 5 payments and 10 balanced demonstration journals. UAE/AED and Pakistan/PKR remain separate. No pictures were added.";
-  return true;
- }catch(err){
-  $("demoDataStatus").textContent="Sample data could not be fully saved on this device. Check available browser storage and try again.";
-  console.error("Demo data seed failed",err);return false;
+ ].map(x=>({...x,demoSample:true}));
+ function seedPropledgerDemoData(force=false){
+  if(localStorage.getItem(DEMO_DATA_VERSION)&&!force){$("demoDataStatus").textContent="The Jan 2025–8 Nov 2026 sample history is already seeded on this device.";return false}
+  try{
+   const clean=list=>list.filter(x=>!x.demoSample&&!String(x.id||"").startsWith("demo-"));
+   const props=clean(getProperties()),vendors=clean(getVendors()),receipts=clean(getReceipts()),payments=clean(getPayments()),journals=clean(postedJournalRecords()),rentInvoices=[],vendorBills=[];
+   DEMO_PROPERTY_ROWS.forEach(p=>props.push({...p}));DEMO_VENDOR_ROWS.forEach(v=>vendors.push({...v}));
+   const rent=[6200,5800,7100,125000,145000],cost=[650,920,1100,18500,24000],late=new Set([3,8,14,19]),missA=new Set([2,6,10,14,18,21]),missB=new Set([4,9,15,20]);
+   const months=[];for(let y=2025;y<=2026;y++)for(let m=0;m<12;m++){const d=new Date(Date.UTC(y,m,1)),iso=d.toISOString().slice(0,10);if(iso<="2026-11-01")months.push({y,m,iso,index:months.length})}
+   const addJ=(id,ref,date,desc,country,currency,lines)=>journals.push({id,reference:ref,date,description:"DEMO SAMPLE — "+desc,country,currency,status:"Posted",demoSample:true,lines});
+   ["AE","PK"].forEach(c=>{const cur=c==="PK"?"PKR":"AED";addJ("demo-opening-"+c,"DEMO-OPEN-"+c,"2024-12-31","opening bank funding",c,cur,[{account:"1020",debit:1000000,credit:0},{account:"3100",debit:0,credit:1000000}])});
+   months.forEach(({y,m,iso,index})=>{
+    const period=y+"-"+String(m+1).padStart(2,"0");
+    DEMO_PROPERTY_ROWS.forEach((p,i)=>{
+     const cur=p.country==="PK"?"PKR":"AED",amount=rent[i],invId="demo-rent-invoice-"+i+"-"+period,due=period+"-05";
+     rentInvoices.push({id:invId,number:"RI-"+period.replace("-","")+"-"+(i+1),date:iso,dueDate:due,propertyId:p.id,property:p.name,tenant:p.tenant.name,tenantId:"demo-tenant-"+(i+1),country:p.country,currency:cur,amount,status:"Open",demoSample:true});
+     addJ("demo-rent-accrual-"+i+"-"+period,"DEMO-RA-"+(i+1)+"-"+period,iso,"rent invoiced "+p.name,p.country,cur,[{account:"1100",debit:amount,credit:0,propertyId:p.id},{account:"4010",debit:0,credit:amount,propertyId:p.id}]);
+     let paid=amount,payDate=period+"-03";
+     if(i===3&&missA.has(index))paid=0;if(i===4&&missB.has(index))paid=0;
+     if(i===2&&index%6===5)paid=Math.round(amount*.65);
+     if(i===3&&index%5===1)paid=Math.round(amount*.5);
+     if(i===4&&index%7===2)paid=Math.round(amount*.7);
+     if(i===1&&late.has(index))payDate=period+"-18";
+     if(i===2&&index%6===5)payDate=period+"-20";
+     if(i===3&&paid>0&&index%5===1)payDate=period+"-24";
+     if(i===4&&paid>0&&index%7===2)payDate=period+"-22";
+     if(y===2026&&m===10&&paid>0)payDate=i===0?"2026-11-03":i===1?"2026-11-07":"2026-11-08";
+     if(paid>0){const rid="demo-rent-receipt-"+i+"-"+period;receipts.push({id:rid,number:"PR-"+period.replace("-","")+"-"+(i+1),date:payDate,propertyId:p.id,property:p.name,tenant:p.tenant.name,currency:cur,amount:paid,method:"Bank transfer",reference:"DEMO-RENT-"+period+"-"+(i+1),description:"Demonstration rent collection "+period,status:"Local preview",demoSample:true,invoiceId:invId});addJ("demo-rent-cash-"+i+"-"+period,"DEMO-RC-"+(i+1)+"-"+period,payDate,"rent received "+p.name,p.country,cur,[{account:"1020",debit:paid,credit:0,propertyId:p.id},{account:"1100",debit:0,credit:paid,propertyId:p.id}])}
+    });
+    DEMO_VENDOR_ROWS.forEach((v,i)=>{
+     const p=DEMO_PROPERTY_ROWS[i],cur=v.country==="PK"?"PKR":"AED",amount=cost[i],cadence=(i===1||i===3)?index%2===0:(i===4?index%3!==1:true);if(!cadence)return;
+     const billId="demo-vendor-bill-"+i+"-"+period,due=period+"-15",forgot=(i===2&&[5,13,20].includes(index))||(i===4&&[7,16].includes(index))||(i===3&&index===18),latePay=(i===1&&index%4===2)||(i===3&&index%5===3),paid=forgot?0:amount,payDate=period+(latePay?"-27":"-12");
+     vendorBills.push({id:billId,number:"VB-"+period.replace("-","")+"-"+(i+1),date:iso,dueDate:due,propertyId:p.id,property:p.name,vendorId:v.id,vendor:v.name,country:v.country,currency:cur,category:v.category,amount,paidAmount:paid,status:paid===0?"Overdue":latePay?"Paid late":"Paid on time",demoSample:true});
+     addJ("demo-vendor-accrual-"+i+"-"+period,"DEMO-VA-"+(i+1)+"-"+period,iso,"vendor bill "+v.name,p.country,cur,[{account:"5010",debit:amount,credit:0,propertyId:p.id},{account:"2010",debit:0,credit:amount,propertyId:p.id}]);
+     if(paid>0){payments.push({id:"demo-vendor-payment-"+i+"-"+period,number:"PV-"+period.replace("-","")+"-"+(i+1),date:payDate,propertyId:p.id,property:p.name,vendorId:v.id,vendor:v.name,category:v.category,currency:cur,amount:paid,method:"Bank transfer",reference:"DEMO-BILL-"+period+"-"+(i+1),description:"Demonstration payment for "+v.name,documentName:"",status:"Local preview",demoSample:true,billId});addJ("demo-vendor-cash-"+i+"-"+period,"DEMO-VC-"+(i+1)+"-"+period,payDate,"vendor paid "+v.name,p.country,cur,[{account:"2010",debit:paid,credit:0,propertyId:p.id},{account:"1020",debit:0,credit:paid,propertyId:p.id}])}
+    });
+   });
+   [["propledger.properties",props],["propledger.vendors",vendors],["propledger.receipts",receipts],["propledger.payments",payments],["propledger.rentInvoices",rentInvoices],["propledger.vendorBills",vendorBills],[POSTED_JOURNAL_SOURCE_KEY,journals]].forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));
+   localStorage.setItem(DEMO_DATA_VERSION,"1");
+   const books=readAccountingSetup();["AE","PK"].forEach(c=>{const b=ensureBook(c);b.yearStart="01-01"});writeAccountingSetup(readAccountingSetup());
+   renderProperties();renderVendors();receiptRenderHistory();paymentRenderHistory();refreshPortfolioDashboard();
+   if($("subledgerCountry")){refreshSubledgerParties();runSubledger()}if($("ledgerCountry")){refreshLedgerAccounts();runGeneralLedger();runTrialBalance()}if($("statementCountry"))runFinancialStatements();
+   $("demoDataStatus").textContent="Seeded Jan 1, 2025–Nov 8, 2026: country-matched names, 5 properties/tenants/vendors, rent invoices and mixed collections, vendor bills with on-time/late/unpaid status, balanced demo journals. Jan–Dec financial years; no pictures.";
+   return true;
+  }catch(err){$("demoDataStatus").textContent="Sample data could not be fully saved on this device. Check browser storage and try again.";console.error("Demo data seed failed",err);return false}
  }
-}
-function removePropledgerDemoData(){
+ function removePropledgerDemoData(){
  try{
   const keep=(list)=>list.filter(x=>!x.demoSample&&!String(x.id||"").startsWith("demo-"));
   localStorage.setItem("propledger.properties",JSON.stringify(keep(getProperties())));
