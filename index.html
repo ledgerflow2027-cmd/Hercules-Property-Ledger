@@ -7,7 +7,7 @@
 <style>
 :root{--ink:#172033;--muted:#697386;--line:#e7eaf0;--paper:#f5f7fb;--white:#fff;--navy:#172554;--violet:#6654d9;--mint:#18a999;--gold:#f0b84b;--shadow:0 12px 34px #1c285012}
 *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,select,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}.app{max-width:520px;min-height:100dvh;margin:auto;background:#f8f9fc;padding-bottom:92px}.top{padding:22px 20px 16px;background:linear-gradient(135deg,#172554,#43358f 65%,#087e83);color:#fff;border-radius:0 0 28px 28px}.topline{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.5px}.mark{width:38px;height:38px;border-radius:13px;background:linear-gradient(145deg,#8ce3d5,#fff);color:#172554;display:grid;place-items:center;font-weight:900;font-size:19px}.top-actions{display:flex;gap:8px;align-items:center}.chip,.iconbtn{border:1px solid #ffffff45;background:#ffffff18;color:white;border-radius:30px;padding:8px 11px}.iconbtn{width:38px;height:38px;padding:0}.welcome{padding:25px 0 8px}.eyebrow{text-transform:uppercase;letter-spacing:1.5px;font-size:10px;font-weight:800;opacity:.75}.welcome h1{font-size:26px;line-height:1.15;margin:8px 0}.welcome p{font-size:13px;opacity:.8;margin:0}.content{padding:18px 16px}.sectionhead{display:flex;align-items:center;justify-content:space-between;margin:5px 2px 12px}.sectionhead h2{font-size:16px;margin:0}.muted{color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat,.tile,.panel{background:var(--white);border:1px solid var(--line);border-radius:19px;padding:15px;box-shadow:var(--shadow)}.stat .ico{font-size:19px}.stat .label{font-size:11px;color:var(--muted);margin-top:8px}.stat strong{display:block;font-size:21px;margin-top:3px}.tile{min-height:105px;text-align:left;border:0;color:var(--ink);background:linear-gradient(145deg,#fff,#f0efff);font-weight:700}.tile span{display:block;font-size:24px;margin-bottom:9px}.tile small{display:block;color:var(--muted);font-weight:500;margin-top:3px}.primary{border:0;border-radius:14px;background:linear-gradient(120deg,#6654d9,#287cba);color:white;padding:12px 16px;font-weight:700;box-shadow:0 7px 18px #6654d933}.soft{border:1px solid var(--line);border-radius:13px;background:#fff;padding:10px 13px;color:var(--ink)}.list{display:grid;gap:9px}.item{display:flex;align-items:center;gap:12px;padding:12px;background:white;border:1px solid var(--line);border-radius:17px}.avatar{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,#e1e7ff,#d6f4ed);display:grid;place-items:center;font-size:22px;flex-shrink:0}.item strong{display:block;font-size:13px}.item small{color:var(--muted);font-size:11px}.item .arrow{margin-left:auto;color:#8791a3}.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#ffffffed;backdrop-filter:blur(16px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);z-index:5}.navbtn{border:0;background:none;color:#8992a4;padding:7px 2px;border-radius:13px;font-size:10px;font-weight:700}.navbtn b{display:block;font-size:19px;margin-bottom:3px}.navbtn.active{color:var(--violet);background:#f0efff}.page-title{font-size:22px;margin:5px 0 4px}.notice{padding:12px 14px;border-radius:14px;background:#fff7e7;color:#79571a;font-size:11px;line-height:1.5;margin-top:14px}.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:12px;font-weight:700}.field select,.field input{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:white;color:var(--ink)}.hero{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:25px;background:radial-gradient(circle at 20% 10%,#d9e5ff,transparent 40%),linear-gradient(145deg,#f8faff,#eef4f6)}.welcome-card{width:min(440px,100%);background:white;border:1px solid var(--line);border-radius:28px;padding:28px 23px;box-shadow:0 24px 70px #263c6818}.welcome-logo{width:64px;height:64px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(145deg,#172554,#6654d9);color:white;font-size:30px;margin-bottom:22px}.welcome-card h1{font-size:29px;line-height:1.1;margin:0 0 10px}.welcome-card p{color:var(--muted);font-size:13px;line-height:1.65}.welcome-card .primary{width:100%;margin-top:10px;padding:14px}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pillnote{font-size:10px;color:var(--muted);text-align:center;margin-top:17px}.profile{width:35px;height:35px;border-radius:50%;background:#f5d7ae;color:#64421f;display:grid;place-items:center;font-weight:800;border:2px solid #ffffff80}
-.profile-upload{overflow:hidden;position:relative;cursor:pointer}.profile-upload img{width:100%;height:100%;object-fit:cover;border-radius:50%}.profile-upload input{display:none}.carousel-wrap{margin:22px -16px 0;padding:0 16px}.carousel-track{display:flex;gap:10px;overflow-x:auto;padding:2px 1px 10px;scroll-snap-type:x mandatory;scrollbar-width:none}.carousel-track::-webkit-scrollbar{display:none}.mini-card{flex:0 0 142px;scroll-snap-align:start;background:#fff;border:1px solid var(--line);border-radius:17px;padding:11px;box-shadow:var(--shadow)}.mini-art{height:78px;border-radius:12px;background:linear-gradient(140deg,#e5e9ff,#d8f3ed);display:grid;place-items:center;font-size:34px;margin-bottom:9px}.mini-card strong{display:block;font-size:12px}.mini-card small{display:block;font-size:10px;color:var(--muted);margin-top:4px}.late-track{direction:rtl}.late-track .mini-card{direction:rtl;text-align:right}.carousel-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.carousel-heading h2{font-size:15px;margin:0}.pulse{animation:pulseGlow 2.4s ease-in-out infinite}@keyframes pulseGlow{0%,100%{box-shadow:0 7px 18px #6654d922}50%{box-shadow:0 7px 23px #18a99966}}
+.profile-upload{overflow:hidden;position:relative;cursor:pointer}.profile-upload img{width:100%;height:100%;object-fit:cover;border-radius:50%}.profile-upload input{display:none}.carousel-wrap{margin:22px -16px 0;padding:0 16px}.carousel-track{display:flex;gap:10px;overflow-x:auto;padding:2px 1px 10px;scroll-snap-type:x mandatory;scrollbar-width:none}.carousel-track::-webkit-scrollbar{display:none}.mini-card{flex:0 0 142px;scroll-snap-align:start;background:#fff;border:1px solid var(--line);border-radius:17px;padding:11px;box-shadow:var(--shadow)}.mini-art{height:78px;border-radius:12px;background:linear-gradient(140deg,#e5e9ff,#d8f3ed);display:grid;place-items:center;font-size:34px;margin-bottom:9px}.mini-card strong{display:block;font-size:12px}.mini-card small{display:block;font-size:10px;color:var(--muted);margin-top:4px}.picture-card{flex:0 0 190px;scroll-snap-align:start;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}.picture-card img{display:block;width:100%;height:118px;object-fit:cover;background:#e9edf5}.picture-card-copy{padding:10px 11px 12px}.picture-card strong{display:block;font-size:12px}.picture-card small{display:block;font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4}.picture-track{padding-bottom:12px}.picture-track.late-track{direction:rtl}.picture-track.late-track .picture-card{direction:rtl;text-align:right}.picture-track .picture-card{direction:ltr;text-align:left}.late-track{direction:rtl}.late-track .mini-card{direction:rtl;text-align:right}.carousel-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.carousel-heading h2{font-size:15px;margin:0}.pulse{animation:pulseGlow 2.4s ease-in-out infinite}@keyframes pulseGlow{0%,100%{box-shadow:0 7px 18px #6654d922}50%{box-shadow:0 7px 23px #18a99966}}
 [dir=rtl]{text-align:right}[dir=rtl] .arrow{margin-left:0;margin-right:auto}[dir=rtl] .topline{flex-direction:row-reverse}
 @media(min-width:600px){body{padding:20px 0}.app{border-radius:28px;overflow:hidden;min-height:calc(100dvh - 40px);box-shadow:0 20px 70px #17255418}.bottom{bottom:20px;border-radius:0 0 28px 28px}}
 
@@ -120,12 +120,16 @@
     <div id="dashboardVendorStatus" class="muted">Vendor payment vouchers are source records only. Payables require posted bills and allocations, which are not yet implemented.</div>
    </div>
    <div class="carousel-wrap">
-    <div class="carousel-heading"><h2>🏘️ Properties</h2><span class="muted">Saved in this country book</span></div>
-    <div id="dashboardProperties" class="carousel-track" aria-label="Saved properties"><div class="empty-state">No saved properties yet.</div></div>
+    <div class="carousel-heading"><h2>🏘️ Properties</h2><span class="muted">Swipe left to right · 5 visual examples + your records</span></div>
+    <div id="dashboardProperties" class="carousel-track picture-track" aria-label="Property picture slides"></div>
    </div>
    <div class="carousel-wrap">
-    <div class="carousel-heading"><h2>🧰 Vendors</h2><span class="muted">Saved in this country book</span></div>
-    <div id="dashboardVendors" class="carousel-track" aria-label="Saved vendors"><div class="empty-state">No saved vendors yet.</div></div>
+    <div class="carousel-heading"><h2>🧑‍🤝‍🧑 Tenants</h2><span class="muted">Swipe right to left · 5 visual examples + your records</span></div>
+    <div id="dashboardTenants" class="carousel-track picture-track late-track" aria-label="Tenant picture slides"></div>
+   </div>
+   <div class="carousel-wrap">
+    <div class="carousel-heading"><h2>🧰 Vendors</h2><span class="muted">Swipe left to right · 5 visual examples + your records</span></div>
+    <div id="dashboardVendors" class="carousel-track picture-track" aria-label="Vendor picture slides"></div>
    </div>
    <div class="panel muted" id="dashboardDataNote">Analytics update from local saved records. No cloud sync is active.</div>
    <div class="sectionhead" style="margin-top:22px"><h2>⚡ Quick actions</h2></div>
@@ -1066,6 +1070,35 @@ function dashCard(host,icon,title,subtitle){
  const meta=document.createElement("small");meta.textContent=subtitle;
  card.append(art,name,meta);host.appendChild(card);
 }
+function dashPictureCard(host,item){
+ const card=document.createElement("article");card.className="picture-card";
+ const img=document.createElement("img");img.src=item.image;img.alt=item.alt||item.title;img.loading="lazy";
+ const copy=document.createElement("div");copy.className="picture-card-copy";
+ const title=document.createElement("strong");title.textContent=item.title;
+ const note=document.createElement("small");note.textContent=item.note||"Sample visual · illustrative only";
+ copy.append(title,note);card.append(img,copy);host.appendChild(card);
+}
+const dashPropertySamples=[
+ {title:"Modern apartment",note:"Residential · Sample",image:"https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=640&q=80"},
+ {title:"Family villa",note:"Residential · Sample",image:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=640&q=80"},
+ {title:"Residential building",note:"Multi-unit · Sample",image:"https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=640&q=80"},
+ {title:"Retail property",note:"Commercial · Sample",image:"https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=640&q=80"},
+ {title:"Office space",note:"Commercial · Sample",image:"https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=640&q=80"}
+];
+const dashTenantSamples=[
+ {title:"Tenant profile 01",note:"Sample profile · no rent status",image:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=640&q=80"},
+ {title:"Tenant profile 02",note:"Sample profile · no rent status",image:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=640&q=80"},
+ {title:"Tenant profile 03",note:"Sample profile · no rent status",image:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=640&q=80"},
+ {title:"Tenant profile 04",note:"Sample profile · no rent status",image:"https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=640&q=80"},
+ {title:"Tenant profile 05",note:"Sample profile · no rent status",image:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=640&q=80"}
+];
+const dashVendorSamples=[
+ {title:"Maintenance team",note:"Repairs & upkeep · Sample",image:"https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=640&q=80"},
+ {title:"Cleaning services",note:"Property care · Sample",image:"https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=640&q=80"},
+ {title:"Electrical services",note:"Electrical · Sample",image:"https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=640&q=80"},
+ {title:"Plumbing services",note:"Plumbing · Sample",image:"https://images.unsplash.com/photo-1621905251918-48416bd8575a?auto=format&fit=crop&w=640&q=80"},
+ {title:"Property professionals",note:"Management · Sample",image:"https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=640&q=80"}
+];
 function refreshPortfolioDashboard(){
  const country=localStorage.getItem("propledger.country")||"AE",currency=country==="PK"?"PKR":"AED";
  const properties=getProperties().filter(p=>p.country===country),vendors=getVendors().filter(v=>v.country===country);
@@ -1087,11 +1120,14 @@ function refreshPortfolioDashboard(){
  $("dashboardRentStatus").textContent=tenants.length+" named tenant(s) are linked to saved properties. Rent schedules, invoices and due dates are not recorded yet, so overdue rent cannot be calculated reliably.";
  $("dashboardVendorStatus").textContent=vendors.length+" vendor profile(s) saved. "+payments.length+" payment voucher(s) recorded this month; this is not a payable balance. Vendor bills and approved allocations are not yet available.";
  const propertyHost=$("dashboardProperties");propertyHost.innerHTML="";
- if(!properties.length){const empty=document.createElement("div");empty.className="empty-state";empty.textContent="No saved properties for this country yet.";propertyHost.appendChild(empty)}
- properties.forEach(p=>dashCard(propertyHost,"🏠",p.name||"Property",(p.city||p.address||"Location not provided")+" · "+(Number(p.units)||1)+" unit(s)"));
+ dashPropertySamples.forEach(item=>dashPictureCard(propertyHost,item));
+ properties.forEach(p=>dashPictureCard(propertyHost,{title:p.name||"Saved property",note:(p.city||p.address||"Location not provided")+" · "+(Number(p.units)||1)+" unit(s) · Your record",image:(p.photos&&p.photos[0])||dashPropertySamples[0].image,alt:p.name||"Saved property"}));
+ const tenantHost=$("dashboardTenants");tenantHost.innerHTML="";
+ dashTenantSamples.forEach(item=>dashPictureCard(tenantHost,item));
+ tenants.forEach((p,i)=>dashPictureCard(tenantHost,{title:p.tenant.name||"Saved tenant",note:(p.name||"Property")+" · Rent status not configured · Your record",image:p.tenant.photo||dashTenantSamples[i%dashTenantSamples.length].image,alt:p.tenant.name||"Saved tenant"}));
  const vendorHost=$("dashboardVendors");vendorHost.innerHTML="";
- if(!vendors.length){const empty=document.createElement("div");empty.className="empty-state";empty.textContent="No saved vendors for this country yet.";vendorHost.appendChild(empty)}
- vendors.forEach(v=>dashCard(vendorHost,"🧰",v.name||"Vendor",(v.category||"Service provider")+" · "+(v.phone||"No phone")));
+ dashVendorSamples.forEach(item=>dashPictureCard(vendorHost,item));
+ vendors.forEach(v=>dashPictureCard(vendorHost,{title:v.name||"Saved vendor",note:(v.category||"Service provider")+" · "+(v.phone||"No phone")+" · Your record",image:v.photo||dashVendorSamples[0].image,alt:v.name||"Saved vendor"}));
  $("dashboardDataNote").textContent="Updated from this device's saved "+(country==="PK"?"Pakistan":"UAE")+" records. Local-only preview; not cloud-synced. Switch country in workspace settings to view the other separate book.";
  const recentHost=$("dashboardRecent");recentHost.innerHTML="";
  const recentRows=[...getReceipts().filter(r=>propertyIds.has(r.propertyId)).map(r=>({kind:"Receipt",number:r.number||"Receipt",date:r.date||"",party:r.tenant||"Tenant",amount:dashCents(r.amount)})),...getPayments().filter(p=>propertyIds.has(p.propertyId)).map(p=>({kind:"Payment",number:p.number||"Payment",date:p.date||"",party:p.vendor||"Vendor",amount:dashCents(p.amount)}))].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,5);
