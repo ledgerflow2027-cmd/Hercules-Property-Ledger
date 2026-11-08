@@ -681,7 +681,7 @@ function recordJournalAudit(country,event,reference,detail){
  all[country]=items.slice(-250);localStorage.setItem(JOURNAL_AUDIT_KEY,JSON.stringify(all));
 }
 function journalFingerprint(j){
- const normalized={country:j.country,date:j.date,description:j.description.toLowerCase().replace(/\\s+/g," ").trim(),lines:j.lines.map(x=>({account:x.account,debit:Math.round(Number(x.debit||0)*100),credit:Math.round(Number(x.credit||0)*100)})).sort((a,b)=>a.account.localeCompare(b.account)||a.debit-b.debit||a.credit-b.credit)};
+ const normalized={country:j.country,date:j.date,description:j.description.toLowerCase().replace(/\\s+/g," ").trim(),lines:j.lines.map(x=>({account:x.account,debit:Math.round(Number(x.debit??x.debitText??0)*100),credit:Math.round(Number(x.credit??x.creditText??0)*100)})).sort((a,b)=>a.account.localeCompare(b.account)||a.debit-b.debit||a.credit-b.credit)};
  return JSON.stringify(normalized);
 }
 function renderJournalAudit(){
@@ -715,7 +715,7 @@ function validateJournal(){
  if(debit!==credit)errors.push("Debits and credits must be equal.");
  if(errors.length){journalIsValid=false;$("saveJournalDraft").disabled=true;$("journalValidation").textContent="Not valid: "+errors.join(" ");return false}
  const fingerprint=journalFingerprint({country:j.country,date:j.date,description:j.description,lines:j.lines.map(x=>({account:x.account,debit:x.debitText||0,credit:x.creditText||0}))});
- const existing=(journalDrafts()[j.country]||[]).some(d=>d.fingerprint===fingerprint);
+ const existing=(journalDrafts()[j.country]||[]).some(d=>d.fingerprint===fingerprint||(!d.fingerprint&&journalFingerprint({country:d.country,date:d.date,description:d.description,lines:d.lines||[]})===fingerprint));
  if(existing){journalIsValid=false;$("saveJournalDraft").disabled=true;$("journalValidation").textContent="Duplicate draft detected: an identical journal already exists in this country book.";return false}
  journalIsValid=true;$("saveJournalDraft").disabled=false;$("journalValidation").textContent="Validated: accounts are active and postable, period is open (if configured), and debits equal credits. This remains an unposted draft.";return true;
 }
