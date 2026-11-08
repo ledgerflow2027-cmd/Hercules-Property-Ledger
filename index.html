@@ -579,13 +579,13 @@ function runGeneralLedger(){
   if(debit||credit)entries.push({date:j.date,reference:j.reference||"Posted journal",description:j.description||"",account:String(line.account),debit,credit});
  }));
  entries.sort((a,b)=>a.date.localeCompare(b.date)||a.reference.localeCompare(b.reference));
- let running=0,prior=0;entries.forEach(e=>{if(from&&e.date<from)prior+=e.debit-e.credit;else running+=e.debit-e.credit});
+ const balances=new Map();entries.forEach(e=>{if(from&&e.date<from)balances.set(e.account,(balances.get(e.account)||0)+e.debit-e.credit)});
  const visible=entries.filter(e=>reportDateOk(e.date,from,to));
- let balance=prior;const host=$("ledgerRows");host.innerHTML="";
+ const host=$("ledgerRows");host.innerHTML="";
  if(!visible.length){host.innerHTML='<div class="empty-state">No posted ledger activity matches this account and date range.</div>'}
- else visible.forEach(e=>{balance+=e.debit-e.credit;const row=document.createElement("div");row.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const title=document.createElement("strong");title.textContent=e.date+" · "+(e.reference||"Journal");const meta=document.createElement("small");meta.textContent=e.account+" · "+(e.description||"Journal entry");info.append(title,meta);const amount=document.createElement("span");amount.className="receipt-history-value";amount.textContent="Dr "+(e.debit/100).toFixed(2)+" / Cr "+(e.credit/100).toFixed(2)+"\nBal "+(balance/100).toFixed(2);row.append(info,amount);host.appendChild(row)});
+ else visible.forEach(e=>{const balance=(balances.get(e.account)||0)+e.debit-e.credit;balances.set(e.account,balance);const row=document.createElement("div");row.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const title=document.createElement("strong");title.textContent=e.date+" · "+(e.reference||"Journal");const meta=document.createElement("small");meta.textContent=e.account+" · "+(e.description||"Journal entry");info.append(title,meta);const amount=document.createElement("span");amount.className="receipt-history-value";amount.textContent="Dr "+(e.debit/100).toFixed(2)+" / Cr "+(e.credit/100).toFixed(2)+"\nBal "+(balance/100).toFixed(2);row.append(info,amount);host.appendChild(row)});
  const periodDebit=visible.reduce((n,e)=>n+e.debit,0),periodCredit=visible.reduce((n,e)=>n+e.credit,0);
- $("ledgerSummary").textContent=visible.length+" posted lines · "+reportMoney(periodDebit,currency)+" debits · "+reportMoney(periodCredit,currency)+" credits · closing movement "+reportMoney(balance,currency);
+ $("ledgerSummary").textContent=visible.length+" posted lines · "+reportMoney(periodDebit,currency)+" debits · "+reportMoney(periodCredit,currency)+" credits · net movement "+reportMoney(periodDebit-periodCredit,currency);
 }
 function runTrialBalance(){
  const country=$("ledgerCountry").value,currency=reportCurrency(country),asOf=$("trialAsOf").value,book=ensureBook(country),accounts=book.accounts.filter(a=>a.type!=="Header");
