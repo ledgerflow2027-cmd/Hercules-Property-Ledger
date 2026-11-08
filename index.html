@@ -225,6 +225,7 @@
    <div class="detail-card">
     <h3>🗃️ Saved journal drafts</h3>
     <div id="journalDraftHistory" class="receipt-history"><p class="muted">No journal drafts saved.</p></div>
+    <h3 style="margin-top:18px">🧾 Local draft activity history</h3><div id="journalAuditHistory" class="receipt-history"><p class="muted">No draft activity recorded.</p></div>
    </div>
    <div class="notice">Backend provider is intentionally undecided. Do not enter sensitive data or rely on this local configuration as an official ledger. Opening balances, journals, posting and reports are later Stage 8 milestones.</div>
   </section>
@@ -672,16 +673,39 @@ function readJournal(){
  }));
  return {country:currentBookCountry(),currency:currentBookCountry()==="PK"?"PKR":"AED",date:$("journalDate").value,description:$("journalDescription").value.trim(),lines};
 }
+const JOURNAL_AUDIT_KEY="propledger.journalDraftAudit";
+function journalAudit(){try{return JSON.parse(localStorage.getItem(JOURNAL_AUDIT_KEY)||"{}")}catch(e){return {}}}
+function recordJournalAudit(country,event,reference,detail){
+ const all=journalAudit(),items=all[country]||[];
+ items.push({event,reference,detail:detail||"",at:new Date().toISOString()});
+ all[country]=items.slice(-250);localStorage.setItem(JOURNAL_AUDIT_KEY,JSON.stringify(all));
+}
+function journalFingerprint(j){
+ const normalized={country:j.country,date:j.date,description:j.description.toLowerCase().replace(/\\s+/g," ").trim(),lines:j.lines.map(x=>({account:x.account,debit:Math.round(Number(x.debit||0)*100),credit:Math.round(Number(x.credit||0)*100)})).sort((a,b)=>a.account.localeCompare(b.account)||a.debit-b.debit||a.credit-b.credit)};
+ return JSON.stringify(normalized);
+}
+function renderJournalAudit(){
+ const all=journalAudit(),items=(all[currentBookCountry()]||[]).slice().reverse(),host=$("journalAuditHistory");host.innerHTML="";
+ if(!items.length){host.innerHTML='<p class="muted">No draft activity recorded for this country book.</p>';return}
+ items.forEach(entry=>{const row=document.createElement("div");row.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const title=document.createElement("strong");title.textContent=entry.event+" · "+entry.reference;const meta=document.createElement("small");meta.textContent=new Date(entry.at).toLocaleString()+" · "+entry.detail;info.append(title,meta);row.append(info);host.appendChild(row)});
+}
 function validateJournal(){
  const j=readJournal(),book=ensureBook(j.country);let debit=0,credit=0,errors=[];
- if(!j.date)errors.push("Choose a journal date.");
+ if(!j.date||!/^\\d{4}-\\d{2}-\\d{2}$/.test(j.date)||Number.isNaN(Date.parse(j.date+"T00:00:00")))errors.push("Choose a valid journal date.");
  if(!j.description)errors.push("Enter a journal description.");
  if(j.lines.length<2)errors.push("At least two journal lines are required.");
+ if(book.periods.length&&j.date){
+  const period=book.periods.find(p=>j.date>=p.start&&j.date<=p.end);
+  if(!period)errors.push("Journal date is outside all configured accounting periods.");
+  else if(period.status!=="Open")errors.push("The selected accounting period is "+period.status.toLowerCase()+"; drafts can only be created in an open period.");
+ }
  j.lines.forEach((line,i)=>{
+  const account=book.accounts.find(a=>a.code===line.account);
   const d=line.debitText===""?0:Number(line.debitText),c=line.creditText===""?0:Number(line.creditText);
-  if(!line.account||!book.accounts.some(a=>a.code===line.account))errors.push("Line "+(i+1)+": choose a valid account.");
-  if(!Number.isFinite(d)||!Number.isFinite(c)||d<0||c<0)errors.push("Line "+(i+1)+": amounts must be valid and non-negative.");
-  const dc=Math.round(d*100),cc=Math.round(c*100);
+  if(!account)errors.push("Line "+(i+1)+": choose a valid account.");
+  else if(account.type==="Header"||account.active===false||account.postable===false)errors.push("Line "+(i+1)+": selected account is inactive or non-postable.");
+  if(!Number.isFinite(d)||!Number.isFinite(c)||d<0||c<0||!Number.isInteger(d*100)||!Number.isInteger(c*100))errors.push("Line "+(i+1)+": amounts must be non-negative values with no more than two decimal places.");
+  const dc=Number.isFinite(d)?Math.round(d*100):0,cc=Number.isFinite(c)?Math.round(c*100):0;
   if((dc>0)===(cc>0))errors.push("Line "+(i+1)+": enter an amount on exactly one side (debit or credit).");
   debit+=dc;credit+=cc;
  });
@@ -690,22 +714,47 @@ function validateJournal(){
  if(debit<=0||credit<=0)errors.push("Journal must contain positive debit and credit totals.");
  if(debit!==credit)errors.push("Debits and credits must be equal.");
  if(errors.length){journalIsValid=false;$("saveJournalDraft").disabled=true;$("journalValidation").textContent="Not valid: "+errors.join(" ");return false}
- journalIsValid=true;$("saveJournalDraft").disabled=false;$("journalValidation").textContent="Validated: debits equal credits. This is still an unposted draft.";return true;
+ const fingerprint=journalFingerprint({country:j.country,date:j.date,description:j.description,lines:j.lines.map(x=>({account:x.account,debit:x.debitText||0,credit:x.creditText||0}))});
+ const existing=(journalDrafts()[j.country]||[]).some(d=>d.fingerprint===fingerprint);
+ if(existing){journalIsValid=false;$("saveJournalDraft").disabled=true;$("journalValidation").textContent="Duplicate draft detected: an identical journal already exists in this country book.";return false}
+ journalIsValid=true;$("saveJournalDraft").disabled=false;$("journalValidation").textContent="Validated: accounts are active and postable, period is open (if configured), and debits equal credits. This remains an unposted draft.";return true;
 }
 function renderJournalDrafts(){
  const country=currentBookCountry(),all=journalDrafts(),list=(all[country]||[]),host=$("journalDraftHistory");host.innerHTML="";
- if(!list.length){host.innerHTML='<p class="muted">No journal drafts saved for this country book.</p>';return}
- list.slice().reverse().forEach(j=>{const item=document.createElement("div");item.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const title=document.createElement("strong");title.textContent=j.reference+" · "+j.description;const meta=document.createElement("small");meta.textContent=j.date+" · "+j.country+" · "+j.currency+" · UNPOSTED DRAFT";info.append(title,meta);const amount=document.createElement("span");amount.className="receipt-history-value";amount.textContent=j.currency+" "+j.total;item.append(info,amount);host.appendChild(item)});
+ if(!list.length){host.innerHTML='<p class="muted">No journal drafts saved for this country book.</p>';renderJournalAudit();return}
+ list.slice().reverse().forEach(j=>{
+  const item=document.createElement("div");item.className="receipt-history-item";
+  const info=document.createElement("span");info.className="receipt-history-info";
+  const title=document.createElement("strong");title.textContent=j.reference+" · "+j.description;
+  const meta=document.createElement("small");meta.textContent=j.date+" · "+j.country+" · "+j.currency+" · UNPOSTED DRAFT";
+  info.append(title,meta);
+  const actions=document.createElement("div");actions.style.display="flex";actions.style.gap="6px";actions.style.alignItems="center";
+  const amount=document.createElement("span");amount.className="receipt-history-value";amount.textContent=j.currency+" "+j.total;
+  const correct=document.createElement("button");correct.type="button";correct.className="soft";correct.textContent="Create corrected copy";
+  correct.addEventListener("click",()=>{
+   if(j.country!==currentBookCountry())return;
+   $("journalDate").value=j.date;$("journalDescription").value="Correction of "+j.reference+": "+j.description;
+   $("journalLines").innerHTML="";
+   j.lines.forEach(line=>{const row=journalLineMarkup();row.querySelector(".journal-account").value=line.account;row.querySelector(".journal-debit").value=line.debit||"";row.querySelector(".journal-credit").value=line.credit||"";$("journalLines").appendChild(row)});
+   journalIsValid=false;$("saveJournalDraft").disabled=true;$("journalValidation").textContent="Corrected copy prepared. Validate it before saving; the original draft remains unchanged.";
+   $("journalSaveStatus").textContent="A new correction draft is being prepared from "+j.reference+".";
+   recordJournalAudit(country,"Correction copy prepared",j.reference,"Original preserved; new draft not yet saved.");renderJournalAudit();
+   $("journalDate").scrollIntoView({behavior:"smooth",block:"center"});
+  });
+  actions.append(amount,correct);item.append(info,actions);host.appendChild(item);
+ });
+ renderJournalAudit();
 }
 function saveJournalDraft(){
  if(!journalIsValid||!validateJournal())return;
  const j=readJournal(),all=journalDrafts(),list=all[j.country]||[];
- const now=new Date(),year=now.getFullYear(),ref="JD-"+year+"-"+String(list.length+1).padStart(4,"0");
+ const now=new Date(),year=Number(j.date.slice(0,4)),used=new Set(list.map(x=>x.reference));
+ let sequence=1,ref="";do{ref="JD-"+year+"-"+String(sequence++).padStart(4,"0")}while(used.has(ref));
  const total=journalMoney(j.lines.reduce((sum,line)=>sum+Math.round(Number(line.debitText||0)*100),0));
- const draft={id:"jd-"+Date.now(),reference:ref,date:j.date,description:j.description,country:j.country,currency:j.currency,total,status:"Unposted draft",lines:j.lines.map(line=>({account:line.account,debit:Number(line.debitText||0),credit:Number(line.creditText||0)})),createdAt:now.toISOString()};
+ const draft={id:"jd-"+now.getTime(),reference:ref,date:j.date,description:j.description,country:j.country,currency:j.currency,total,status:"Unposted draft",fingerprint:journalFingerprint({country:j.country,date:j.date,description:j.description,lines:j.lines.map(x=>({account:x.account,debit:x.debitText||0,credit:x.creditText||0}))}),lines:j.lines.map(line=>({account:line.account,debit:Number(line.debitText||0),credit:Number(line.creditText||0)})),createdAt:now.toISOString()};
  all[j.country]=list.concat(draft);
- try{localStorage.setItem(JOURNAL_DRAFT_KEY,JSON.stringify(all));$("journalSaveStatus").textContent=ref+" saved locally as an unposted draft. No account balances changed.";renderJournalDrafts();$("journalDescription").value="";$("journalDate").value=new Date().toLocaleDateString("en-CA");resetJournalLines();journalIsValid=false;$("saveJournalDraft").disabled=true;$("journalValidation").textContent="A journal needs at least two lines and equal debit and credit totals."}
- catch(e){$("journalSaveStatus").textContent="Could not save this draft on this device."}
+ try{localStorage.setItem(JOURNAL_DRAFT_KEY,JSON.stringify(all));recordJournalAudit(j.country,"Draft saved",ref,"Validated locally; unposted; no balances changed.");$("journalSaveStatus").textContent=ref+" saved locally as an unposted draft. No account balances changed.";renderJournalDrafts();$("journalDescription").value="";$("journalDate").value=new Date().toLocaleDateString("en-CA");resetJournalLines();journalIsValid=false;$("saveJournalDraft").disabled=true;$("journalValidation").textContent="A journal needs at least two lines and equal debit and credit totals."}
+ catch(e){$("journalSaveStatus").textContent="Could not save this draft or its activity history on this device."}
 }
 function initJournalWorkspace(){
  $("journalCurrency").value=currentBookCountry()==="PK"?"PKR":"AED";
