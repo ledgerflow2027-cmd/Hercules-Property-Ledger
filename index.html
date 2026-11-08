@@ -106,32 +106,32 @@
     <div class="stat"><span class="ico">🧰</span><div class="label">Saved vendors</div><strong id="dashVendors">0</strong></div>
     <div class="stat"><span class="ico">📚</span><div class="label">Posted journals</div><strong id="dashPosted">0</strong></div>
    </div>
-   <div class="detail-card" style="margin-top:14px">
+   <div class="detail-card dashboard-legacy" style="margin-top:14px">
     <h3>📈 Monthly activity snapshot</h3>
     <div id="dashboardActivitySummary" class="muted">Saved voucher activity will appear here.</div>
     <div class="notice" style="margin-top:10px">Receipt and payment figures are locally saved source vouchers, not posted accounting income/expenses or outstanding balances. Posted journal count is shown separately. UAE and Pakistan are kept separate.</div>
    </div>
-   <div class="detail-card">
+   <div class="detail-card dashboard-legacy">
     <h3>⏰ Rent follow-up</h3>
     <div id="dashboardRentStatus" class="muted">Rent due dates and invoice schedules have not been configured. No overdue rent is being assumed.</div>
    </div>
-   <div class="detail-card">
+   <div class="detail-card dashboard-legacy">
     <h3>🧾 Vendor balances</h3>
     <div id="dashboardVendorStatus" class="muted">Vendor payment vouchers are source records only. Payables require posted bills and allocations, which are not yet implemented.</div>
    </div>
-   <div class="carousel-wrap dashboard-legacy">
+   <div class="carousel-wrap">
     <div class="carousel-heading"><h2>🏘️ Properties</h2><span class="muted">Swipe left to right · 5 visual examples + your records</span></div>
     <div id="dashboardProperties" class="carousel-track picture-track" aria-label="Property picture slides"></div>
    </div>
    <div class="carousel-wrap">
-    <div class="carousel-heading"><h2>🧑‍🤝‍🧑 Tenants</h2><span class="muted">Swipe right to left · 5 visual examples + your records</span></div>
+    <div class="carousel-heading"><h2>🧑‍🤝‍🧑 Tenants</h2><span class="muted">Right to left · overdue status requires verified rent records</span></div>
     <div id="dashboardTenants" class="carousel-track picture-track late-track" aria-label="Tenant picture slides"></div>
    </div>
    <div class="carousel-wrap">
     <div class="carousel-heading"><h2>🧰 Vendors</h2><span class="muted">Swipe left to right · 5 visual examples + your records</span></div>
     <div id="dashboardVendors" class="carousel-track picture-track" aria-label="Vendor picture slides"></div>
    </div>
-   <div class="panel muted dashboard-legacy" id="dashboardDataNote">Analytics update from local saved records. No cloud sync is active.</div>
+   <div class="panel muted" id="dashboardDataNote">These slides use this device's saved records. No cloud sync is active.</div>
    <div class="sectionhead" style="margin-top:20px"><h2>✨ What would you like to do?</h2></div>
    <div class="grid dashboard-actions" aria-label="Main actions">
     <button type="button" class="tile" id="dashIncome" aria-label="Income: create receipt voucher"><span>💰</span>Income<small>Create receipt voucher</small></button>
@@ -1081,7 +1081,8 @@ function dashCard(host,icon,title,subtitle){
 }
 function dashPictureCard(host,item,kind,id){
  const card=document.createElement("article");card.className="picture-card";card.tabIndex=0;card.setAttribute("role","button");card.setAttribute("aria-label","Open "+(item.title||kind));card.dataset.dashboardKind=kind;card.dataset.dashboardId=id||"";
- const art=document.createElement("div");art.className="picture-card-art";art.setAttribute("aria-hidden","true");art.textContent=item.emoji||"✨";
+ const art=document.createElement("div");art.className="picture-card-art";art.setAttribute("aria-hidden","true");
+ if(item.photo){const img=document.createElement("img");img.src=item.photo;img.alt="";img.loading="lazy";img.style.cssText="width:100%;height:100%;object-fit:cover;border-radius:12px";art.appendChild(img)}else art.textContent=item.emoji||"✨";
  const copy=document.createElement("div");copy.className="picture-card-copy";
  const title=document.createElement("strong");title.textContent=item.title;
  const note=document.createElement("small");note.textContent=item.note||"Illustrative preview";
@@ -1136,13 +1137,13 @@ function refreshPortfolioDashboard(){
  $("dashboardVendorStatus").textContent=vendors.length+" vendor profile(s) saved. "+payments.length+" payment voucher(s) recorded this month; this is not a payable balance. Vendor bills and approved allocations are not yet available.";
  const propertyHost=$("dashboardProperties");propertyHost.innerHTML="";
  dashPropertySamples.forEach(item=>dashPictureCard(propertyHost,item,"property",""));
- properties.forEach(p=>dashPictureCard(propertyHost,{title:p.name||"Saved property",note:(p.city||p.address||"Location not provided")+" · "+(Number(p.units)||1)+" unit(s) · Tap to open",emoji:"🏠"},"property",p.id));
+ properties.forEach(p=>dashPictureCard(propertyHost,{title:p.name||"Saved property",note:(p.city||p.address||"Location not provided")+" · "+(Number(p.units)||1)+" unit(s) · Tap to open",photo:p.photos&&p.photos[0],emoji:"🏠"},"property",p.id));
  const tenantHost=$("dashboardTenants");tenantHost.innerHTML="";
  dashTenantSamples.forEach(item=>dashPictureCard(tenantHost,item,"tenant",""));
- tenants.forEach((p,i)=>dashPictureCard(tenantHost,{title:p.tenant.name||"Saved tenant",note:(p.name||"Property")+" · Open tenant details",emoji:["🧑","👩","🧕","👨","👩‍💼"][i%5]},"tenant",p.id));
+ tenants.forEach((p,i)=>dashPictureCard(tenantHost,{title:p.tenant.name||"Saved tenant",note:(p.name||"Property")+" · Rent status not verified",photo:p.tenant.photo||p.tenant.profilePhoto,emoji:["🧑","👩","🧕","👨","👩‍💼"][i%5]},"tenant",p.id));
  const vendorHost=$("dashboardVendors");vendorHost.innerHTML="";
  dashVendorSamples.forEach(item=>dashPictureCard(vendorHost,item,"vendor",""));
- vendors.forEach(v=>dashPictureCard(vendorHost,{title:v.name||"Saved vendor",note:(v.category||"Service provider")+" · "+(v.phone||"No phone")+" · Tap to open",emoji:"🧰"},"vendor",v.id));
+ vendors.forEach(v=>dashPictureCard(vendorHost,{title:v.name||"Saved vendor",note:(v.category||"Service provider")+" · "+(v.phone||"No phone")+" · Tap to open",photo:v.photo,emoji:"🧰"},"vendor",v.id));
  enableSlowPictureLoop(propertyHost);enableSlowPictureLoop(tenantHost);enableSlowPictureLoop(vendorHost);
  $("dashboardDataNote").textContent="Updated from this device's saved "+(country==="PK"?"Pakistan":"UAE")+" records. Local-only preview; not cloud-synced. Switch country in workspace settings to view the other separate book.";
  const recentHost=$("dashboardRecent");recentHost.innerHTML="";
