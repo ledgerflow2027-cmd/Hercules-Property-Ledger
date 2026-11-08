@@ -469,10 +469,10 @@
 const $=id=>document.getElementById(id);
 const copy={en:{intro:"A clearer way to manage properties, tenants, vendors and the numbers behind your property business.",greeting:"Good day, property owner 👋"},ar:{intro:"طريقة أوضح لإدارة العقارات والمستأجرين والموردين وحسابات أعمالك العقارية.",greeting:"مرحباً بك 👋"},ur:{intro:"جائیدادوں، کرایہ داروں، وینڈرز اور کاروباری حسابات کو منظم کرنے کا آسان طریقہ۔",greeting:"خوش آمدید 👋"}};
 function setLanguage(v){document.documentElement.lang=v;document.documentElement.dir=v==="en"?"ltr":"rtl";$("intro").textContent=copy[v].intro;$("greeting").textContent=copy[v].greeting;$("langQuick").textContent=v.toUpperCase()+"⌄";try{localStorage.setItem("propledger.language",v)}catch(e){}}
-function setCountry(v){const label=v==="AE"?"UAE WORKSPACE • AED":"PAKISTAN WORKSPACE • PKR";$("region").textContent=label;const currency=v==="AE"?"AED":"PKR";$("income").textContent=currency+(v==="AE"?" 18,500":" 185,000");$("expense").textContent=currency+(v==="AE"?" 4,250":" 42,500");try{localStorage.setItem("propledger.country",v)}catch(e){}}
+function setCountry(v){v=v==="PK"?"PK":"AE";const label=v==="AE"?"UAE WORKSPACE • AED":"PAKISTAN WORKSPACE • PKR",currency=v==="AE"?"AED":"PKR";$("region").textContent=label;["country","dashCountry","settingsCountry","bookCountry","ledgerCountry","statementCountry","subledgerCountry"].forEach(id=>{const el=$(id);if(el)el.value=v});["bookCurrency","journalCurrency","rCurrency","payCurrency"].forEach(id=>{const el=$(id);if(el)el.value=currency});try{localStorage.setItem("propledger.country",v)}catch(e){}}
 $("language").addEventListener("change",e=>setLanguage(e.target.value));
 $("settingsLanguage").addEventListener("change",e=>{ $("language").value=e.target.value;setLanguage(e.target.value); });
-$("settingsCountry").addEventListener("change",e=>{ $("country").value=e.target.value;$("dashCountry").value=e.target.value;setCountry(e.target.value);refreshPortfolioDashboard(); });
+$("settingsCountry").addEventListener("change",e=>{setCountry(e.target.value);refreshPortfolioDashboard();renderProperties();renderVendors()});
 $("settings").addEventListener("click",()=>{ $("settingsLanguage").value=$("language").value;$("settingsCountry").value=localStorage.getItem("propledger.country")||"AE"; });
 $("companyLogoUpload").addEventListener("change",e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!file.type.startsWith("image/")){alert("Please choose an image file.");return}const reader=new FileReader();reader.onload=()=>{try{localStorage.setItem("propledger.companyLogoPreview",reader.result);$("companyLogoPreview").innerHTML="";const img=document.createElement("img");img.src=reader.result;img.alt="Company logo preview";img.style="max-width:110px;max-height:90px;object-fit:contain;border-radius:10px";$("companyLogoPreview").appendChild(img)}catch(err){alert("This image is too large to save on this device.")}};reader.readAsDataURL(file)});
 try{const logo=localStorage.getItem("propledger.companyLogoPreview");if(logo){const img=document.createElement("img");img.src=logo;img.alt="Company logo preview";img.style="max-width:110px;max-height:90px;object-fit:contain;border-radius:10px";$("companyLogoPreview").textContent="";$("companyLogoPreview").appendChild(img)}}catch(e){}
@@ -480,7 +480,7 @@ $("founderPhotoUpload").addEventListener("change",e=>{const file=e.target.files&
 try{const fp=localStorage.getItem("propledger.founderPhoto");if(fp){const label=$("founderPhotoUpload").parentElement;const img=document.createElement("img");img.src=fp;img.alt="Founder profile preview";img.style="width:100%;height:100%;object-fit:cover;border-radius:50%";label.appendChild(img)}}catch(e){}
 $("previewLogout").addEventListener("click",()=>{showScreen("dashboard");$("app").classList.add("hidden");$("onboarding").classList.remove("hidden")});
 $("country").addEventListener("change",e=>setCountry(e.target.value));
-$("enter").addEventListener("click",()=>{$("onboarding").classList.add("hidden");$("app").classList.remove("hidden");try{localStorage.setItem("propledger.started","yes")}catch(e){}});
+$("enter").addEventListener("click",()=>{$("onboarding").classList.add("hidden");$("app").classList.remove("hidden");setCountry($("country").value);try{localStorage.setItem("propledger.started","yes")}catch(e){}refreshPortfolioDashboard();renderProperties();renderVendors()});
 $("langQuick").addEventListener("click",()=>{const n=$("language");n.value=n.value==="en"?"ar":n.value==="ar"?"ur":"en";setLanguage(n.value)});
 $("profileUpload").addEventListener("change",e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!file.type.startsWith("image/")){alert("Please choose an image file.");return}const reader=new FileReader();reader.onload=()=>{const img=document.createElement("img");img.src=reader.result;const label=document.querySelector(".profile-upload");label.textContent="";label.appendChild(img);try{localStorage.setItem("propledger.profilePreview",reader.result)}catch(err){alert("Photo preview is active for this session, but this image is too large to save on this device.")}};reader.readAsDataURL(file)});
 try{const savedPhoto=localStorage.getItem("propledger.profilePreview");if(savedPhoto){const label=document.querySelector(".profile-upload");const img=document.createElement("img");img.src=savedPhoto;label.textContent="";label.appendChild(img)}}catch(e){}
@@ -503,11 +503,11 @@ $("pPhotos").addEventListener("change",()=>{const files=[...$("pPhotos").files].
 $("tPhoto").addEventListener("change",()=>previewFile($("tPhoto"),"tPhotoPreview"));
 function compressImage(file){return new Promise(resolve=>{if(!file||!file.type.startsWith("image/"))return resolve("");const reader=new FileReader();reader.onload=()=>{const image=new Image();image.onload=()=>{const scale=Math.min(1,1000/Math.max(image.width,image.height));const canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(image.width*scale));canvas.height=Math.max(1,Math.round(image.height*scale));canvas.getContext("2d").drawImage(image,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL("image/jpeg",.68))};image.onerror=()=>resolve("");image.src=reader.result};reader.onerror=()=>resolve("");reader.readAsDataURL(file)})}
 function getProperties(){try{return JSON.parse(localStorage.getItem("propledger.properties")||"[]")}catch(e){return []}}
-function renderProperties(){const list=$("propertyList");getProperties().forEach(()=>{});const saved=getProperties();list.querySelectorAll("[data-saved-property]").forEach(n=>n.remove());saved.forEach(p=>{const row=document.createElement("div");row.className="item";row.dataset.savedProperty=p.id;const avatar=document.createElement("div");avatar.className="avatar";if(p.photos&&p.photos[0]){const img=document.createElement("img");img.src=p.photos[0];img.alt="";img.style.cssText="width:46px;height:46px;object-fit:cover;border-radius:15px";avatar.textContent="";avatar.appendChild(img)}else avatar.textContent="🏠";const info=document.createElement("div");const name=document.createElement("strong");name.textContent=p.name;const detail=document.createElement("small");detail.textContent=p.city+" • "+p.units+" unit(s) • "+p.country+" • Local preview";info.append(name,detail);const arrow=document.createElement("span");arrow.className="arrow";arrow.textContent="›";row.append(avatar,info,arrow);list.appendChild(row)})}
+function renderProperties(){const list=$("propertyList");getProperties().forEach(()=>{});const saved=getProperties().filter(p=>p.country===(localStorage.getItem("propledger.country")||"AE"));list.querySelectorAll("[data-saved-property]").forEach(n=>n.remove());saved.forEach(p=>{const row=document.createElement("div");row.className="item";row.dataset.savedProperty=p.id;const avatar=document.createElement("div");avatar.className="avatar";if(p.photos&&p.photos[0]){const img=document.createElement("img");img.src=p.photos[0];img.alt="";img.style.cssText="width:46px;height:46px;object-fit:cover;border-radius:15px";avatar.textContent="";avatar.appendChild(img)}else avatar.textContent="🏠";const info=document.createElement("div");const name=document.createElement("strong");name.textContent=p.name;const detail=document.createElement("small");detail.textContent=p.city+" • "+p.units+" unit(s) • "+p.country+" • Local preview";info.append(name,detail);const arrow=document.createElement("span");arrow.className="arrow";arrow.textContent="›";row.append(avatar,info,arrow);list.appendChild(row)})}
 $("propertyForm").addEventListener("submit",async e=>{e.preventDefault();const files=[...$("pPhotos").files].slice(0,3);const photos=[];for(const file of files){const data=await compressImage(file);if(data)photos.push(data)}const tenantPhoto=await compressImage($("tPhoto").files[0]);const doc=$("tDocument").files[0];const property={id:"p"+Date.now(),name:$("pName").value.trim(),type:$("pType").value,country:$("pCountry").value,address:$("pAddress").value.trim(),city:$("pAddress").value.trim().split(",").slice(-1)[0].trim(),units:Math.max(1,Number($("pUnits").value)||1),reference:$("pRef").value.trim(),photos,tenant:{name:$("tName").value.trim(),phone:$("tPhone").value.trim(),country:$("tCountry").value,identity:$("tIdentity").value.trim(),identityType:$("tCountry").value==="PK"?"CNIC":"Emirates ID",photo:tenantPhoto,documentName:doc?doc.name:""}};try{const all=getProperties();all.push(property);localStorage.setItem("propledger.properties",JSON.stringify(all));renderProperties();$("propertyForm").reset();$("pPhotoPreview").innerHTML="";$("tPhotoPreview").innerHTML="";$("tCountry").dispatchEvent(new Event("change"));closeProperty();alert("Property saved in this device's local preview. It is not uploaded to cloud storage.");}catch(err){alert("Could not save this record on this device. Try fewer or smaller photos. No cloud copy was created.")}});
 
 function getVendors(){try{return JSON.parse(localStorage.getItem("propledger.vendors")||"[]")}catch(e){return []}}
-function renderVendors(){const list=$("vendorList"),saved=getVendors();list.querySelectorAll("[data-saved-vendor]").forEach(n=>n.remove());saved.forEach(v=>{const row=document.createElement("div");row.className="item";row.dataset.savedVendor=v.id;const avatar=document.createElement("div");avatar.className="avatar";if(v.photo){const img=document.createElement("img");img.src=v.photo;img.alt="";img.style.cssText="width:46px;height:46px;object-fit:cover;border-radius:15px";avatar.textContent="";avatar.appendChild(img)}else avatar.textContent="🧰";const info=document.createElement("div"),name=document.createElement("strong"),detail=document.createElement("small");name.textContent=v.name;detail.textContent=v.category+" • "+v.phone+" • "+v.country+" • Local preview";info.append(name,detail);const arrow=document.createElement("span");arrow.className="arrow";arrow.textContent="›";row.append(avatar,info,arrow);list.appendChild(row)})}
+function renderVendors(){const list=$("vendorList"),saved=getVendors().filter(v=>v.country===(localStorage.getItem("propledger.country")||"AE"));list.querySelectorAll("[data-saved-vendor]").forEach(n=>n.remove());saved.forEach(v=>{const row=document.createElement("div");row.className="item";row.dataset.savedVendor=v.id;const avatar=document.createElement("div");avatar.className="avatar";if(v.photo){const img=document.createElement("img");img.src=v.photo;img.alt="";img.style.cssText="width:46px;height:46px;object-fit:cover;border-radius:15px";avatar.textContent="";avatar.appendChild(img)}else avatar.textContent="🧰";const info=document.createElement("div"),name=document.createElement("strong"),detail=document.createElement("small");name.textContent=v.name;detail.textContent=v.category+" • "+v.phone+" • "+v.country+" • Local preview";info.append(name,detail);const arrow=document.createElement("span");arrow.className="arrow";arrow.textContent="›";row.append(avatar,info,arrow);list.appendChild(row)})}
 const vendorModal=$("vendorModal");function openVendor(){vendorModal.classList.add("open");document.body.style.overflow="hidden"}function closeVendor(){vendorModal.classList.remove("open");document.body.style.overflow=""}
 $("addVendor").addEventListener("click",openVendor);$("closeVendor").addEventListener("click",closeVendor);vendorModal.addEventListener("click",e=>{if(e.target===vendorModal)closeVendor()});
 $("vCountry").addEventListener("change",e=>{const pk=e.target.value==="PK";$("vIdentityLabel").textContent=pk?"CNIC number":"Emirates ID number";$("vDocumentLabel").textContent=pk?"📄 CNIC / business registration document":"📄 Emirates ID / trade document";$("vIdentity").placeholder=pk?"Enter CNIC number":"Enter Emirates ID number"});
@@ -532,7 +532,7 @@ function receiptRenderHistory(){
 }
 function receiptPopulateProperties(){
  const select=$("rProperty");select.innerHTML='<option value="">Choose property</option>';
- getProperties().forEach(p=>{const opt=document.createElement("option");opt.value=p.id;opt.textContent=p.name+" • "+p.country;select.appendChild(opt)});
+ getProperties().filter(p=>p.country===(localStorage.getItem("propledger.country")||"AE")).forEach(p=>{const opt=document.createElement("option");opt.value=p.id;opt.textContent=p.name+" • "+p.country;select.appendChild(opt)});$("rCurrency").value=(localStorage.getItem("propledger.country")||"AE")==="PK"?"PKR":"AED";
 }
 function receiptOpen(){
  $("receiptModal").classList.add("open");document.body.style.overflow="hidden";
@@ -590,7 +590,7 @@ receiptRenderHistory();
 function getPayments(){try{return JSON.parse(localStorage.getItem("propledger.payments")||"[]")}catch(e){return []}}
 function paymentNextNumber(){return "PV-"+new Date().getFullYear()+"-"+String(getPayments().length+1).padStart(4,"0")}
 function paymentSelectedProperty(){return getProperties().find(p=>p.id===$("payProperty").value)}
-function paymentPopulateProperties(){const s=$("payProperty");s.innerHTML='<option value="">Choose property</option>';getProperties().forEach(p=>{const o=document.createElement("option");o.value=p.id;o.textContent=p.name+" • "+p.country;s.appendChild(o)})}
+function paymentPopulateProperties(){const s=$("payProperty");s.innerHTML='<option value="">Choose property</option>';getProperties().filter(p=>p.country===(localStorage.getItem("propledger.country")||"AE")).forEach(p=>{const o=document.createElement("option");o.value=p.id;o.textContent=p.name+" • "+p.country;s.appendChild(o)});$("payCurrency").value=(localStorage.getItem("propledger.country")||"AE")==="PK"?"PKR":"AED"}
 function paymentPopulateVendors(){const s=$("payVendor"),p=paymentSelectedProperty();s.innerHTML='<option value="">Choose vendor</option>';if(!p)return;getVendors().filter(v=>v.country===p.country).forEach(v=>{const o=document.createElement("option");o.value=v.id;o.textContent=v.name+" • "+v.category;s.appendChild(o)})}
 function paymentRenderHistory(){const host=$("paymentHistory");if(!host)return;const list=getPayments().slice().reverse();host.innerHTML="";if(!list.length){host.innerHTML='<p class="muted">No payments saved yet.</p>';return}list.forEach(p=>{const b=document.createElement("button");b.type="button";b.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const name=document.createElement("strong");name.textContent=p.number+" • "+p.vendor;const meta=document.createElement("small");meta.textContent=p.date+" • "+p.property+" • "+p.category;info.append(name,meta);const val=document.createElement("span");val.className="receipt-history-value";val.textContent=p.currency+" "+Number(p.amount).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});b.append(info,val);b.addEventListener("click",()=>paymentShowSaved(p));host.appendChild(b)})}
 function paymentBuildPreview(p){$("paymentPrintArea").innerHTML='<div style="display:flex;justify-content:space-between;gap:12px;align-items:start"><div><h3>💳 PAYMENT VOUCHER</h3><div class="receipt-meta">PROPLE DGER 2027 • EXPENSE VOUCHER<br>Payment acknowledgement preview</div></div><div style="text-align:right;font-size:11px"><strong>'+detailEscape(p.number)+'</strong><br>'+detailEscape(p.date)+'</div></div><div class="receipt-amount">'+detailEscape(p.currency)+' '+Number(p.amount).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+'</div><div class="receipt-line"><span>Paid to</span><strong>'+detailEscape(p.vendor)+'</strong></div><div class="receipt-line"><span>Property</span><strong>'+detailEscape(p.property)+'</strong></div><div class="receipt-line"><span>Category</span><strong>'+detailEscape(p.category)+'</strong></div><div class="receipt-line"><span>Payment method</span><strong>'+detailEscape(p.method)+'</strong></div><div class="receipt-line"><span>Payment reference</span><strong>'+detailEscape(p.reference||"—")+'</strong></div><div class="receipt-line"><span>Description</span><strong>'+detailEscape(p.description)+'</strong></div><div class="receipt-line"><span>Supporting file name</span><strong>'+detailEscape(p.documentName||"—")+'</strong></div><p class="receipt-meta" style="margin-top:18px">Local preview only. This voucher is not a bank confirmation, posted accounting transaction, or tax document.</p><div style="display:flex;justify-content:space-between;margin-top:28px;font-size:11px"><span>Paid by: __________________</span><span>Received by: ______________</span></div>'}
@@ -651,7 +651,7 @@ function renderAccountingSetup(){
  const periods=$("periodList");periods.innerHTML="";if(!book.periods.length)periods.innerHTML='<div class="empty-state">No periods configured yet. Add the first accounting period.</div>';
  book.periods.forEach(p=>{const row=document.createElement("div");row.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const title=document.createElement("strong");title.textContent=p.start+" to "+p.end;const meta=document.createElement("small");meta.textContent=p.status+" · "+country+" book";info.append(title,meta);const val=document.createElement("span");val.className="receipt-history-value";val.textContent=p.status;row.append(info,val);periods.appendChild(row)});
 }
-$("bookCountry").addEventListener("change",renderAccountingSetup);
+$("bookCountry").addEventListener("change",()=>{setCountry($("bookCountry").value);renderAccountingSetup();refreshLedgerAccounts();runGeneralLedger();runTrialBalance()});
 $("saveBookSetup").addEventListener("click",()=>{
  const all=readAccountingSetup(),country=currentBookCountry(),book=ensureBook(country),entityCode=$("bookEntityCode").value.trim(),name=$("bookName").value.trim();
  if(!entityCode||!name){$("bookSaveStatus").textContent="Enter both an entity code and legal entity name.";return}
@@ -738,7 +738,7 @@ function initAccountingReports(){
  $("ledgerFrom").value="";$("ledgerTo").value=new Date().toLocaleDateString("en-CA");$("trialAsOf").value=$("ledgerTo").value;
  refreshLedgerAccounts();runGeneralLedger();runTrialBalance();
 }
-$("ledgerCountry").addEventListener("change",()=>{refreshLedgerAccounts();runGeneralLedger();runTrialBalance()});
+$("ledgerCountry").addEventListener("change",()=>{setCountry($("ledgerCountry").value);refreshLedgerAccounts();runGeneralLedger();runTrialBalance()});
 $("ledgerAccount").addEventListener("change",runGeneralLedger);
 $("runLedger").addEventListener("click",runGeneralLedger);
 $("runTrialBalance").addEventListener("click",runTrialBalance);
@@ -925,6 +925,8 @@ function openProfile(kind,id,row){
 }
 $("closeProfile").addEventListener("click",()=>{$("profileDetail").classList.remove("open");document.body.style.overflow=""});
 $("propertyList").addEventListener("click",e=>{const row=e.target.closest(".item");if(!row)return;openProfile("property",row.dataset.savedProperty,row)});
+ function handleDashboardSlide(e){const card=e.target.closest(".picture-card[data-dashboard-kind]");if(!card)return;const kind=card.dataset.dashboardKind,id=card.dataset.dashboardId;if(!id){showScreen(kind==="vendor"?"vendors":"properties");return}if(kind==="vendor"){showScreen("vendors");const record=getVendors().find(x=>x.id===id);if(record)openProfile("vendor",id,card)}else{showScreen("properties");const record=getProperties().find(x=>x.id===id);if(record)openProfile("property",id,card)}}
+ ["dashboardProperties","dashboardTenants","dashboardVendors"].forEach(id=>{const host=$(id);host.addEventListener("click",handleDashboardSlide);host.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){const card=e.target.closest(".picture-card[data-dashboard-kind]");if(card){e.preventDefault();card.click()}}})});
 $("vendorList").addEventListener("click",e=>{const row=e.target.closest(".item");if(!row)return;openProfile("vendor",row.dataset.savedVendor,row)});
 
 
@@ -978,7 +980,7 @@ function initSubledgers(){
  $("subledgerCountry").value=$("bookCountry").value;
  refreshSubledgerParties();runSubledger();
 }
-$("subledgerCountry").addEventListener("change",()=>{refreshSubledgerParties();runSubledger()});
+$("subledgerCountry").addEventListener("change",()=>{setCountry($("subledgerCountry").value);refreshSubledgerParties();runSubledger()});
 $("subledgerType").addEventListener("change",()=>{refreshSubledgerParties();runSubledger()});
 $("subledgerParty").addEventListener("change",runSubledger);
 $("runSubledger").addEventListener("click",runSubledger);
@@ -1023,14 +1025,14 @@ function runFinancialStatements(){
  $("periodCloseSummary").textContent=all.length+" posted journal(s) included · "+(checks.filter(c=>c.ok).length)+"/"+checks.length+" readiness checks passed · "+(Math.abs(difference)<1?"Balance Sheet balances":"Balance Sheet does not balance");
 }
 function initFinancialStatements(){ $("statementCountry").value=$("bookCountry").value;$("statementFrom").value="";$("statementTo").value=new Date().toLocaleDateString("en-CA");runFinancialStatements() }
-$("statementCountry").addEventListener("change",runFinancialStatements);
+$("statementCountry").addEventListener("change",()=>{setCountry($("statementCountry").value);runFinancialStatements()});
 $("statementFrom").addEventListener("change",runFinancialStatements);
 $("statementTo").addEventListener("change",runFinancialStatements);
 $("runStatements").addEventListener("click",runFinancialStatements);
 document.querySelectorAll('[data-screen="accounting-statements"]').forEach(b=>b.addEventListener("click",()=>{showScreen("accounting-statements");initFinancialStatements()}));
 /* Stage 9 — document previews and share handoff. Source vouchers remain unposted. */
 function initDocumentStudio(){
- const select=$("documentProperty"),prior=select.value,properties=getProperties();
+ const select=$("documentProperty"),prior=select.value,country=localStorage.getItem("propledger.country")||"AE",properties=getProperties().filter(p=>p.country===country);
  select.innerHTML='<option value="">Choose a property</option>';
  properties.forEach(p=>{const o=document.createElement("option");o.value=p.id;o.textContent=(p.name||"Property")+" · "+(p.country==="PK"?"Pakistan":"UAE");select.appendChild(o)});
  if(properties.some(p=>p.id===prior))select.value=prior;
@@ -1071,8 +1073,8 @@ function dashCard(host,icon,title,subtitle){
  const meta=document.createElement("small");meta.textContent=subtitle;
  card.append(art,name,meta);host.appendChild(card);
 }
-function dashPictureCard(host,item){
- const card=document.createElement("article");card.className="picture-card";
+function dashPictureCard(host,item,kind,id){
+ const card=document.createElement("article");card.className="picture-card";card.tabIndex=0;card.setAttribute("role","button");card.setAttribute("aria-label","Open "+(item.title||kind));card.dataset.dashboardKind=kind;card.dataset.dashboardId=id||"";
  const art=document.createElement("div");art.className="picture-card-art";art.setAttribute("aria-hidden","true");art.textContent=item.emoji||"✨";
  const copy=document.createElement("div");copy.className="picture-card-copy";
  const title=document.createElement("strong");title.textContent=item.title;
@@ -1127,14 +1129,14 @@ function refreshPortfolioDashboard(){
  $("dashboardRentStatus").textContent=tenants.length+" named tenant(s) are linked to saved properties. Rent schedules, invoices and due dates are not recorded yet, so overdue rent cannot be calculated reliably.";
  $("dashboardVendorStatus").textContent=vendors.length+" vendor profile(s) saved. "+payments.length+" payment voucher(s) recorded this month; this is not a payable balance. Vendor bills and approved allocations are not yet available.";
  const propertyHost=$("dashboardProperties");propertyHost.innerHTML="";
- dashPropertySamples.forEach(item=>dashPictureCard(propertyHost,item));
- properties.forEach(p=>dashPictureCard(propertyHost,{title:p.name||"Saved property",note:(p.city||p.address||"Location not provided")+" · "+(Number(p.units)||1)+" unit(s) · Your record",emoji:"🏠"}));
+ dashPropertySamples.forEach(item=>dashPictureCard(propertyHost,item,"property",""));
+ properties.forEach(p=>dashPictureCard(propertyHost,{title:p.name||"Saved property",note:(p.city||p.address||"Location not provided")+" · "+(Number(p.units)||1)+" unit(s) · Tap to open",emoji:"🏠"},"property",p.id));
  const tenantHost=$("dashboardTenants");tenantHost.innerHTML="";
- dashTenantSamples.forEach(item=>dashPictureCard(tenantHost,item));
- tenants.forEach((p,i)=>dashPictureCard(tenantHost,{title:p.tenant.name||"Saved tenant",note:(p.name||"Property")+" · Rent status not configured · Your record",emoji:["🧑","👩","🧕","👨","👩‍💼"][i%5]}));
+ dashTenantSamples.forEach(item=>dashPictureCard(tenantHost,item,"tenant",""));
+ tenants.forEach((p,i)=>dashPictureCard(tenantHost,{title:p.tenant.name||"Saved tenant",note:(p.name||"Property")+" · Open tenant details",emoji:["🧑","👩","🧕","👨","👩‍💼"][i%5]},"tenant",p.id));
  const vendorHost=$("dashboardVendors");vendorHost.innerHTML="";
- dashVendorSamples.forEach(item=>dashPictureCard(vendorHost,item));
- vendors.forEach(v=>dashPictureCard(vendorHost,{title:v.name||"Saved vendor",note:(v.category||"Service provider")+" · "+(v.phone||"No phone")+" · Your record",emoji:"🧰"}));
+ dashVendorSamples.forEach(item=>dashPictureCard(vendorHost,item,"vendor",""));
+ vendors.forEach(v=>dashPictureCard(vendorHost,{title:v.name||"Saved vendor",note:(v.category||"Service provider")+" · "+(v.phone||"No phone")+" · Tap to open",emoji:"🧰"},"vendor",v.id));
  enableSlowPictureLoop(propertyHost);enableSlowPictureLoop(tenantHost);enableSlowPictureLoop(vendorHost);
  $("dashboardDataNote").textContent="Updated from this device's saved "+(country==="PK"?"Pakistan":"UAE")+" records. Local-only preview; not cloud-synced. Switch country in workspace settings to view the other separate book.";
  const recentHost=$("dashboardRecent");recentHost.innerHTML="";
@@ -1147,7 +1149,7 @@ function refreshPortfolioDashboard(){
 $("enter").addEventListener("click",()=>setTimeout(refreshPortfolioDashboard,0));
 document.querySelectorAll('[data-screen="dashboard"]').forEach(b=>b.addEventListener("click",refreshPortfolioDashboard));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener("click",()=>setTimeout(refreshPortfolioDashboard,0)));
-$("dashCountry").addEventListener("change",e=>{setCountry(e.target.value);refreshPortfolioDashboard()});
+$("dashCountry").addEventListener("change",e=>{setCountry(e.target.value);refreshPortfolioDashboard();renderProperties();renderVendors()});
 try{refreshPortfolioDashboard()}catch(e){console.warn("Dashboard refresh deferred",e)}
 
 /* Stage 11A — safe, removable demo dataset for bookkeeping walkthroughs.
