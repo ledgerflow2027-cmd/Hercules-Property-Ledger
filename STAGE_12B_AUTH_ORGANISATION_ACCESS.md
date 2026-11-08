@@ -157,3 +157,38 @@ If any requirement cannot be met for USD 0, stop and report the limitation. Do n
 - Authentication integration: not implemented.
 - Production data migration: not started.
 - Live GitHub Pages application: unchanged.
+
+## 11. Owner-requested welcome page, PIN unlock, and biometrics
+
+The owner has requested the following first-screen experience. Treat this as a product requirement for the authentication implementation; it is not yet live.
+
+### Welcome / landing screen
+- Display the product name **Propledger 2027**.
+- Offer language selection: English, Arabic, and Urdu.
+- Show a concise introduction explaining that the app helps property owners organise properties, tenants, rent receipts, expenses, vendors, and financial records.
+- Use welcoming, trustworthy product copy without unsupported claims (for example, do not claim bank-grade security, automatic cloud backup, or fully automated accounting unless implemented).
+- Support Arabic and Urdu right-to-left layout, including navigation, form alignment, and validation messages.
+- Remember the selected language on the device, with a visible way to change it later.
+
+### First login and PIN setup
+- First-time account access uses Firebase email/password authentication and email verification as described above.
+- After successful first login, offer the user the option to create a local device-unlock PIN. Recommended default: six digits, with clear guidance that the PIN is for unlocking the app on that device, not a replacement for the account password.
+- Never store the PIN itself, a reversible representation, or a plain hash in localStorage, Firestore, logs, analytics, or application preferences.
+- A secure PIN verifier / device credential must use the platform's protected storage and appropriate rate limiting. If the target environment cannot provide secure storage and retry protection, do not offer a locally saved PIN.
+- Provide a recovery route through the account's verified email/password sign-in; do not claim that a forgotten local PIN can be recovered from the PIN itself.
+- PIN setup must be optional where the platform cannot safely support it.
+
+### Face ID / fingerprint unlock
+- Offer biometric unlock only after the first successful account login and explicit user opt-in.
+- On supported native Android/iOS builds, use the operating system's biometric prompt and platform-protected Keychain/Keystore-backed credential mechanism. Do not collect or store biometric images, fingerprints, or face templates.
+- Keep PIN fallback available when biometrics are unavailable, declined, or fail.
+- Require full account authentication again after sign-out, device credential reset, app data removal, or other invalidation events as appropriate.
+- If biometrics are unavailable, explain this and retain the secure account-login route.
+
+### Platform boundary and release sequencing
+- The current GitHub Pages app is a browser-based prototype. It must not simulate Face ID/fingerprint or describe a browser-stored PIN as secure device authentication.
+- Browser WebAuthn/passkeys are a separate standards-based option and must not be misrepresented as native Face ID/fingerprint integration.
+- Native biometric and secure local PIN functionality belongs in the Android/iOS packaging and device-security implementation stage, after the authentication backend and security review.
+- No PIN, biometric, or authentication code is to be added to the live prototype until the owner separately approves implementation and the security design is validated.
+- These requirements do not authorise Firebase project creation, billing linkage, paid services, or data migration.
+
