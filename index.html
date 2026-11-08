@@ -97,7 +97,7 @@
  </header>
  <div class="content">
   <section id="dashboard" class="screen">
-   <div class="sectionhead"><h2>📊 Portfolio overview</h2><span class="muted" id="dashboardCountryLabel">UAE · AED</span></div>
+   <div class="sectionhead"><h2>📊 Portfolio overview</h2><div class="field" style="margin:0;min-width:145px"><label for="dashCountry">Country book</label><select id="dashCountry"><option value="AE">🇦🇪 UAE · AED</option><option value="PK">🇵🇰 Pakistan · PKR</option></select></div></div>
    <div class="grid">
     <div class="stat"><span class="ico">🏠</span><div class="label">Saved properties</div><strong id="dashProperties">0</strong></div>
     <div class="stat"><span class="ico">🧑‍🤝‍🧑</span><div class="label">Named tenants</div><strong id="dashTenants">0</strong></div>
@@ -1032,7 +1032,7 @@ function refreshPortfolioDashboard(){
  const payments=getPayments().filter(p=>propertyIds.has(p.propertyId)&&String(p.date||"").slice(0,7)===month);
  const receiptTotal=receipts.reduce((s,r)=>s+dashCents(r.amount),0),paymentTotal=payments.reduce((s,p)=>s+dashCents(p.amount),0);
  const posted=countryPostedJournals(country);
- $("dashboardCountryLabel").textContent=(country==="PK"?"Pakistan":"UAE")+" · "+currency;
+ $("dashCountry").value=country;
  $("dashProperties").textContent=String(properties.length);
  $("dashTenants").textContent=String(tenants.length);
  $("income").textContent=dashMoney(receiptTotal,currency);
@@ -1059,6 +1059,7 @@ function refreshPortfolioDashboard(){
 $("enter").addEventListener("click",()=>setTimeout(refreshPortfolioDashboard,0));
 document.querySelectorAll('[data-screen="dashboard"]').forEach(b=>b.addEventListener("click",refreshPortfolioDashboard));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener("click",()=>setTimeout(refreshPortfolioDashboard,0)));
+$("dashCountry").addEventListener("change",e=>{setCountry(e.target.value);refreshPortfolioDashboard()});
 try{refreshPortfolioDashboard()}catch(e){console.warn("Dashboard refresh deferred",e)}
 </script>
 </body>
