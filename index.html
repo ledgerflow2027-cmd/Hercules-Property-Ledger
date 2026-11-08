@@ -65,10 +65,10 @@
 .receipt-history-item .receipt-history-value{font-weight:800;font-size:12px}
 @media print{
  body *{visibility:hidden!important}
- #receiptPrintArea,#receiptPrintArea *,#paymentPrintArea,#paymentPrintArea *{visibility:visible!important}
- #receiptPrintArea,#paymentPrintArea{position:absolute!important;left:0!important;top:0!important;width:100%!important;border:0!important;box-shadow:none!important;margin:0!important;padding:24px!important}
+ #receiptPrintArea,#receiptPrintArea *,#paymentPrintArea,#paymentPrintArea *,#documentPrintArea,#documentPrintArea *{visibility:visible!important}
+ #receiptPrintArea,#paymentPrintArea,#documentPrintArea{position:absolute!important;left:0!important;top:0!important;width:100%!important;border:0!important;box-shadow:none!important;margin:0!important;padding:24px!important}
  .receipt-modal,.receipt-sheet{position:static!important;display:block!important;background:#fff!important;padding:0!important;min-height:0!important;overflow:visible!important}
- .receipt-sheet>*:not(#receiptPrintArea):not(#paymentPrintArea){display:none!important}
+ .receipt-sheet>*:not(#receiptPrintArea):not(#paymentPrintArea):not(#documentPrintArea){display:none!important}
 }
 
 </style>
@@ -289,9 +289,32 @@
     <div class="notice" style="margin-top:10px">Stage 8E source-register preview only. Existing receipt and payment vouchers are local, unposted source documents. They are not automatically matched to invoices or bills, and they do not change receivables, payables, or account balances. Invoice/bill records, allocation approval, and trusted server-side posting require the approved cloud backend.</div>
    </div>
   </section>
+  <section id="documents" class="screen hidden">
+   <div class="sectionhead"><div><h1 class="page-title">📄 Document Studio</h1><div class="muted">Create, preview, print or share property documents</div></div></div>
+   <div class="detail-card">
+    <div class="field"><label for="documentType">Document type</label><select id="documentType"><option value="contract">📑 Tenancy agreement draft</option><option value="property-soa">🏠 Property activity statement</option><option value="tenant-soa">👤 Tenant activity statement</option><option value="vendor-soa">🧰 Vendor activity statement</option></select></div>
+    <div class="field"><label for="documentProperty">Property</label><select id="documentProperty"><option value="">Choose a property</option></select></div>
+    <button class="primary" type="button" id="generateDocument" style="width:100%">✨ Generate document preview</button>
+   </div>
+   <div class="detail-card">
+    <div id="documentPrintArea" class="receipt-preview">
+     <div class="receipt-meta">PROPLEDGER 2027 · DOCUMENT PREVIEW</div>
+     <h3 id="documentTitle">Your document preview</h3>
+     <div id="documentBody" style="white-space:pre-wrap;line-height:1.7;font-size:13px;margin-top:14px">Choose a document type and property, then generate a preview.</div>
+     <div class="receipt-meta" style="margin-top:18px">Preview only · Verify all details before use</div>
+    </div>
+    <div class="receipt-actions">
+     <button class="soft" type="button" id="printDocument">🖨️ Print / Save PDF</button>
+     <button class="soft" type="button" id="shareDocument">📤 Share</button>
+    </div>
+    <button class="soft" type="button" id="whatsappDocument" style="width:100%;margin-top:8px">🟢 Share via WhatsApp</button>
+   </div>
+   <div class="notice">Stage 9 document preview. Tenancy wording is a draft template, not legal advice or a signing-ready contract. Activity statements are based on locally saved receipt/payment vouchers and are explicitly unposted; they are not official statements of account. Secure file uploads, signatures, verified PDF records and access-controlled sharing require the approved cloud backend. Review UAE/Pakistan legal requirements with a qualified professional.</div>
+  </section>
   <section id="more" class="screen hidden">
    <h1 class="page-title">☰ More</h1><div class="list" style="margin-top:15px">
     <div class="item"><div class="avatar">📢</div><div><strong>Official notices</strong><small>Important workspace announcements</small></div><span class="arrow">›</span></div>
+    <button type="button" class="item" data-screen="documents" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📄</div><div><strong>Document Studio</strong><small>Tenancy draft, property and party statements</small></div><span class="arrow">›</span></button>
     <button type="button" class="item" data-screen="accounting-ledger" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📚</div><div><strong>General Ledger & Trial Balance</strong><small>Country-wise reports from posted journals</small></div><span class="arrow">›</span></button>
     <button type="button" class="item" data-screen="accounting-statements" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">📈</div><div><strong>Financial Statements & Period Close</strong><small>Profit & Loss, Balance Sheet and cash movement</small></div><span class="arrow">›</span></button>
     <button type="button" class="item" data-screen="accounting-subledgers" style="width:100%;text-align:left;color:inherit;font:inherit"><div class="avatar">🧩</div><div><strong>Subledgers & Allocations</strong><small>Property, tenant and vendor source registers</small></div><span class="arrow">›</span></button>
@@ -961,6 +984,39 @@ $("statementFrom").addEventListener("change",runFinancialStatements);
 $("statementTo").addEventListener("change",runFinancialStatements);
 $("runStatements").addEventListener("click",runFinancialStatements);
 document.querySelectorAll('[data-screen="accounting-statements"]').forEach(b=>b.addEventListener("click",()=>{showScreen("accounting-statements");initFinancialStatements()}));
+/* Stage 9 — document previews and share handoff. Source vouchers remain unposted. */
+function initDocumentStudio(){
+ const select=$("documentProperty"),prior=select.value,properties=getProperties();
+ select.innerHTML='<option value="">Choose a property</option>';
+ properties.forEach(p=>{const o=document.createElement("option");o.value=p.id;o.textContent=(p.name||"Property")+" · "+(p.country==="PK"?"Pakistan":"UAE");select.appendChild(o)});
+ if(properties.some(p=>p.id===prior))select.value=prior;
+}
+function buildDocumentText(){
+ const type=$("documentType").value,id=$("documentProperty").value;
+ const property=getProperties().find(p=>p.id===id);
+ if(!property){$("documentTitle").textContent="Select a property";$("documentBody").textContent="Choose a property to prepare this document.";return ""}
+ const tenant=property.tenant||{},currency=property.country==="PK"?"PKR":"AED";
+ const receipts=getReceipts().filter(r=>r.propertyId===id),payments=getPayments().filter(p=>p.propertyId===id);
+ let title="",lines=[];
+ if(type==="contract"){
+  title="Tenancy Agreement — Draft Template";
+  lines=["Property: "+(property.name||"—"),"Address: "+(property.address||"—"),"Landlord / owner: ____________________","Tenant: "+(tenant.name||"To be completed"),"Tenant contact: "+(tenant.phone||"—"),"Lease start: ____________________","Lease end: ____________________","Rent amount and schedule: ____________________","Security deposit: ____________________","Utilities and maintenance responsibilities: ____________________","Additional terms: ____________________","Landlord signature: ____________________","Tenant signature: ____________________","","DRAFT TEMPLATE ONLY — not a legal contract or ready for signing. Complete and have reviewed by a qualified local professional."];
+ }else{
+  const selected=type==="tenant-soa"?"tenant":type==="vendor-soa"?"vendor":"all";
+  const rows=[...receipts.map(r=>({kind:"Tenant receipt",party:r.tenant||"Tenant",number:r.number||"Receipt",date:r.date||"",amount:Number(r.amount)||0})),...payments.map(p=>({kind:"Vendor payment",party:p.vendor||"Vendor",number:p.number||"Payment",date:p.date||"",amount:-(Number(p.amount)||0)}))].filter(x=>selected==="all"||(selected==="tenant"&&x.kind==="Tenant receipt")||(selected==="vendor"&&x.kind==="Vendor payment")).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  title=type==="property-soa"?"Property Activity Statement":type==="tenant-soa"?"Tenant Activity Statement":"Vendor Activity Statement";
+  lines=["Property: "+(property.name||"—"),"Country / currency: "+(property.country==="PK"?"Pakistan":"UAE")+" / "+currency,"Status: LOCAL PREVIEW — UNPOSTED SOURCE VOUCHERS","",...rows.map(r=>r.date+" | "+r.kind+" | "+r.number+" | "+r.party+" | "+currency+" "+r.amount.toFixed(2)),"","Source records: "+rows.length,"Net source-voucher movement: "+currency+" "+rows.reduce((s,r)=>s+r.amount,0).toFixed(2),"","This is not a ledger balance or official statement. Vouchers have not been posted or reconciled."];
+ }
+ $("documentTitle").textContent=title;$("documentBody").textContent=lines.join("\n");
+ return "PROPLE DGER 2027\n"+title+"\n"+lines.join("\n");
+}
+$("generateDocument").addEventListener("click",buildDocumentText);
+$("documentType").addEventListener("change",()=>{if($("documentProperty").value)buildDocumentText()});
+$("documentProperty").addEventListener("change",()=>{if($("documentProperty").value)buildDocumentText()});
+$("printDocument").addEventListener("click",()=>{if($("documentProperty").value){buildDocumentText();window.print()}else alert("Choose a property first.")});
+$("shareDocument").addEventListener("click",async()=>{const body=buildDocumentText();if(!body)return;try{if(navigator.share)await navigator.share({title:$("documentTitle").textContent,text:body});else if(navigator.clipboard){await navigator.clipboard.writeText(body);alert("Document text copied. You can paste it into your preferred app.")}else alert("Use Print / Save PDF to share this preview.")}catch(e){if(e.name!=="AbortError")alert("Sharing is not available on this device. Try Print / Save PDF.")}});
+$("whatsappDocument").addEventListener("click",()=>{const body=buildDocumentText();if(!body)return;window.open("https://wa.me/?text="+encodeURIComponent(body),"_blank","noopener")});
+document.querySelectorAll('[data-screen="documents"]').forEach(b=>b.addEventListener("click",()=>{showScreen("documents");initDocumentStudio()}));
 </script>
 </body>
 </html>
