@@ -1,89 +1,103 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
-    <title>Ledgerly - Settings, Help, About and languages</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <style>
-      :root { --widget-page:#fdfdfc; --widget-card:#fff; --widget-border:#e4e4e7; }
-      @media (prefers-color-scheme:dark) { :root { --widget-page:#141310; --widget-card:#201e1a; --widget-border:rgba(255,255,255,.1); } }
-      html,body { margin:0; min-height:100%; background:var(--widget-page); }
-      body { padding:16px; box-sizing:border-box; }
-      #hercules-widget-root { background:var(--widget-card); border:1px solid var(--widget-border); border-radius:12px; padding:20px; box-sizing:border-box; }
-    </style>
-  </head>
-  <body>
-    <div id="hercules-widget-root" style="max-width:680px;margin:0 auto;width:100%">
-<h2 class="sr-only">Mockup: Settings and Language buttons, About page, Help guide, and English, Arabic and Urdu translation</h2>
-<div id="app" class="font-sans text-zinc-900 dark:text-zinc-100 space-y-3" style="font-weight:300">
-  <div class="flex flex-col gap-2">
-    <div class="flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2 font-semibold text-base"><i class="ti ti-building-estate text-violet-600 dark:text-violet-300" aria-hidden="true"></i><span data-i="brand"></span></div>
-      <div class="relative">
-        <button id="langBtn" class="rounded-full bg-gradient-to-r from-yellow-200 to-emerald-200 dark:from-yellow-900 dark:to-emerald-900 px-3 py-1.5 text-sm font-medium" aria-haspopup="true"><i class="ti ti-language" aria-hidden="true"></i> <span id="langLbl"></span></button>
-        <div id="langMenu" class="hidden absolute end-0 top-10 z-10 w-40 rounded-3xl bg-white dark:bg-zinc-800 shadow p-1">
-          <button data-l="en" class="lo w-full text-start rounded-full px-3 py-2">English</button>
-          <button data-l="ar" class="lo w-full text-start rounded-full px-3 py-2">العربية</button>
-          <button data-l="ur" class="lo w-full text-start rounded-full px-3 py-2">اردو</button>
-        </div>
-      </div>
-    </div>
-    <nav class="grid grid-cols-4 gap-1 p-1 rounded-full bg-gradient-to-r from-violet-100 via-blue-100 to-emerald-100 dark:from-violet-950 dark:via-blue-950 dark:to-emerald-950" aria-label="Main">
-      <button data-t="dash" class="tab"><i class="ti ti-layout-dashboard" aria-hidden="true"></i><span data-i="dash"></span></button>
-      <button data-t="prop" class="tab"><i class="ti ti-home" aria-hidden="true"></i><span data-i="prop"></span></button>
-      <button data-t="stmt" class="tab"><i class="ti ti-file-text" aria-hidden="true"></i><span data-i="stmt"></span></button>
-      <button data-t="set" class="tab"><i class="ti ti-settings" aria-hidden="true"></i><span data-i="set"></span></button>
-    </nav>
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827"><meta name="description" content="Propledger 2027 — property management and accounting for owners in the UAE and Pakistan.">
+<title>Propledger 2027</title>
+<style>
+:root{--ink:#172033;--muted:#697386;--line:#e7eaf0;--paper:#f5f7fb;--white:#fff;--navy:#172554;--violet:#6654d9;--mint:#18a999;--gold:#f0b84b;--shadow:0 12px 34px #1c285012}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,select,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}.app{max-width:520px;min-height:100dvh;margin:auto;background:#f8f9fc;padding-bottom:92px}.top{padding:22px 20px 16px;background:linear-gradient(135deg,#172554,#43358f 65%,#087e83);color:#fff;border-radius:0 0 28px 28px}.topline{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.5px}.mark{width:38px;height:38px;border-radius:13px;background:linear-gradient(145deg,#8ce3d5,#fff);color:#172554;display:grid;place-items:center;font-weight:900;font-size:19px}.top-actions{display:flex;gap:8px;align-items:center}.chip,.iconbtn{border:1px solid #ffffff45;background:#ffffff18;color:white;border-radius:30px;padding:8px 11px}.iconbtn{width:38px;height:38px;padding:0}.welcome{padding:25px 0 8px}.eyebrow{text-transform:uppercase;letter-spacing:1.5px;font-size:10px;font-weight:800;opacity:.75}.welcome h1{font-size:26px;line-height:1.15;margin:8px 0}.welcome p{font-size:13px;opacity:.8;margin:0}.content{padding:18px 16px}.sectionhead{display:flex;align-items:center;justify-content:space-between;margin:5px 2px 12px}.sectionhead h2{font-size:16px;margin:0}.muted{color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat,.tile,.panel{background:var(--white);border:1px solid var(--line);border-radius:19px;padding:15px;box-shadow:var(--shadow)}.stat .ico{font-size:19px}.stat .label{font-size:11px;color:var(--muted);margin-top:8px}.stat strong{display:block;font-size:21px;margin-top:3px}.tile{min-height:105px;text-align:left;border:0;color:var(--ink);background:linear-gradient(145deg,#fff,#f0efff);font-weight:700}.tile span{display:block;font-size:24px;margin-bottom:9px}.tile small{display:block;color:var(--muted);font-weight:500;margin-top:3px}.primary{border:0;border-radius:14px;background:linear-gradient(120deg,#6654d9,#287cba);color:white;padding:12px 16px;font-weight:700;box-shadow:0 7px 18px #6654d933}.soft{border:1px solid var(--line);border-radius:13px;background:#fff;padding:10px 13px;color:var(--ink)}.list{display:grid;gap:9px}.item{display:flex;align-items:center;gap:12px;padding:12px;background:white;border:1px solid var(--line);border-radius:17px}.avatar{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,#e1e7ff,#d6f4ed);display:grid;place-items:center;font-size:22px;flex-shrink:0}.item strong{display:block;font-size:13px}.item small{color:var(--muted);font-size:11px}.item .arrow{margin-left:auto;color:#8791a3}.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#ffffffed;backdrop-filter:blur(16px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);z-index:5}.navbtn{border:0;background:none;color:#8992a4;padding:7px 2px;border-radius:13px;font-size:10px;font-weight:700}.navbtn b{display:block;font-size:19px;margin-bottom:3px}.navbtn.active{color:var(--violet);background:#f0efff}.page-title{font-size:22px;margin:5px 0 4px}.notice{padding:12px 14px;border-radius:14px;background:#fff7e7;color:#79571a;font-size:11px;line-height:1.5;margin-top:14px}.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:12px;font-weight:700}.field select,.field input{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:white;color:var(--ink)}.hero{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:25px;background:radial-gradient(circle at 20% 10%,#d9e5ff,transparent 40%),linear-gradient(145deg,#f8faff,#eef4f6)}.welcome-card{width:min(440px,100%);background:white;border:1px solid var(--line);border-radius:28px;padding:28px 23px;box-shadow:0 24px 70px #263c6818}.welcome-logo{width:64px;height:64px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(145deg,#172554,#6654d9);color:white;font-size:30px;margin-bottom:22px}.welcome-card h1{font-size:29px;line-height:1.1;margin:0 0 10px}.welcome-card p{color:var(--muted);font-size:13px;line-height:1.65}.welcome-card .primary{width:100%;margin-top:10px;padding:14px}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pillnote{font-size:10px;color:var(--muted);text-align:center;margin-top:17px}.profile{width:35px;height:35px;border-radius:50%;background:#f5d7ae;color:#64421f;display:grid;place-items:center;font-weight:800;border:2px solid #ffffff80}
+[dir=rtl]{text-align:right}[dir=rtl] .arrow{margin-left:0;margin-right:auto}[dir=rtl] .topline{flex-direction:row-reverse}
+@media(min-width:600px){body{padding:20px 0}.app{border-radius:28px;overflow:hidden;min-height:calc(100dvh - 40px);box-shadow:0 20px 70px #17255418}.bottom{bottom:20px;border-radius:0 0 28px 28px}}
+</style>
+</head>
+<body>
+<section id="onboarding" class="hero">
+ <div class="welcome-card">
+  <div class="welcome-logo">P</div>
+  <div class="eyebrow" style="color:#6654d9">PROPERTY • FINANCE • CLARITY</div>
+  <h1>Propledger <span style="color:#6654d9">2027</span></h1>
+  <p id="intro">A clearer way to manage properties, tenants, vendors and the numbers behind your property business.</p>
+  <div class="field"><label for="language">🌐 Language</label><select id="language"><option value="en">English</option><option value="ar">العربية</option><option value="ur">اردو</option></select></div>
+  <div class="field"><label for="country">🌍 Country / region</label><select id="country"><option value="AE">United Arab Emirates (AED)</option><option value="PK">Pakistan (PKR)</option></select></div>
+  <button class="primary" id="enter">Continue to preview →</button>
+  <div class="pillnote">Designed for property owners in the UAE and Pakistan</div>
+ </div>
+</section>
+<main id="app" class="app hidden">
+ <header class="top">
+  <div class="topline">
+   <div class="brand"><div class="mark">P</div><span>Propledger <span style="color:#9ee9df">2027</span></span></div>
+   <div class="top-actions"><button class="chip" id="langQuick">EN⌄</button><button class="iconbtn" id="updates" aria-label="Updates">🔔</button><div class="profile" aria-label="Profile">👤</div></div>
   </div>
-  <section id="dash" class="pane space-y-3">
-    <h3 class="hd" data-i="welcome"></h3>
-    <div class="grid grid-cols-2 gap-2">
-      <div class="rounded-3xl p-4 bg-gradient-to-br from-emerald-200 to-blue-200 dark:from-emerald-900 dark:to-blue-900"><div class="opacity-75" data-i="income"></div><div class="font-semibold">$45,770</div></div>
-      <div class="rounded-3xl p-4 bg-gradient-to-br from-violet-200 to-blue-200 dark:from-violet-900 dark:to-blue-900"><div class="opacity-75" data-i="expense"></div><div class="font-semibold">$12,340</div></div>
-      <div class="rounded-3xl p-4 bg-gradient-to-br from-emerald-200 to-yellow-200 dark:from-emerald-900 dark:to-yellow-900"><div class="opacity-75" data-i="profit"></div><div class="font-semibold">$33,430</div></div>
-      <div class="rounded-3xl p-4 bg-gradient-to-br from-yellow-200 to-violet-200 dark:from-yellow-900 dark:to-violet-900"><div class="opacity-75" data-i="due"></div><div class="font-semibold">$2,100</div></div>
-    </div>
-    <div class="grid grid-cols-2 gap-2">
-      <button class="rounded-3xl p-4 text-start bg-gradient-to-br from-emerald-300 to-emerald-100 dark:from-emerald-800 dark:to-emerald-950"><i class="ti ti-circle-plus text-2xl" aria-hidden="true"></i><div class="font-semibold" data-i="addInc"></div></button>
-      <button class="rounded-3xl p-4 text-start bg-gradient-to-br from-violet-300 to-violet-100 dark:from-violet-800 dark:to-violet-950"><i class="ti ti-circle-minus text-2xl" aria-hidden="true"></i><div class="font-semibold" data-i="addExp"></div></button>
-    </div>
-    <p class="opacity-70 text-sm" data-i="note"></p>
+  <div class="welcome"><div class="eyebrow" id="region">UAE WORKSPACE • AED</div><h1 id="greeting">Good day, property owner 👋</h1><p>Your property business, organised in one place.</p></div>
+ </header>
+ <div class="content">
+  <section id="dashboard" class="screen">
+   <div class="sectionhead"><h2>📊 Overview</h2><span class="muted">Sample preview</span></div>
+   <div class="grid">
+    <div class="stat"><span class="ico">🏠</span><div class="label">Properties</div><strong>05</strong></div>
+    <div class="stat"><span class="ico">🧑‍🤝‍🧑</span><div class="label">Tenants</div><strong>08</strong></div>
+    <div class="stat"><span class="ico">💰</span><div class="label">Income this month</div><strong id="income">AED 18,500</strong></div>
+    <div class="stat"><span class="ico">🧾</span><div class="label">Expenses this month</div><strong id="expense">AED 4,250</strong></div>
+   </div>
+   <div class="sectionhead" style="margin-top:22px"><h2>⚡ Quick actions</h2></div>
+   <div class="grid">
+    <button class="tile" data-go="properties"><span>🏘️</span>Properties<small>Register and manage</small></button>
+    <button class="tile" data-go="vendors"><span>🧰</span>Vendors<small>Service providers</small></button>
+    <button class="tile" data-go="activity"><span>📥</span>Record income<small>Receipt vouchers</small></button>
+    <button class="tile" data-go="activity"><span>📤</span>Record expense<small>Payment vouchers</small></button>
+   </div>
+   <div class="sectionhead" style="margin-top:22px"><h2>🔔 Recent updates</h2><span class="muted">View all</span></div>
+   <div class="panel muted">Your workspace is ready for the next setup stage. No real financial records are stored in this preview.</div>
   </section>
-  <section id="prop" class="pane hidden"><div class="rounded-3xl p-6 bg-gradient-to-br from-violet-100 to-blue-100 dark:from-violet-950 dark:to-blue-950" data-i="same"></div></section>
-  <section id="stmt" class="pane hidden"><div class="rounded-3xl p-6 bg-gradient-to-br from-emerald-100 to-violet-100 dark:from-emerald-950 dark:to-violet-950" data-i="same"></div></section>
-  <section id="set" class="pane hidden space-y-3">
-    <div class="grid grid-cols-3 gap-1 p-1 rounded-full bg-white/70 dark:bg-zinc-800/70">
-      <button data-s="general" class="st"><span data-i="general"></span></button><button data-s="help" class="st"><span data-i="help"></span></button><button data-s="about" class="st"><span data-i="about"></span></button>
-    </div>
-    <div id="general" class="sp space-y-2">
-      <div class="rounded-3xl p-4 bg-gradient-to-br from-violet-100 to-blue-100 dark:from-violet-950 dark:to-blue-950 flex justify-between items-center gap-2"><span data-i="language"></span><span id="langCur" class="font-medium"></span></div>
-      <div class="rounded-3xl p-4 bg-gradient-to-br from-blue-100 to-emerald-100 dark:from-blue-950 dark:to-emerald-950 flex justify-between items-center gap-2"><span data-i="currency"></span><select class="rounded-full bg-white/80 dark:bg-zinc-800 px-3 py-1.5"><option>USD $</option><option>AED</option><option>SAR</option><option>PKR</option></select></div>
-      <div class="rounded-3xl p-4 bg-gradient-to-br from-emerald-100 to-yellow-100 dark:from-emerald-950 dark:to-yellow-950 flex justify-between items-center gap-2"><span data-i="profile"></span><i class="ti ti-chevron-right rtl:rotate-180" aria-hidden="true"></i></div>
-      <div class="rounded-3xl p-4 bg-gradient-to-br from-yellow-100 to-violet-100 dark:from-yellow-950 dark:to-violet-950 flex justify-between items-center gap-2"><span data-i="acct"></span><i class="ti ti-chevron-right rtl:rotate-180" aria-hidden="true"></i></div>
-    </div>
-    <div id="help" class="sp hidden space-y-2"><h3 class="hd" data-i="helpTitle"></h3><ol id="steps" class="space-y-2"></ol></div>
-    <div id="about" class="sp hidden">
-      <div class="rounded-3xl p-6 text-center space-y-3 bg-gradient-to-br from-violet-200 via-blue-200 to-emerald-200 dark:from-violet-900 dark:via-blue-900 dark:to-emerald-900">
-        <div class="mx-auto h-28 w-28 rounded-full ring-4 ring-white dark:ring-zinc-800 bg-gradient-to-br from-yellow-200 to-violet-300 dark:from-yellow-800 dark:to-violet-800 grid place-items-center text-3xl font-semibold" aria-label="Photo of M.Saqib">MS</div>
-        <div><div class="hd">M.Saqib</div><div class="opacity-75" data-i="role"></div></div>
-        <p data-i="thanks1"></p><p data-i="thanks2"></p><div class="text-xs opacity-60" data-i="ver"></div>
-      </div>
-    </div>
+  <section id="properties" class="screen hidden">
+   <div class="sectionhead"><div><h1 class="page-title">🏠 Properties</h1><div class="muted">Your property portfolio</div></div><button class="primary" id="addProperty">＋ Add</button></div>
+   <div class="list">
+    <div class="item"><div class="avatar">🏢</div><div><strong>Residential building</strong><small>Dubai • 3 units • Demo record</small></div><span class="arrow">›</span></div>
+    <div class="item"><div class="avatar">🏡</div><div><strong>Family villa</strong><small>Sharjah • 1 unit • Demo record</small></div><span class="arrow">›</span></div>
+    <div class="item"><div class="avatar">🏬</div><div><strong>Retail units</strong><small>Ajman • 4 units • Demo record</small></div><span class="arrow">›</span></div>
+   </div>
   </section>
-</div>
+  <section id="vendors" class="screen hidden">
+   <div class="sectionhead"><div><h1 class="page-title">🧰 Vendors</h1><div class="muted">Your trusted service providers</div></div><button class="primary" id="addVendor">＋ Add</button></div>
+   <div class="list"><div class="item"><div class="avatar">🔧</div><div><strong>Maintenance services</strong><small>General repairs • Demo record</small></div><span class="arrow">›</span></div><div class="item"><div class="avatar">🧹</div><div><strong>Cleaning services</strong><small>Property care • Demo record</small></div><span class="arrow">›</span></div></div>
+  </section>
+  <section id="activity" class="screen hidden">
+   <h1 class="page-title">📚 Activity</h1><p class="muted">Income and expense workflows will connect to the accounting ledger in a later milestone.</p>
+   <div class="grid"><button class="tile" id="receipt"><span>🧾</span>New receipt<small>Income voucher</small></button><button class="tile" id="payment"><span>💳</span>New payment<small>Expense voucher</small></button></div>
+   <div class="notice">Preview mode: the displayed amounts and records are illustrative only. Do not use this preview to record actual transactions.</div>
+  </section>
+  <section id="more" class="screen hidden">
+   <h1 class="page-title">☰ More</h1><div class="list" style="margin-top:15px">
+    <div class="item"><div class="avatar">📢</div><div><strong>Official notices</strong><small>Important workspace announcements</small></div><span class="arrow">›</span></div>
+    <div class="item"><div class="avatar">⚙️</div><div><strong>Settings</strong><small>Profile, country, currency and language</small></div><span class="arrow">›</span></div>
+    <div class="item"><div class="avatar">❔</div><div><strong>Help & support</strong><small>Learn how Propledger works</small></div><span class="arrow">›</span></div>
+    <div class="item"><div class="avatar">👨‍💻</div><div><strong>Founder & developer</strong><small>Built to make property accounting clearer</small></div><span class="arrow">›</span></div>
+   </div>
+   <div class="notice">Cloud authentication, database storage, encrypted document uploads and biometric sign-in are planned for the secure backend milestone. This preview stores only your display preferences on this device.</div>
+  </section>
+ </div>
+ <nav class="bottom" aria-label="Main navigation">
+  <button class="navbtn active" data-screen="dashboard"><b>⌂</b>Dashboard</button>
+  <button class="navbtn" data-screen="properties"><b>🏘️</b>Properties</button>
+  <button class="navbtn" data-screen="vendors"><b>🧰</b>Vendors</button>
+  <button class="navbtn" data-screen="more"><b>☰</b>More</button>
+ </nav>
+</main>
 <script>
-const T={
-en:{dir:"ltr",name:"English",font:"'Lexend','Segoe UI',system-ui,sans-serif",body:"16px",head:"28px",brand:"Ledgerly",dash:"Dashboard",prop:"Property",stmt:"Statements",set:"Settings",welcome:"Welcome back",income:"Income",expense:"Expenses",profit:"Profit",due:"Rent due",addInc:"Add income",addExp:"Add expense",note:"Sample data. Property and Statements pages are the same as the previous preview, fully translated.",same:"Same as the previous preview, fully translated into the chosen language.",general:"General",help:"Help",about:"About",language:"Language",currency:"Currency",profile:"My profile",acct:"Accountant access",helpTitle:"Getting started",steps:[["Sign in","Tap Sign in and use your email or Google account."],["Add a property","Go to Property, tap Add, enter details and upload photos."],["Add a tenant","Open the property, add the tenant, lease, rent and deposit."],["Record income and expenses","Tap Add income or Add expense, pick a quick title and save."],["View statements","Open Statements, choose filters to see your numbers."],["Print or share","Tap Preview to check, then Print, Download or Share the PDF."]],role:"CEO and Developer",thanks1:"Thank you to M.Saqib for designing and building this app with care for every property owner.",thanks2:"His vision makes bookkeeping simple, clear and stress-free for everyone.",ver:"Version 1.0"},
-ar:{dir:"rtl",name:"العربية",font:"'Tajawal','Noto Sans Arabic',system-ui,sans-serif",body:"17px",head:"30px",brand:"ليدجرلي",dash:"لوحة التحكم",prop:"العقار",stmt:"الكشوفات",set:"الإعدادات",welcome:"مرحبًا بعودتك",income:"الدخل",expense:"المصروفات",profit:"الربح",due:"إيجار مستحق",addInc:"إضافة دخل",addExp:"إضافة مصروف",note:"بيانات تجريبية. صفحتا العقار والكشوفات مثل المعاينة السابقة ومترجمتان بالكامل.",same:"مثل المعاينة السابقة، ومترجمة بالكامل إلى اللغة المختارة.",general:"عام",help:"المساعدة",about:"حول",language:"اللغة",currency:"العملة",profile:"ملفي الشخصي",acct:"وصول المحاسب",helpTitle:"البدء",steps:[["تسجيل الدخول","اضغط تسجيل الدخول واستخدم بريدك أو حساب جوجل."],["إضافة عقار","اذهب إلى العقار، اضغط إضافة، أدخل التفاصيل وارفع الصور."],["إضافة مستأجر","افتح العقار وأضف المستأجر والعقد والإيجار والتأمين."],["تسجيل الدخل والمصروفات","اضغط إضافة دخل أو إضافة مصروف، اختر عنوانًا سريعًا واحفظ."],["عرض الكشوفات","افتح الكشوفات واختر عوامل التصفية لرؤية أرقامك."],["الطباعة أو المشاركة","اضغط معاينة للتحقق، ثم اطبع أو نزّل أو شارك ملف PDF."]],role:"الرئيس التنفيذي والمطوّر",thanks1:"شكرًا لـ م. ثاقب على تصميم وبناء هذا التطبيق بعناية لكل مالك عقار.",thanks2:"رؤيته تجعل مسك الدفاتر بسيطًا وواضحًا وخاليًا من التوتر للجميع.",ver:"الإصدار 1.0"},
-ur:{dir:"rtl",name:"اردو",font:"'Alvi Nastaleeq','Noto Nastaliq Urdu','Jameel Noori Nastaleeq',serif",body:"20px",head:"34px",weight:"700",lh:"2.1",brand:"لیجرلی",dash:"ڈیش بورڈ",prop:"پراپرٹی",stmt:"گوشوارے",set:"ترتیبات",welcome:"خوش آمدید",income:"آمدنی",expense:"اخراجات",profit:"منافع",due:"واجب الادا کرایہ",addInc:"آمدنی شامل کریں",addExp:"خرچ شامل کریں",note:"نمونہ ڈیٹا۔ پراپرٹی اور گوشوارے کے صفحات پچھلے پیش نظارہ جیسے ہیں اور مکمل ترجمہ شدہ ہیں۔",same:"پچھلے پیش نظارہ جیسا، منتخب زبان میں مکمل ترجمہ شدہ۔",general:"عمومی",help:"مدد",about:"تعارف",language:"زبان",currency:"کرنسی",profile:"میری پروفائل",acct:"اکاؤنٹنٹ کی رسائی",helpTitle:"آغاز کیسے کریں",steps:[["سائن ان","سائن ان دبائیں اور اپنی ای میل یا گوگل اکاؤنٹ استعمال کریں۔"],["پراپرٹی شامل کریں","پراپرٹی میں جائیں، شامل کریں دبائیں، تفصیلات اور تصاویر ڈالیں۔"],["کرایہ دار شامل کریں","پراپرٹی کھولیں، کرایہ دار، معاہدہ، کرایہ اور ڈپازٹ درج کریں۔"],["آمدنی اور اخراجات","آمدنی یا خرچ شامل کریں دبائیں، فوری عنوان چنیں اور محفوظ کریں۔"],["گوشوارے دیکھیں","گوشوارے کھولیں اور فلٹر چن کر اپنے اعداد دیکھیں۔"],["پرنٹ یا شیئر","پیش نظارہ دبا کر دیکھیں، پھر پی ڈی ایف پرنٹ، ڈاؤن لوڈ یا شیئر کریں۔"]],role:"سی ای او اور ڈویلپر",thanks1:"ایم ثاقب کا شکریہ جنہوں نے ہر پراپرٹی مالک کے لیے یہ ایپ محبت سے بنائی۔",thanks2:"ان کا وژن حساب کتاب کو سب کے لیے آسان، واضح اور بے فکر بناتا ہے۔",ver:"ورژن 1.0"}};
-let lang="en",tab="dash",sub="general";const $=id=>document.getElementById(id);
-function apply(){const L=T[lang],app=$("app");app.dir=L.dir;app.style.fontFamily=L.font;app.style.fontSize=L.body;app.style.fontWeight=L.weight||"300";app.style.lineHeight=L.lh||"1.6";document.querySelectorAll("[data-i]").forEach(e=>e.textContent=L[e.dataset.i]);document.querySelectorAll(".hd").forEach(h=>{h.style.fontSize=L.head;h.style.fontWeight=lang==="ur"?"700":"500";});$("langLbl").textContent=L.name;$("langCur").textContent=L.name;$("steps").innerHTML="";L.steps.forEach(([h,d],i)=>{const li=document.createElement("li");li.className="rounded-3xl p-4 flex gap-3 bg-gradient-to-br "+["from-violet-100 to-blue-100 dark:from-violet-950 dark:to-blue-950","from-blue-100 to-emerald-100 dark:from-blue-950 dark:to-emerald-950","from-emerald-100 to-yellow-100 dark:from-emerald-950 dark:to-yellow-950"][i%3];const n=document.createElement("span");n.className="h-8 w-8 shrink-0 rounded-full bg-violet-600 text-white grid place-items-center text-sm";n.textContent=String(i+1);const b=document.createElement("div");const t=document.createElement("div");t.className="font-medium";t.textContent=h;const p=document.createElement("div");p.className="opacity-75";p.textContent=d;b.append(t,p);li.append(n,b);$("steps").append(li);});document.querySelectorAll(".lo").forEach(b=>b.className="lo w-full text-start rounded-full px-3 py-2 "+(b.dataset.l===lang?"bg-violet-600 text-white":""));}
-function show(){document.querySelectorAll(".pane").forEach(p=>p.classList.toggle("hidden",p.id!==tab));document.querySelectorAll(".tab").forEach(b=>{const on=b.dataset.t===tab;b.setAttribute("aria-current",on?"page":"false");b.className="tab w-full flex flex-col items-center justify-center gap-0.5 rounded-full px-1 py-2.5 text-xs font-medium "+(on?"bg-violet-600 text-white shadow":"bg-white/70 dark:bg-zinc-800/70");});document.querySelectorAll(".sp").forEach(p=>p.classList.toggle("hidden",p.id!==sub));document.querySelectorAll(".st").forEach(b=>b.className="st rounded-full py-2 text-sm "+(b.dataset.s===sub?"bg-violet-600 text-white":""));}
-$("langBtn").onclick=()=>$("langMenu").classList.toggle("hidden");document.querySelectorAll(".lo").forEach(b=>b.onclick=()=>{lang=b.dataset.l;$("langMenu").classList.add("hidden");apply();});document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{tab=b.dataset.t;show();});document.querySelectorAll(".st").forEach(b=>b.onclick=()=>{sub=b.dataset.s;show();});apply();show();
+const $=id=>document.getElementById(id);
+const copy={en:{intro:"A clearer way to manage properties, tenants, vendors and the numbers behind your property business.",greeting:"Good day, property owner 👋"},ar:{intro:"طريقة أوضح لإدارة العقارات والمستأجرين والموردين وحسابات أعمالك العقارية.",greeting:"مرحباً بك 👋"},ur:{intro:"جائیدادوں، کرایہ داروں، وینڈرز اور کاروباری حسابات کو منظم کرنے کا آسان طریقہ۔",greeting:"خوش آمدید 👋"}};
+function setLanguage(v){document.documentElement.lang=v;document.documentElement.dir=v==="en"?"ltr":"rtl";$("intro").textContent=copy[v].intro;$("greeting").textContent=copy[v].greeting;$("langQuick").textContent=v.toUpperCase()+"⌄";try{localStorage.setItem("propledger.language",v)}catch(e){}}
+function setCountry(v){const label=v==="AE"?"UAE WORKSPACE • AED":"PAKISTAN WORKSPACE • PKR";$("region").textContent=label;const currency=v==="AE"?"AED":"PKR";$("income").textContent=currency+(v==="AE"?" 18,500":" 185,000");$("expense").textContent=currency+(v==="AE"?" 4,250":" 42,500");try{localStorage.setItem("propledger.country",v)}catch(e){}}
+$("language").addEventListener("change",e=>setLanguage(e.target.value));
+$("country").addEventListener("change",e=>setCountry(e.target.value));
+$("enter").addEventListener("click",()=>{$("onboarding").classList.add("hidden");$("app").classList.remove("hidden");try{localStorage.setItem("propledger.started","yes")}catch(e){}});
+$("langQuick").addEventListener("click",()=>{const n=$("language");n.value=n.value==="en"?"ar":n.value==="ar"?"ur":"en";setLanguage(n.value)});
+document.querySelectorAll("[data-screen],[data-go]").forEach(b=>b.addEventListener("click",()=>showScreen(b.dataset.screen||b.dataset.go)));
+function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("hidden",s.id!==id));document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.screen===id));window.scrollTo({top:0,behavior:"smooth"})}
+["addProperty","addVendor","receipt","payment","updates"].forEach(id=>$(id).addEventListener("click",()=>alert("This feature is scheduled for the next Propledger development milestone. This preview does not save business records.")));
+try{const l=localStorage.getItem("propledger.language")||"en",c=localStorage.getItem("propledger.country")||"AE";$("language").value=l;$("country").value=c;setLanguage(l);setCountry(c);if(localStorage.getItem("propledger.started")==="yes"){$("onboarding").classList.add("hidden");$("app").classList.remove("hidden")}}catch(e){setLanguage("en");setCountry("AE")}
 </script>
-    </div>
-  </body>
+</body>
 </html>
