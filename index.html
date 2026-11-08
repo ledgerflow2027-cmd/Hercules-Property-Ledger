@@ -41,6 +41,36 @@
 .profile-detail .notice{margin-top:10px}
 @media(max-width:360px){.detail-kv{grid-template-columns:1fr}.chart-grid{gap:6px}.chart-box{padding:8px}}
 
+
+.receipt-modal{position:fixed;inset:0;background:rgba(14,20,38,.58);z-index:45;display:none;overflow:auto}
+.receipt-modal.open{display:block}
+.receipt-sheet{max-width:560px;min-height:100dvh;margin:auto;background:#f7f8fc;padding:18px 16px 34px}
+.receipt-sheet .modal-head{position:sticky;top:0;background:#f7f8fc;z-index:2}
+.receipt-form{display:grid;gap:12px}
+.receipt-form .field{margin:0}
+.receipt-form input,.receipt-form select,.receipt-form textarea{width:100%;box-sizing:border-box}
+.receipt-preview{background:#fff;border:1px solid #e4e7ef;border-radius:17px;padding:19px;margin-top:15px;color:#182033}
+.receipt-preview h3{font-size:20px;margin:0 0 5px}
+.receipt-preview .receipt-meta{font-size:11px;color:#667085;line-height:1.6}
+.receipt-amount{font-size:27px;font-weight:850;margin:17px 0;color:#1b765f}
+.receipt-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #edf0f4;font-size:12px}
+.receipt-line span:first-child{color:#667085}
+.receipt-actions{display:flex;gap:8px;margin-top:12px}
+.receipt-actions button{flex:1}
+.receipt-history{display:grid;gap:8px;margin-top:12px}
+.receipt-history-item{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px;text-align:left;width:100%;color:inherit}
+.receipt-history-item .receipt-history-info{flex:1;min-width:0}
+.receipt-history-item strong,.receipt-history-item small{display:block;overflow-wrap:anywhere}
+.receipt-history-item small{font-size:10px;color:var(--muted);margin-top:3px}
+.receipt-history-item .receipt-history-value{font-weight:800;font-size:12px}
+@media print{
+ body *{visibility:hidden!important}
+ #receiptPrintArea,#receiptPrintArea *{visibility:visible!important}
+ #receiptPrintArea{position:absolute!important;left:0!important;top:0!important;width:100%!important;border:0!important;box-shadow:none!important;margin:0!important;padding:24px!important}
+ .receipt-modal,.receipt-sheet{position:static!important;display:block!important;background:#fff!important;padding:0!important;min-height:0!important;overflow:visible!important}
+ .receipt-sheet>*:not(#receiptPrintArea){display:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -129,7 +159,8 @@
   <section id="activity" class="screen hidden">
    <h1 class="page-title">📚 Activity</h1><p class="muted">Income and expense workflows will connect to the accounting ledger in a later milestone.</p>
    <div class="grid"><button class="tile" id="receipt"><span>🧾</span>New receipt<small>Income voucher</small></button><button class="tile" id="payment"><span>💳</span>New payment<small>Expense voucher</small></button></div>
-   <div class="notice">Preview mode: the displayed amounts and records are illustrative only. Do not use this preview to record actual transactions.</div>
+   <div class="notice">Receipt previews are stored only on this device. They do not post to a general ledger or create a cloud backup. Do not use this preview as your official accounting record.</div>
+   <div class="detail-card"><h3>🧾 Saved receipt history</h3><div id="receiptHistory" class="receipt-history"><p class="muted">No receipts saved yet.</p></div></div>
   </section>
   <section id="more" class="screen hidden">
    <h1 class="page-title">☰ More</h1><div class="list" style="margin-top:15px">
@@ -187,6 +218,36 @@
  <div class="field"><label id="vDocumentLabel" for="vDocument">📄 Emirates ID / trade document</label><input id="vDocument" type="file" accept="image/*,.pdf"><div class="upload-hint">Only the selected filename is saved in this preview. Do not store sensitive identity documents until secure cloud storage is implemented.</div></div>
  <div class="notice">Preview storage only: vendor details and compressed photo are saved in this browser on this device. They are not synced, backed up, or protected by a cloud account.</div>
  <button class="primary" type="submit">💾 Save vendor preview</button></form></div></div> 
+
+<div id="receiptModal" class="receipt-modal" role="dialog" aria-modal="true" aria-labelledby="receiptModalTitle">
+ <div class="receipt-sheet">
+  <div class="modal-head"><div><div class="eyebrow" style="color:#6654d9">INCOME WORKSPACE</div><h2 id="receiptModalTitle">🧾 New receipt voucher</h2></div><button type="button" class="close-btn" id="closeReceipt" aria-label="Close">×</button></div>
+  <form id="receiptForm" class="receipt-form">
+   <div class="two">
+    <div class="field"><label for="rNumber">Voucher number</label><input id="rNumber" readonly></div>
+    <div class="field"><label for="rDate">Receipt date *</label><input id="rDate" type="date" required></div>
+   </div>
+   <div class="field"><label for="rProperty">Property *</label><select id="rProperty" required><option value="">Choose property</option></select></div>
+   <div class="field"><label for="rTenant">Tenant *</label><select id="rTenant" required><option value="">Choose tenant</option></select></div>
+   <div class="two">
+    <div class="field"><label for="rCurrency">Currency</label><select id="rCurrency" required><option value="AED">AED</option><option value="PKR">PKR</option></select></div>
+    <div class="field"><label for="rAmount">Amount *</label><input id="rAmount" type="number" min="0.01" step="0.01" required placeholder="0.00"></div>
+   </div>
+   <div class="two">
+    <div class="field"><label for="rMethod">Payment method *</label><select id="rMethod" required><option value="">Choose method</option><option>Cash</option><option>Bank transfer</option><option>Card</option><option>Cheque</option><option>Other</option></select></div>
+    <div class="field"><label for="rReference">Payment reference</label><input id="rReference" maxlength="80" placeholder="Optional"></div>
+   </div>
+   <div class="field"><label for="rDescription">Description / purpose *</label><textarea id="rDescription" required maxlength="240" placeholder="e.g. Monthly rent for November"></textarea></div>
+   <div class="notice">Local preview only. Saving does not post a journal entry, update balances, or sync to cloud storage. Avoid entering sensitive payment details.</div>
+   <button class="primary" type="submit">👁️ Preview receipt</button>
+  </form>
+  <div id="receiptPreviewWrap" hidden>
+   <div id="receiptPrintArea" class="receipt-preview"></div>
+   <div class="receipt-actions"><button type="button" class="secondary" id="editReceipt">✏️ Edit</button><button type="button" class="primary" id="saveReceipt">💾 Save preview</button></div>
+   <div class="receipt-actions"><button type="button" class="secondary" id="printReceipt">🖨️ Print / Save PDF</button></div>
+  </div>
+ </div>
+</div>
 <div id="profileDetail" class="profile-detail" role="dialog" aria-modal="true" aria-label="Property or vendor profile">
  <div class="profile-detail-inner">
   <div class="detail-top"><button class="detail-back" id="closeProfile">← Back</button><span class="muted">PROFILE DETAILS</span></div>
@@ -215,7 +276,8 @@ try{const savedPhoto=localStorage.getItem("propledger.profilePreview");if(savedP
 document.querySelectorAll("[data-screen],[data-go]").forEach(b=>b.addEventListener("click",()=>showScreen(b.dataset.screen||b.dataset.go)));
 function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("hidden",s.id!==id));document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.screen===id));window.scrollTo({top:0,behavior:"smooth"})}
 
-["receipt","payment","updates"].forEach(id=>$(id).addEventListener("click",()=>alert("This feature is scheduled for a later Propledger milestone. This preview does not save business records.")));
+$("payment").addEventListener("click",()=>alert("Payment vouchers are planned for Stage 7."));
+$("updates").addEventListener("click",()=>alert("Updates and notices are planned for a later milestone."));
 const propertyModal=$("propertyModal");
 function openProperty(){propertyModal.classList.add("open");document.body.style.overflow="hidden"}
 function closeProperty(){propertyModal.classList.remove("open");document.body.style.overflow=""}
@@ -239,6 +301,78 @@ $("addVendor").addEventListener("click",openVendor);$("closeVendor").addEventLis
 $("vCountry").addEventListener("change",e=>{const pk=e.target.value==="PK";$("vIdentityLabel").textContent=pk?"CNIC number":"Emirates ID number";$("vDocumentLabel").textContent=pk?"📄 CNIC / business registration document":"📄 Emirates ID / trade document";$("vIdentity").placeholder=pk?"Enter CNIC number":"Enter Emirates ID number"});
 $("vPhoto").addEventListener("change",()=>previewFile($("vPhoto"),"vPhotoPreview"));
 $("vendorForm").addEventListener("submit",async e=>{e.preventDefault();const photo=await compressImage($("vPhoto").files[0]),doc=$("vDocument").files[0],vendor={id:"v"+Date.now(),name:$("vName").value.trim(),category:$("vType").value,country:$("vCountry").value,address:$("vAddress").value.trim(),phone:$("vPhone").value.trim(),email:$("vEmail").value.trim(),identity:$("vIdentity").value.trim(),identityType:$("vCountry").value==="PK"?"CNIC":"Emirates ID",photo,documentName:doc?doc.name:""};try{const all=getVendors();all.push(vendor);localStorage.setItem("propledger.vendors",JSON.stringify(all));renderVendors();$("vendorForm").reset();$("vPhotoPreview").innerHTML="";$("vCountry").dispatchEvent(new Event("change"));closeVendor();alert("Vendor saved in this device's local preview. It is not uploaded to cloud storage.")}catch(err){alert("Could not save this vendor on this device. Try a smaller photo. No cloud copy was created.")}});
+
+
+function getReceipts(){try{return JSON.parse(localStorage.getItem("propledger.receipts")||"[]")}catch(e){return []}}
+function receiptNextNumber(){const list=getReceipts();const n=list.length+1;return "PR-"+String(new Date().getFullYear())+"-"+String(n).padStart(4,"0")}
+function receiptSelectedProperty(){return getProperties().find(p=>p.id===$("rProperty").value)}
+function receiptRefreshTenants(){
+ const property=receiptSelectedProperty(),select=$("rTenant");select.innerHTML='<option value="">Choose tenant</option>';
+ if(!property)return;
+ const tenant=property.tenant||{};
+ if(tenant.name){const opt=document.createElement("option");opt.value=tenant.name;opt.textContent=tenant.name;select.appendChild(opt)}
+ else{const opt=document.createElement("option");opt.value="";opt.textContent="No tenant is saved for this property";select.appendChild(opt)}
+}
+function receiptRenderHistory(){
+ const host=$("receiptHistory");if(!host)return;const list=getReceipts().slice().reverse();host.innerHTML="";
+ if(!list.length){host.innerHTML='<p class="muted">No receipts saved yet.</p>';return}
+ list.forEach(r=>{const btn=document.createElement("button");btn.type="button";btn.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const name=document.createElement("strong");name.textContent=r.number+" • "+r.tenant;const meta=document.createElement("small");meta.textContent=r.date+" • "+r.property+" • "+r.method;info.append(name,meta);const value=document.createElement("span");value.className="receipt-history-value";value.textContent=r.currency+" "+Number(r.amount).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});btn.append(info,value);btn.addEventListener("click",()=>receiptShowSaved(r));host.appendChild(btn)})
+}
+function receiptPopulateProperties(){
+ const select=$("rProperty");select.innerHTML='<option value="">Choose property</option>';
+ getProperties().forEach(p=>{const opt=document.createElement("option");opt.value=p.id;opt.textContent=p.name+" • "+p.country;select.appendChild(opt)});
+}
+function receiptOpen(){
+ $("receiptModal").classList.add("open");document.body.style.overflow="hidden";
+ $("receiptForm").reset();$("receiptForm").hidden=false;$("receiptPreviewWrap").hidden=true;
+ $("rNumber").value=receiptNextNumber();$("rDate").value=new Date().toLocaleDateString("en-CA");
+ receiptPopulateProperties();receiptRefreshTenants();
+}
+function receiptClose(){$("receiptModal").classList.remove("open");document.body.style.overflow=""}
+function receiptEscape(v){return detailEscape(v)}
+function receiptBuildPreview(r){
+ const host=$("receiptPrintArea");
+ host.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px;align-items:start"><div><h3>🧾 PAYMENT RECEIPT</h3><div class="receipt-meta">PROPLE DGER 2027 • INCOME VOUCHER<br>Receipt acknowledgement preview</div></div><div style="text-align:right;font-size:11px"><strong>'+receiptEscape(r.number)+'</strong><br>'+receiptEscape(r.date)+'</div></div>'+
+ '<div class="receipt-amount">'+receiptEscape(r.currency)+' '+Number(r.amount).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+'</div>'+
+ '<div class="receipt-line"><span>Received from</span><strong>'+receiptEscape(r.tenant)+'</strong></div>'+
+ '<div class="receipt-line"><span>Property</span><strong>'+receiptEscape(r.property)+'</strong></div>'+
+ '<div class="receipt-line"><span>Payment method</span><strong>'+receiptEscape(r.method)+'</strong></div>'+
+ '<div class="receipt-line"><span>Payment reference</span><strong>'+receiptEscape(r.reference||"—")+'</strong></div>'+
+ '<div class="receipt-line"><span>Description</span><strong>'+receiptEscape(r.description)+'</strong></div>'+
+ '<p class="receipt-meta" style="margin-top:18px">This is a locally generated preview only. It is not proof of cleared funds, a posted accounting transaction, or a tax invoice.</p>'+
+ '<div style="display:flex;justify-content:space-between;margin-top:28px;font-size:11px"><span>Received by: __________________</span><span>Signature: ______________</span></div>';
+}
+function receiptShowSaved(r){
+ $("receiptForm").hidden=true;$("receiptPreviewWrap").hidden=false;receiptBuildPreview(r);
+ $("saveReceipt").hidden=true;$("editReceipt").hidden=true;$("receiptModal").classList.add("open");document.body.style.overflow="hidden";
+}
+let receiptDraft=null;
+$("receipt").addEventListener("click",receiptOpen);
+$("closeReceipt").addEventListener("click",receiptClose);
+$("receiptModal").addEventListener("click",e=>{if(e.target===$("receiptModal"))receiptClose()});
+$("rProperty").addEventListener("change",()=>{
+ const p=receiptSelectedProperty();receiptRefreshTenants();
+ if(p)$("rCurrency").value=p.country==="PK"?"PKR":"AED";
+});
+$("receiptForm").addEventListener("submit",e=>{
+ e.preventDefault();const p=receiptSelectedProperty();
+ if(!p){alert("Please register and select a property first.");return}
+ const tenant=p.tenant||{};
+ if(!tenant.name||$("rTenant").value!==tenant.name){alert("This property needs a saved tenant before a receipt can be created. Add the tenant in Property registration first.");return}
+ const amount=Number($("rAmount").value);
+ if(!Number.isFinite(amount)||amount<=0){alert("Enter an amount greater than zero.");return}
+ if((p.country==="PK"?"PKR":"AED")!==$("rCurrency").value){alert("Receipt currency must match the selected property's country. Select the matching currency.");return}
+ receiptDraft={id:"rc"+Date.now(),number:$("rNumber").value,date:$("rDate").value,propertyId:p.id,property:p.name,tenant:$("rTenant").value,currency:$("rCurrency").value,amount,method:$("rMethod").value,reference:$("rReference").value.trim(),description:$("rDescription").value.trim(),status:"Local preview"};
+ receiptBuildPreview(receiptDraft);$("receiptForm").hidden=true;$("receiptPreviewWrap").hidden=false;$("saveReceipt").hidden=false;$("editReceipt").hidden=false;
+});
+$("editReceipt").addEventListener("click",()=>{$("receiptPreviewWrap").hidden=true;$("receiptForm").hidden=false});
+$("saveReceipt").addEventListener("click",()=>{
+ if(!receiptDraft)return;
+ try{const list=getReceipts();list.push(receiptDraft);localStorage.setItem("propledger.receipts",JSON.stringify(list));receiptRenderHistory();$("saveReceipt").hidden=true;$("editReceipt").hidden=true;alert("Receipt preview saved on this device only. No accounting entries or cloud records were created.");}
+ catch(e){alert("Could not save this receipt on this device. No cloud record was created.")}
+});
+$("printReceipt").addEventListener("click",()=>window.print());
+receiptRenderHistory();
 
 renderProperties();renderVendors();
 
