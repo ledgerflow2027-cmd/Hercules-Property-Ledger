@@ -1599,6 +1599,27 @@ function stage16ChartSvg(kind,months,income,expense){
  }
  return '<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Monthly income and expense line chart"><polyline points="'+points(income)+'" fill="none" stroke="#6654d9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="'+points(expense)+'" fill="none" stroke="#18a999" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><div class="stage16-legend"><span>🟣 Income</span><span>🟢 Expenses</span></div>';
 }
+function stage16RentStatus(invoice,receivedAmount,receivedDate){
+ const amount=Number(invoice.amount)||0,received=Number(receivedAmount)||0,due=String(invoice.dueDate||"").slice(0,10),paid=String(receivedDate||invoice.paidDate||"").slice(0,10),today=new Date().toISOString().slice(0,10);
+ if(received<=0)return due&&due<today?"Overdue — not received":"Not received";
+ if(received+0.005<amount)return paid&&due&&paid>due?"Partially received — late":"Partially received";
+ return paid&&due&&paid>due?"Paid late":"Paid on time";
+}
+function stage16RentActivityRows(d){
+ const invoices=d.rent.slice().sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+ const receipts=d.receipts.slice().sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+ const used=new Set(),out=[];
+ invoices.forEach(inv=>{
+  const linked=receipts.filter(r=>!used.has(r.id)&&(r.invoiceId===inv.id||( !r.invoiceId&&r.propertyId===inv.propertyId&&String(r.tenant||"")===String(inv.tenant||"")&&String(r.date||"").slice(0,7)===String(inv.date||"").slice(0,7))));
+  linked.forEach(r=>used.add(r.id));
+  const received=linked.reduce((sum,r)=>sum+(Number(r.amount)||0),0);
+  const latest=linked.map(r=>String(r.date||"")).sort().pop()||inv.paidDate||"";
+  out.push({date:inv.date,kind:"Rent billed",ref:inv.number,tenant:inv.tenant,amount:Number(inv.amount)||0,received,status:stage16RentStatus(inv,received||inv.paidAmount,latest),dueDate:inv.dueDate});
+  linked.forEach(r=>out.push({date:r.date,kind:"Rent received",ref:r.number,tenant:r.tenant,amount:Number(r.amount)||0,status:stage16RentStatus(inv,r.amount,r.date),dueDate:inv.dueDate}));
+ });
+ receipts.filter(r=>!used.has(r.id)).forEach(r=>out.push({date:r.date,kind:"Rent received",ref:r.number,tenant:r.tenant,amount:Number(r.amount)||0,status:"Rent received — receipt recorded",dueDate:""}));
+ return out.sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.kind).localeCompare(String(b.kind)));
+}
 function stage16RenderPropertyFinancials(id){
  const p=getProperties().find(x=>x.id===id);if(!p)return;
  const from=$("stage16From")?.value||"2025-11",to=$("stage16Till")?.value||new Date().toISOString().slice(0,7);
@@ -1606,17 +1627,11 @@ function stage16RenderPropertyFinancials(id){
  if(from>to){if(status)status.textContent="From month must be earlier than or equal to Till month.";return}
  const d=stage16PeriodRows(id,from,to),income=d.rent.reduce((s,x)=>s+(Number(x.amount)||0),0),expense=d.bills.reduce((s,x)=>s+(Number(x.amount)||0),0),received=d.receipts.reduce((s,x)=>s+(Number(x.amount)||0),0),paid=d.payments.reduce((s,x)=>s+(Number(x.amount)||0),0),currency=p.country==="PK"?"PKR":"AED";
  const months=stage16MonthKeys(from,to),inc=months.map(m=>d.rent.filter(x=>String(x.date).slice(0,7)===m).reduce((s,x)=>s+(Number(x.amount)||0),0)),exp=months.map(m=>d.bills.filter(x=>String(x.date).slice(0,7)===m).reduce((s,x)=>s+(Number(x.amount)||0),0));
- const vendors=getVendors().filter(v=>v.propertyId===id);
- const tenant=p.tenant||{};
- const rows=[
- ...d.rent.map(x=>({date:x.date,kind:"Rent charge",ref:x.number,party:x.tenant,amount:Number(x.amount)||0})),
- ...d.receipts.map(x=>({date:x.date,kind:"Rent received",ref:x.number,party:x.tenant,amount:-(Number(x.amount)||0)})),
- ...d.bills.map(x=>({date:x.date,kind:"Vendor charge",ref:x.number,party:x.vendor,amount:Number(x.amount)||0})),
- ...d.payments.map(x=>({date:x.date,kind:"Vendor payment",ref:x.number,party:x.vendor,amount:-(Number(x.amount)||0)}))
- ].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+ const vendors=getVendors().filter(v=>v.propertyId===id),rentRows=stage16RentActivityRows(d);
  const host=$("stage16FinancialBody");if(!host)return;
- host.innerHTML='<div class="stage16-summary"><div><small>Rent billed</small><strong>'+stage16Money(income,currency)+'</strong></div><div><small>Rent received</small><strong>'+stage16Money(received,currency)+'</strong></div><div><small>Vendor costs</small><strong>'+stage16Money(expense,currency)+'</strong></div><div><small>Vendor paid</small><strong>'+stage16Money(paid,currency)+'</strong></div><div><small>P&L net</small><strong>'+stage16Money(income-expense,currency)+'</strong></div><div><small>SOA net due</small><strong>'+stage16Money(income+expense-received-paid,currency)+'</strong></div></div><div class="detail-card"><strong>📄 SOA and P&amp;L reports are PDF only</strong><p class="contract-note">Use the two PDF buttons above to view the selected report. Each PDF contains no pictures and is limited to 15 data lines per page.</p></div>+<div class="stage16-chart-grid"><div class="chart-box"><strong>🥧 Income / expense mix</strong>'+stage16ChartSvg("pie",months,inc,exp)+'</div><div class="chart-box"><strong>📉 Monthly trend</strong>'+stage16ChartSvg("line",months,inc,exp)+'</div><div class="chart-box"><strong>📊 Monthly comparison</strong>'+stage16ChartSvg("bar",months,inc,exp)+'</div><div class="chart-box"><strong>🌊 Cumulative net</strong>'+stage16ChartSvg("area",months,inc,exp)+'</div></div><p class="contract-note">Demo dataset only. Amounts are not posted to a trusted AI accounting ledger. Display currency '+currency+' is a label only; no conversion is performed.</p>';
- if(status)status.textContent="Period applied to the graphs and PDF reports. "+rows.length+" SOA data line(s); "+months.length+" P&L month(s); "+vendors.length+" linked vendor(s).";
+ const rentHtml=rentRows.length?'<div class="stage16-table" style="overflow-x:auto"><strong>🏠 Property rent income — all entries</strong><p class="contract-note">Only rent activity for '+propertySafe(p.name)+' is shown. Each receipt is listed separately and marked against its due date.</p><table style="width:100%;border-collapse:collapse;font-size:10px;min-width:470px;margin-top:8px"><thead><tr style="text-align:left;background:#f5f6fb"><th style="padding:8px">Date</th><th style="padding:8px">Entry / reference</th><th style="padding:8px">Tenant</th><th style="padding:8px;text-align:right">Amount</th><th style="padding:8px">Status</th></tr></thead><tbody>'+rentRows.map(r=>'<tr style="border-top:1px solid #e7eaf0"><td style="padding:8px;white-space:nowrap">'+propertySafe(r.date||"—")+'</td><td style="padding:8px">'+(r.kind==="Rent received"?"💰 ":"🧾 ")+propertySafe(r.kind)+'<br><small>'+propertySafe(r.ref||"—")+'</small></td><td style="padding:8px">'+propertySafe(r.tenant||"—")+'</td><td style="padding:8px;text-align:right;white-space:nowrap">'+stage16Money(r.amount,currency)+'</td><td style="padding:8px"><strong style="color:'+(String(r.status).includes("late")||String(r.status).includes("Overdue")?"#a65b12":"#18745e")+'">'+propertySafe(r.status)+'</strong>'+(r.dueDate?'<br><small>Due '+propertySafe(r.dueDate)+'</small>':"")+'</td></tr>').join("")+'</tbody></table></div>':'<div class="stage16-table"><strong>🏠 Property rent income — all entries</strong><p class="contract-note">No rent charges or receipts were found for this property in the selected period.</p></div>';
+ host.innerHTML='<div class="stage16-summary"><div><small>Rent billed</small><strong>'+stage16Money(income,currency)+'</strong></div><div><small>Rent received</small><strong>'+stage16Money(received,currency)+'</strong></div><div><small>Vendor costs</small><strong>'+stage16Money(expense,currency)+'</strong></div><div><small>Vendor paid</small><strong>'+stage16Money(paid,currency)+'</strong></div><div><small>P&L net</small><strong>'+stage16Money(income-expense,currency)+'</strong></div><div><small>SOA net due</small><strong>'+stage16Money(income+expense-received-paid,currency)+'</strong></div></div>'+rentHtml+'<div class="detail-card"><strong>📄 SOA and P&amp;L reports are PDF only</strong><p class="contract-note">Use the two PDF buttons above to view the selected report. Each PDF contains no pictures and is limited to 15 data lines per page.</p></div><div class="stage16-chart-grid"><div class="chart-box"><strong>🥧 Income / expense mix</strong>'+stage16ChartSvg("pie",months,inc,exp)+'</div><div class="chart-box"><strong>📉 Monthly trend</strong>'+stage16ChartSvg("line",months,inc,exp)+'</div><div class="chart-box"><strong>📊 Monthly comparison</strong>'+stage16ChartSvg("bar",months,inc,exp)+'</div><div class="chart-box"><strong>🌊 Cumulative net</strong>'+stage16ChartSvg("area",months,inc,exp)+'</div></div><p class="contract-note">Demo dataset only. Amounts are not posted to a trusted AI accounting ledger. Display currency '+currency+' is a label only; no conversion is performed.</p>';
+ if(status)status.textContent="Period applied to the graphs and PDF reports. "+rentRows.length+" rent income entries; "+months.length+" P&L month(s); "+vendors.length+" linked vendor(s).";
  $("stage16SOAPdf")?.addEventListener("click",()=>stage16CreatePdf(id,"SOA",from,to));
  $("stage16PLPdf")?.addEventListener("click",()=>stage16CreatePdf(id,"P&L",from,to));
 }
