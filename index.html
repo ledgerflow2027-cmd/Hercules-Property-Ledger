@@ -105,7 +105,7 @@
 }
 </style>
 <style id="seamless-dashboard-carousel-loop">
-/* The viewport is stationary; only the inner duplicated track moves. */
+/* Fixed viewport + exact measured travel distance for a seamless loop. */
 #dashboard .picture-track{
  display:block!important;
  position:relative!important;
@@ -130,7 +130,7 @@
  will-change:transform;
  transform:translate3d(0,0,0);
  backface-visibility:hidden;
- animation:ledgerly-loop-left 18s linear infinite!important;
+ animation:ledgerly-loop-left 36s linear infinite!important;
 }
 #dashboard .picture-loop-group{
  display:flex!important;
@@ -157,14 +157,14 @@
 }
 @keyframes ledgerly-loop-left{
  from{transform:translate3d(0,0,0)}
- to{transform:translate3d(-50%,0,0)}
+ to{transform:translate3d(var(--loop-shift),0,0)}
 }
 @keyframes ledgerly-loop-right{
- from{transform:translate3d(-50%,0,0)}
+ from{transform:translate3d(var(--loop-shift),0,0)}
  to{transform:translate3d(0,0,0)}
 }
 @media(max-width:599px){
- #dashboard .picture-loop-track{animation-duration:18s!important}
+ #dashboard .picture-loop-track{animation-duration:36s!important}
 }
 @media(prefers-reduced-motion:reduce){
  #dashboard .picture-loop-track{animation:none!important;transform:none!important}
@@ -1373,8 +1373,9 @@ function enableSlowPictureLoop(host,kind){
  if(host.dataset.loopReady==="true")return;
  const cards=Array.from(host.children);
  if(!cards.length)return;
- // Two identical, fixed-width groups let the animation wrap at an exact
- // half-track distance. No JS timer or DOM reset runs at the loop boundary.
+ // Duplicate the complete card sequence. Measure the first group in pixels
+ // and animate by that exact distance so the next group is already in place
+ // when the cycle wraps; no percentage rounding or DOM reset at the seam.
  const track=document.createElement("div");
  track.className="picture-loop-track"+(kind==="tenant"?" picture-loop-reverse":"");
  const makeGroup=(clone=false)=>{
@@ -1383,14 +1384,25 @@ function enableSlowPictureLoop(host,kind){
   group.setAttribute("aria-hidden",clone?"true":"false");
   cards.forEach(card=>{
    const node=clone?card.cloneNode(true):card;
-   if(clone)node.setAttribute("tabindex","-1");
+   if(clone){node.setAttribute("tabindex","-1");node.setAttribute("aria-hidden","true");}
    node.querySelectorAll("img").forEach(img=>{img.loading="eager";img.decoding="async"});
    group.appendChild(node);
   });
   return group;
  };
- track.append(makeGroup(false),makeGroup(true));
+ const first=makeGroup(false),second=makeGroup(true);
+ track.append(first,second);
  host.replaceChildren(track);
+ const setLoopDistance=()=>{
+  const distance=first.getBoundingClientRect().width;
+  if(distance>0)track.style.setProperty("--loop-shift",(-distance)+"px");
+ };
+ setLoopDistance();
+ if(typeof ResizeObserver!=="undefined"){
+  const observer=new ResizeObserver(setLoopDistance);
+  observer.observe(first);
+  track._loopResizeObserver=observer;
+ }
  host.dataset.loopReady="true";
 }
 function dashLateTenantSamples(){
