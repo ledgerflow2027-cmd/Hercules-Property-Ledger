@@ -1200,6 +1200,9 @@ function renderDashboardSlides(){
  });
 }
 function refreshPortfolioDashboard(){
+ // Render the three dashboard carousels first, independently of any saved-data/report calculation.
+ // This guarantees the sample slides are visible even if a later dashboard metric encounters bad local data.
+ renderDashboardSlides();
  const currency=getDisplayCurrency();
  // Country is record metadata, not a ledger partition: dashboard totals include all organisation records.
  const properties=getProperties(),vendors=getVendors();
@@ -1221,8 +1224,6 @@ function refreshPortfolioDashboard(){
  $("dashboardActivitySummary").textContent=month+" · "+receipts.length+" locally saved receipt(s): "+dashMoney(receiptTotal,currency)+" · "+payments.length+" locally saved payment(s): "+dashMoney(paymentTotal,currency)+". These records are unposted source vouchers.";
  $("dashboardRentStatus").textContent=tenants.length+" named tenant(s) are linked to saved properties. Rent schedules, invoices and due dates are not recorded yet, so overdue rent cannot be calculated reliably.";
  $("dashboardVendorStatus").textContent=vendors.length+" vendor profile(s) saved. "+payments.length+" payment voucher(s) recorded this month; this is not a payable balance. Vendor bills and approved allocations are not yet available.";
- renderDashboardSlides();
- 
  const recentHost=$("dashboardRecent");recentHost.innerHTML="";
  const recentRows=[...getReceipts().map(r=>({kind:"Receipt",number:r.number||"Receipt",date:r.date||"",party:r.tenant||"Tenant",amount:dashCents(r.amount)})),...getPayments().map(p=>({kind:"Payment",number:p.number||"Payment",date:p.date||"",party:p.vendor||"Vendor",amount:dashCents(p.amount)}))].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,5);
  if(!recentRows.length){const empty=document.createElement("div");empty.className="empty-state";empty.textContent="No local receipt or payment vouchers saved yet.";recentHost.appendChild(empty)}
