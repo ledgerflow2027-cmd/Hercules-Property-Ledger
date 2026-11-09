@@ -538,7 +538,7 @@ $("langQuick").addEventListener("click",()=>{const n=$("language");n.value=n.val
 $("profileUpload").addEventListener("change",e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!file.type.startsWith("image/")){alert("Please choose an image file.");return}compressImage(file).then(data=>{if(!data){alert("Could not read this image.");return}try{localStorage.setItem("propledger.profilePreview",data);applyProfilePhoto(data)}catch(err){alert("This image is too large to save on this device.")}})});
 
 document.querySelectorAll("[data-screen],[data-go]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".modal-backdrop.open,.receipt-modal.open,.profile-detail.open").forEach(layer=>layer.classList.remove("open"));document.body.style.overflow="";showScreen(b.dataset.screen||b.dataset.go)}));
-function showScreen(id){const target=$(id);if(!target||!target.classList.contains("screen"))return;document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("hidden",s!==target));const section=id==="dashboard"?"dashboard":["properties"].includes(id)?"properties":["vendors"].includes(id)?"vendors":"more";if(id==="tenants")renderTenants();document.querySelectorAll(".navbtn").forEach(b=>{const active=b.dataset.screen===section;b.classList.toggle("active",active);if(active)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});window.scrollTo({top:0,behavior:"smooth"})}
+function showScreen(id){const target=$(id);if(!target||!target.classList.contains("screen"))return;document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("hidden",s!==target));const section=id==="dashboard"?"dashboard":["properties"].includes(id)?"properties":["vendors"].includes(id)?"vendors":"more";if(id==="dashboard")renderDashboardSlides();if(id==="tenants")renderTenants();document.querySelectorAll(".navbtn").forEach(b=>{const active=b.dataset.screen===section;b.classList.toggle("active",active);if(active)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});window.scrollTo({top:0,behavior:"smooth"})}
 
 $("payment").addEventListener("click",()=>alert("Payment vouchers are planned for Stage 7."));
 $("updates").addEventListener("click",()=>showScreen("notices"));
@@ -1183,6 +1183,19 @@ function enableSlowPictureLoop(host){
  originals.forEach(node=>{const clone=node.cloneNode(true);clone.setAttribute("aria-hidden","true");host.appendChild(clone)});
  host.dataset.loopReady="true";
 }
+function renderDashboardSlides(){
+ const groups=[
+  ["dashboardProperties",dashPropertySamples,"property"],
+  ["dashboardTenants",dashTenantSamples,"tenant"],
+  ["dashboardVendors",dashVendorSamples,"vendor"]
+ ];
+ groups.forEach(([id,items,kind])=>{
+  const host=$(id);if(!host)return;
+  host.innerHTML="";
+  items.forEach(item=>dashPictureCard(host,item,kind,""));
+  enableSlowPictureLoop(host);
+ });
+}
 function refreshPortfolioDashboard(){
  const currency=getDisplayCurrency();
  // Country is record metadata, not a ledger partition: dashboard totals include all organisation records.
@@ -1205,16 +1218,7 @@ function refreshPortfolioDashboard(){
  $("dashboardActivitySummary").textContent=month+" · "+receipts.length+" locally saved receipt(s): "+dashMoney(receiptTotal,currency)+" · "+payments.length+" locally saved payment(s): "+dashMoney(paymentTotal,currency)+". These records are unposted source vouchers.";
  $("dashboardRentStatus").textContent=tenants.length+" named tenant(s) are linked to saved properties. Rent schedules, invoices and due dates are not recorded yet, so overdue rent cannot be calculated reliably.";
  $("dashboardVendorStatus").textContent=vendors.length+" vendor profile(s) saved. "+payments.length+" payment voucher(s) recorded this month; this is not a payable balance. Vendor bills and approved allocations are not yet available.";
- const propertyHost=$("dashboardProperties");propertyHost.innerHTML="";
- dashPropertySamples.forEach(item=>dashPictureCard(propertyHost,item,"property",""));
- 
- const tenantHost=$("dashboardTenants");tenantHost.innerHTML="";
- dashTenantSamples.forEach(item=>dashPictureCard(tenantHost,item,"tenant",""));
- 
- const vendorHost=$("dashboardVendors");vendorHost.innerHTML="";
- dashVendorSamples.forEach(item=>dashPictureCard(vendorHost,item,"vendor",""));
- 
- enableSlowPictureLoop(propertyHost);enableSlowPictureLoop(tenantHost);enableSlowPictureLoop(vendorHost);
+ renderDashboardSlides();
  
  const recentHost=$("dashboardRecent");recentHost.innerHTML="";
  const recentRows=[...getReceipts().map(r=>({kind:"Receipt",number:r.number||"Receipt",date:r.date||"",party:r.tenant||"Tenant",amount:dashCents(r.amount)})),...getPayments().map(p=>({kind:"Payment",number:p.number||"Payment",date:p.date||"",party:p.vendor||"Vendor",amount:dashCents(p.amount)}))].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,5);
