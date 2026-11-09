@@ -1637,7 +1637,7 @@ function stage16RenderPropertyFinancials(id){
    ...d.rent.map(x=>({date:x.date,description:"Rent billed",ref:x.number,party:x.tenant,income:Number(x.amount)||0,expense:0,settlement:0,status:"Rent charge"})),
    ...d.receipts.map(x=>({date:x.date,description:"Rent received",ref:x.number,party:x.tenant,income:0,expense:0,settlement:Number(x.amount)||0,status:"Receipt recorded"})),
    ...d.bills.map(x=>({date:x.date,description:"Vendor expense",ref:x.number,party:x.vendor,income:0,expense:Number(x.amount)||0,settlement:0,status:"Expense recorded"})),
-   ...d.payments.map(x=>({date:x.date,description:"Vendor payment",ref:x.number,party:x.vendor,income:0,expense:0,settlement:-(Number(x.amount)||0),status:"Payment recorded"}))
+   ...d.payments.map(x=>({date:x.date,description:"Vendor payment",ref:x.number,party:x.vendor,income:0,expense:0,settlement:Number(x.amount)||0,status:"Payment recorded"}))
   ].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   let running=opening;
   const rows=entries.map(x=>{running+=x.income+x.expense-x.settlement;return '<tr><td>'+propertySafe(x.date||"—")+'</td><td><strong>'+propertySafe(x.description)+'</strong><small>'+propertySafe(x.ref||"—")+'</small></td><td>'+propertySafe(x.party||"—")+'</td><td class="num">'+(x.income?stage16Money(x.income,currency):"—")+'</td><td class="num">'+(x.expense?stage16Money(x.expense,currency):"—")+'</td><td class="num">'+(x.settlement?stage16Money(x.settlement,currency):"—")+'</td><td class="num">'+stage16Money(running,currency)+'</td><td>'+propertySafe(x.status)+'</td></tr>'}).join("");
@@ -1680,7 +1680,7 @@ function stage16CreatePdf(id,type,from,to){
     ...d.rent.map(x=>({date:x.date,kind:"Rent billed",ref:x.number,party:x.tenant,income:Number(x.amount)||0,expense:0,settle:0,status:"Rent charge"})),
     ...d.receipts.map(x=>({date:x.date,kind:"Rent received",ref:x.number,party:x.tenant,income:0,expense:0,settle:Number(x.amount)||0,status:"Receipt recorded"})),
     ...d.bills.map(x=>({date:x.date,kind:"Vendor expense",ref:x.number,party:x.vendor,income:0,expense:Number(x.amount)||0,settle:0,status:"Expense recorded"})),
-    ...d.payments.map(x=>({date:x.date,kind:"Vendor payment",ref:x.number,party:x.vendor,income:0,expense:0,settle:-(Number(x.amount)||0),status:"Payment recorded"}))
+    ...d.payments.map(x=>({date:x.date,kind:"Vendor payment",ref:x.number,party:x.vendor,income:0,expense:0,settle:Number(x.amount)||0,status:"Payment recorded"}))
    ].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
    let balance=opening;
    rows=["OPENING BALANCE | "+currency+" "+opening.toFixed(2),...entries.map(x=>{balance+=x.income+x.expense-x.settle;return [x.date,x.kind,x.ref||"",x.party||"",x.income?("Income "+currency+" "+x.income.toFixed(2)):"",x.expense?("Expense "+currency+" "+x.expense.toFixed(2)):"",x.settle?("Received/paid "+currency+" "+x.settle.toFixed(2)):"",x.status,"Balance "+currency+" "+balance.toFixed(2)].filter(Boolean).join(" | ")}),"CLOSING BALANCE | "+currency+" "+balance.toFixed(2)];
