@@ -121,7 +121,7 @@
  will-change:transform;
  transform:translate3d(0,0,0);
  backface-visibility:hidden;
- animation:ledgerly-loop-left 100s linear infinite;
+ animation:ledgerly-loop-left 36s linear infinite;
 }
 #dashboard .picture-loop-group{
  display:flex;
@@ -146,7 +146,7 @@
  to{transform:translate3d(0,0,0)}
 }
 @media(max-width:599px){
- #dashboard .picture-loop-track{animation-duration:100s}
+ #dashboard .picture-loop-track{animation-duration:36s}
 }
 @media(prefers-reduced-motion:reduce){
  #dashboard .picture-loop-track{animation:none!important;transform:none!important}
@@ -1376,11 +1376,12 @@ function enableSlowPictureLoop(host,kind){
  host.dataset.loopReady="true";
 }
 function dashLateTenantSamples(){
- try{const invoices=JSON.parse(localStorage.getItem("propledger.rentInvoices")||"[]"),props=JSON.parse(localStorage.getItem("propledger.properties")||"[]"),today=new Date().toISOString().slice(0,10),seen=new Set();
-  const late=invoices.filter(x=>x&&x.demoSample&&String(x.date||"").slice(0,7)===today.slice(0,7)&&x.dueDate<today&&(Number(x.paidAmount||0)<Number(x.amount||0)||String(x.paidDate||"")>String(x.dueDate||""))).sort((a,b)=>String(b.dueDate).localeCompare(String(a.dueDate))),rows=[];
-  late.forEach(inv=>{const key=inv.tenantId||inv.propertyId;if(seen.has(key))return;seen.add(key);const p=props.find(x=>x.id===inv.propertyId),t=p?.tenant||{},idx=Math.max(0,props.findIndex(x=>x.id===inv.propertyId)),image=dashTenantSamples[idx%dashTenantSamples.length]||{},outstanding=Math.max(0,Number(inv.amount||0)-Number(inv.paidAmount||0));rows.push({title:t.name||inv.tenant||"Tenant",note:outstanding>0?"Overdue · "+inv.dueDate:"Paid late · "+(inv.paidDate||""),photo:t.photo||image.photo||"",emoji:"⚠️"})});
-  return rows.length?rows:[{title:"No late rent",note:"All sample rents are up to date",emoji:"✅"}];
- }catch(e){return [{title:"Rent status unavailable",note:"Sample rent schedule not loaded",emoji:"⚠️"}]}
+ // The dashboard tenant carousel is a directory preview, not a late-only filter.
+ // Always render every seeded tenant profile so all 12 are reachable in the stream.
+ return dashTenantSamples.map((sample,index)=>({
+  ...sample,
+  note:"Tenant profile "+String(index+1).padStart(2,"0")+" · Sample"
+ }));
 }
 function renderDashboardSlides(){
  const groups=[
