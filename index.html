@@ -1207,31 +1207,51 @@ function dashCard(host,icon,title,subtitle){
 function dashPictureCard(host,item,kind,id){
  const card=document.createElement("article");card.className="picture-card";card.tabIndex=0;card.setAttribute("role","button");card.setAttribute("aria-label","Open "+(item.title||kind));card.dataset.dashboardKind=kind;card.dataset.dashboardId=id||"";
  const art=document.createElement("div");art.className="picture-card-art";art.setAttribute("aria-hidden","true");
- if(item.photo){const img=document.createElement("img");img.src=item.photo;img.alt="";img.loading="lazy";img.style.cssText="width:100%;height:100%;object-fit:cover;border-radius:12px";art.appendChild(img)}else art.textContent=item.emoji||"✨";
+ if(item.photo){
+  const img=document.createElement("img");img.src=item.photo;img.alt="";img.loading="lazy";img.decoding="async";
+  img.style.cssText="width:100%;height:100%;object-fit:cover;border-radius:12px";
+  img.onerror=()=>{art.textContent=item.emoji||"✨"};
+  art.appendChild(img);
+ }else art.textContent=item.emoji||"✨";
  const copy=document.createElement("div");copy.className="picture-card-copy";
  const title=document.createElement("strong");title.textContent=item.title;
  copy.append(title);card.append(art,copy);host.appendChild(card);
 }
+// Sample images are served from this repository alongside index.html.
 const dashPropertySamples=[
- {title:"Modern apartment",note:"Residential · Sample",emoji:"🏢"},
- {title:"Family villa",note:"Residential · Sample",emoji:"🏡"},
- {title:"Residential building",note:"Multi-unit · Sample",emoji:"🏙️"},
- {title:"Retail property",note:"Commercial · Sample",emoji:"🏬"},
- {title:"Office space",note:"Commercial · Sample",emoji:"🏢"}
+ {title:"Mediterranean villa",note:"Residential · Sample",photo:"Beautiful_Mediterranean_villa_with_white_stucco_walls_terrac.jpg",emoji:"🏡"},
+ {title:"Suburban family home",note:"Residential · Sample",photo:"Charming_suburban_house_with_front_porch_brick_and_siding_ex.jpg",emoji:"🏠"},
+ {title:"Contemporary home",note:"Residential · Sample",photo:"Contemporary_single-family_home_with_wood_and_white_exterior.jpg",emoji:"🏡"},
+ {title:"Curved condominium",note:"Multi-unit · Sample",photo:"Elegant_condominium_building_curved_architecture_balconies_w.jpg",emoji:"🏢"},
+ {title:"Luxury high-rise",note:"Multi-unit · Sample",photo:"Luxury_high-rise_apartment_complex_glass_and_steel_facade_ur.jpg",emoji:"🏙️"},
+ {title:"Minimalist modern home",note:"Residential · Sample",photo:"Minimalist_modern_home_concrete_and_wood_materials_flat_roof (3).jpg",emoji:"🏠"},
+ {title:"Modern apartment",note:"Multi-unit · Sample",photo:"Modern_luxury_apartment_building_exterior_at_dusk_warm_inter.jpg",emoji:"🏢"},
+ {title:"Townhouse community",note:"Residential · Sample",photo:"Modern_townhouse_complex_three-story_units_contemporary_desi.jpg",emoji:"🏘️"},
+ {title:"Victorian residence",note:"Residential · Sample",photo:"Renovated_Victorian_house_colorful_exterior_bay_windows_mani.jpg",emoji:"🏡"},
+ {title:"Community pool",note:"Shared amenities · Sample",photo:"Upscale_apartment_community_clubhouse_and_pool_area_outdoor.jpg",emoji:"🏊"}
 ];
 const dashTenantSamples=[
- {title:"Tenant profile 01",note:"Sample profile · no rent status",emoji:"🧑"},
- {title:"Tenant profile 02",note:"Sample profile · no rent status",emoji:"👩"},
- {title:"Tenant profile 03",note:"Sample profile · no rent status",emoji:"🧕"},
- {title:"Tenant profile 04",note:"Sample profile · no rent status",emoji:"👨"},
- {title:"Tenant profile 05",note:"Sample profile · no rent status",emoji:"👩‍💼"}
+ {title:"Resident profile 01",note:"Sample profile · no rent status",photo:"Man_in_his_30s_wearing_sweater_over_collared_shirt_approacha.jpg",emoji:"🧑"},
+ {title:"Resident profile 02",note:"Sample profile · no rent status",photo:"Professional_man_wearing_casual_suit_jacket_and_open-collar.jpg",emoji:"👨"},
+ {title:"Resident profile 03",note:"Sample profile · no rent status",photo:"Professional_woman_in_her_30s_wearing_beige_cardigan_and_blo.jpg",emoji:"👩"},
+ {title:"Resident profile 04",note:"Sample profile · no rent status",photo:"Professional_young_woman_in_casual_business_attire_navy_blaz.jpg",emoji:"👩"},
+ {title:"Resident profile 05",note:"Sample profile · no rent status",photo:"Woman_in_business_casual_attire_wearing_dark_cardigan_warm_s.jpg",emoji:"👩"},
+ {title:"Resident profile 06",note:"Sample profile · no rent status",photo:"Woman_in_business_casual_attire_wearing_dark_cardigan_warm_s (1).jpg",emoji:"👩"},
+ {title:"Resident profile 07",note:"Sample profile · no rent status",photo:"Woman_in_professional_casual_wear_striped_blouse_confident_p.jpg",emoji:"👩"},
+ {title:"Resident profile 08",note:"Sample profile · no rent status",photo:"Young_man_in_smart_casual_outfit_light_blue_button-down_shir.jpg",emoji:"👨"},
+ {title:"Resident profile 09",note:"Sample profile · no rent status",photo:"Young_man_in_smart_casual_wear_wearing_henley_shirt_and_blaz.jpg",emoji:"👨"},
+ {title:"Resident profile 10",note:"Sample profile · no rent status",photo:"Young_professional_man_wearing_polo_shirt_and_blazer_friendl.jpg",emoji:"👨"},
+ {title:"Resident profile 11",note:"Sample profile · no rent status",photo:"Young_woman_professional_wearing_light_pink_blouse_friendly.jpg",emoji:"👩"},
+ {title:"Resident profile 12",note:"Sample profile · no rent status",photo:"Young_woman_professional_wearing_light_pink_blouse_friendly (1).jpg",emoji:"👩"}
 ];
 const dashVendorSamples=[
- {title:"Maintenance team",note:"Repairs & upkeep · Sample",emoji:"🧰"},
- {title:"Cleaning services",note:"Property care · Sample",emoji:"🧹"},
- {title:"Electrical services",note:"Electrical · Sample",emoji:"🪛"},
- {title:"Plumbing services",note:"Plumbing · Sample",emoji:"🔧"},
- {title:"Property professionals",note:"Management · Sample",emoji:"👷"}
+ {title:"Cleaning professional",note:"Property care · Sample",photo:"Professional_female_cleaning_service_worker_wearing_a_crisp.jpg",emoji:"🧹"},
+ {title:"House painter",note:"Repairs & upkeep · Sample",photo:"Professional_female_house_painter_wearing_clean_white_painte.jpg",emoji:"🖌️"},
+ {title:"Landscaping professional",note:"Outdoor maintenance · Sample",photo:"Professional_female_landscaper_in_her_30s_wearing_a_green_po.jpg",emoji:"🌿"},
+ {title:"Plumbing professional",note:"Plumbing · Sample",photo:"Professional_female_plumber_in_her_30s_wearing_a_clean_navy.jpg",emoji:"🔧"},
+ {title:"HVAC technician",note:"Climate systems · Sample",photo:"Professional_male_HVAC_technician_wearing_a_branded_light_bl.jpg",emoji:"❄️"},
+ {title:"Carpenter",note:"Repairs & upkeep · Sample",photo:"Professional_male_carpenter_wearing_a_neat_plaid_work_shirt.jpg",emoji:"🪚"},
+ {title:"Electrician",note:"Electrical · Sample",photo:"Professional_male_electrician_in_his_40s_wearing_a_yellow_hi.jpg",emoji:"⚡"}
 ];
 function enableSlowPictureLoop(host){
  if(host.dataset.loopReady==="true")return;
