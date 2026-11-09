@@ -109,7 +109,7 @@
    <div class="detail-card dashboard-legacy" style="margin-top:14px">
     <h3>📈 Monthly activity snapshot</h3>
     <div id="dashboardActivitySummary" class="muted">Saved voucher activity will appear here.</div>
-    <div class="notice" style="margin-top:10px">Receipt and payment figures are locally saved source vouchers, not posted accounting income/expenses or outstanding balances. Posted journal count is shown separately. UAE and Pakistan are kept separate.</div>
+    <div class="notice" style="margin-top:10px">Receipt and payment figures include records across countries in this organisation. They are locally saved source vouchers, not posted accounting income/expenses or outstanding balances. Posted journal count is shown separately. Country is descriptive metadata, not a separate ledger.</div>
    </div>
    <div class="detail-card dashboard-legacy">
     <h3>⏰ Rent follow-up</h3>
@@ -1122,15 +1122,17 @@ function enableSlowPictureLoop(host){
  host.dataset.loopReady="true";
 }
 function refreshPortfolioDashboard(){
- const country=localStorage.getItem("propledger.country")||"AE",currency=getDisplayCurrency();
- const properties=getProperties().filter(p=>p.country===country),vendors=getVendors().filter(v=>v.country===country);
+ const currency=getDisplayCurrency();
+ // Country is record metadata, not a ledger partition: dashboard totals include all organisation records.
+ const properties=getProperties(),vendors=getVendors();
  const propertyIds=new Set(properties.map(p=>p.id));
  const tenants=properties.filter(p=>p.tenant&&String(p.tenant.name||"").trim());
  const now=new Date(),month=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
  const receipts=getReceipts().filter(r=>propertyIds.has(r.propertyId)&&String(r.date||"").slice(0,7)===month);
  const payments=getPayments().filter(p=>propertyIds.has(p.propertyId)&&String(p.date||"").slice(0,7)===month);
  const receiptTotal=receipts.reduce((s,r)=>s+dashCents(r.amount),0),paymentTotal=payments.reduce((s,p)=>s+dashCents(p.amount),0);
- const posted=countryPostedJournals(country);
+ // Legacy country-book stores remain untouched; include existing posted journals across AE and PK.
+ const posted=[...countryPostedJournals("AE"),...countryPostedJournals("PK")];
  
  $("dashProperties").textContent=String(properties.length);
  $("dashTenants").textContent=String(tenants.length);
@@ -1153,8 +1155,8 @@ function refreshPortfolioDashboard(){
  enableSlowPictureLoop(propertyHost);enableSlowPictureLoop(tenantHost);enableSlowPictureLoop(vendorHost);
  
  const recentHost=$("dashboardRecent");recentHost.innerHTML="";
- const recentRows=[...getReceipts().filter(r=>propertyIds.has(r.propertyId)).map(r=>({kind:"Receipt",number:r.number||"Receipt",date:r.date||"",party:r.tenant||"Tenant",amount:dashCents(r.amount)})),...getPayments().filter(p=>propertyIds.has(p.propertyId)).map(p=>({kind:"Payment",number:p.number||"Payment",date:p.date||"",party:p.vendor||"Vendor",amount:dashCents(p.amount)}))].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,5);
- if(!recentRows.length){const empty=document.createElement("div");empty.className="empty-state";empty.textContent="No local receipt or payment vouchers saved for this country yet.";recentHost.appendChild(empty)}
+ const recentRows=[...getReceipts().map(r=>({kind:"Receipt",number:r.number||"Receipt",date:r.date||"",party:r.tenant||"Tenant",amount:dashCents(r.amount)})),...getPayments().map(p=>({kind:"Payment",number:p.number||"Payment",date:p.date||"",party:p.vendor||"Vendor",amount:dashCents(p.amount)}))].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,5);
+ if(!recentRows.length){const empty=document.createElement("div");empty.className="empty-state";empty.textContent="No local receipt or payment vouchers saved yet.";recentHost.appendChild(empty)}
  recentRows.forEach(x=>{const row=document.createElement("div");row.className="receipt-history-item";const info=document.createElement("span");info.className="receipt-history-info";const title=document.createElement("strong");title.textContent=(x.kind==="Receipt"?"🧾 ":"💸 ")+x.number+" · "+x.party;const meta=document.createElement("small");meta.textContent=x.date+" · "+x.kind+" · Unposted source voucher";info.append(title,meta);const amount=document.createElement("span");amount.className="receipt-history-value";amount.textContent=dashMoney(x.amount,currency);row.append(info,amount);recentHost.appendChild(row)});
 
 }
