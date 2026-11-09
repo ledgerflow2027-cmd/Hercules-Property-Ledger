@@ -50,11 +50,11 @@ The organisation and membership structure is specified in Stage 12B. Every recor
 
 `organizations/{orgId}/preferences/{preferenceId}` (or a single owner preference document):
 - `language`: supported locale code, initially `en`, `ar`, or `ur`.
-- `countryCode`: selected country/region, initially `AE` or `PK`; extensible without creating a new ledger.
-- `displayCurrency`: selected ISO 4217 currency code, initially support at least `AED` and `PKR`; additional currencies require a validated currency catalogue and formatting tests.
+- `countryCode`: selected country/region from the approved 10-country list: `AE`, `SA`, `QA`, `KW`, `BH`, `OM`, `PK`, `IN`, `GB`, `US`. This is profile/operational metadata only, never a ledger partition key.
+- `displayCurrency`: selected ISO 4217 code from the approved 10-currency list: `AED`, `SAR`, `QAR`, `KWD`, `BHD`, `OMR`, `PKR`, `INR`, `GBP`, `USD`. Store the code and its catalogue-controlled display symbol; do not store a user-entered arbitrary symbol.
 - `updatedAt`, `updatedBy`.
 
-The selected currency is a display preference only. Do not use it to rewrite amounts or create country books. Changing this preference must not mutate any financial source record or journal.
+Country and currency are independent drop-down preferences; selecting one does not automatically select or change the other. The selected currency is a display preference only. Do not use it to rewrite amounts or create country books. Changing either preference must not mutate any financial source record or journal.
 
 ## 4. Core document shapes
 
@@ -161,10 +161,10 @@ The client must never write to `postedJournals`, account balances, allocations, 
 
 ## 8. Migration and implementation sequence
 
-1. Update the product UI to select language, country and display currency on the welcome/login page.
+1. Update Settings (and the welcome/login page where appropriate) with independent country and display-currency drop-downs using the approved 10-option catalogues.
 2. Replace country-book filters with one organisation-wide ledger; retain country only for descriptive and operational filtering.
 3. Centralise currency formatting so every amount uses the selected display currency label without changing stored numbers.
-4. Add clear non-conversion notices to financial reports and voucher previews.
+4. Add clear non-conversion notices to financial reports and voucher previews. Country selection is descriptive/operational metadata; it never partitions the ledger.
 5. Build automated tests proving that changing country or display currency does not change amounts, duplicate ledgers, or omit records from consolidated totals.
 6. Design and review migration mapping for existing local/demo records. Do not read or migrate device localStorage without explicit approval.
 7. Only after separate approval, evaluate Firebase Spark feasibility, security boundaries and emulator tests. No billing account; no Blaze; budget remains USD 0.
