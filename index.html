@@ -13,9 +13,9 @@
 
 .property-form{display:grid;gap:10px}.property-form .field{margin:3px 0}.property-form input,.property-form select,.property-form textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit}.property-form textarea{min-height:72px;resize:vertical}.modal-backdrop{position:fixed;inset:0;background:#11182799;z-index:20;display:none;align-items:flex-end;justify-content:center;padding:12px}.modal-backdrop.open{display:flex}.modal-sheet{width:min(520px,100%);max-height:92dvh;overflow:auto;background:#f8f9fc;border-radius:24px 24px 18px 18px;padding:18px;box-shadow:0 20px 70px #0004}.modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.modal-head h2{font-size:19px;margin:0}.close-btn{border:0;background:#e9ebf2;border-radius:50%;width:36px;height:36px;font-size:20px}.form-section{font-size:12px;font-weight:800;color:#6654d9;margin:8px 0 2px}.upload-hint{font-size:10px;color:var(--muted);line-height:1.4}.saved-photo{width:58px;height:58px;object-fit:cover;border-radius:13px;border:1px solid var(--line)}.empty-state{padding:20px;text-align:center;background:#fff;border:1px dashed #cbd2df;border-radius:16px;color:var(--muted);font-size:12px}
 
-.profile-detail{position:fixed;inset:0;background:#f5f7fb;z-index:30;display:none;overflow:auto}
+.profile-detail{position:fixed;inset:64px 0 calc(70px + env(safe-area-inset-bottom));background:#f5f7fb;z-index:20;display:none;overflow:auto}
 .profile-detail.open{display:block}
-.profile-detail-inner{max-width:520px;min-height:100dvh;margin:auto;background:#f8f9fc;padding:18px 16px 35px}
+.profile-detail-inner{max-width:520px;min-height:100%;margin:auto;background:#f8f9fc;padding:18px 16px 24px}
 .detail-top{display:flex;align-items:center;gap:12px;margin:4px 0 16px}
 .detail-back{border:0;border-radius:13px;background:#fff;padding:10px 13px;font-weight:800}
 .detail-hero{background:linear-gradient(135deg,#172554,#43358f 65%,#087e83);color:#fff;border-radius:22px;padding:18px;margin-bottom:13px}
@@ -42,9 +42,9 @@
 @media(max-width:360px){.detail-kv{grid-template-columns:1fr}.chart-grid{gap:6px}.chart-box{padding:8px}}
 
 
-.receipt-modal{position:fixed;inset:0;background:rgba(14,20,38,.58);z-index:45;display:none;overflow:auto}
+.receipt-modal{position:fixed;inset:64px 0 calc(70px + env(safe-area-inset-bottom));background:rgba(14,20,38,.58);z-index:20;display:none;overflow:auto}
 .receipt-modal.open{display:block}
-.receipt-sheet{max-width:560px;min-height:100dvh;margin:auto;background:#f7f8fc;padding:18px 16px 34px}
+.receipt-sheet{max-width:560px;min-height:100%;margin:auto;background:#f7f8fc;padding:18px 16px 24px}
 .receipt-sheet .modal-head{position:sticky;top:0;background:#f7f8fc;z-index:2}
 .receipt-form{display:grid;gap:12px}
 .receipt-form .field{margin:0}
@@ -485,7 +485,7 @@ $("langQuick").addEventListener("click",()=>{const n=$("language");n.value=n.val
 $("profileUpload").addEventListener("change",e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!file.type.startsWith("image/")){alert("Please choose an image file.");return}const reader=new FileReader();reader.onload=()=>{const img=document.createElement("img");img.src=reader.result;const label=document.querySelector(".profile-upload");label.textContent="";label.appendChild(img);try{localStorage.setItem("propledger.profilePreview",reader.result)}catch(err){alert("Photo preview is active for this session, but this image is too large to save on this device.")}};reader.readAsDataURL(file)});
 try{const savedPhoto=localStorage.getItem("propledger.profilePreview");if(savedPhoto){const label=document.querySelector(".profile-upload");const img=document.createElement("img");img.src=savedPhoto;label.textContent="";label.appendChild(img)}}catch(e){}
 
-document.querySelectorAll("[data-screen],[data-go]").forEach(b=>b.addEventListener("click",()=>showScreen(b.dataset.screen||b.dataset.go)));
+document.querySelectorAll("[data-screen],[data-go]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".modal-backdrop.open,.receipt-modal.open,.profile-detail.open").forEach(layer=>layer.classList.remove("open"));document.body.style.overflow="";showScreen(b.dataset.screen||b.dataset.go)}));
 function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("hidden",s.id!==id));document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.screen===id));window.scrollTo({top:0,behavior:"smooth"})}
 
 $("payment").addEventListener("click",()=>alert("Payment vouchers are planned for Stage 7."));
