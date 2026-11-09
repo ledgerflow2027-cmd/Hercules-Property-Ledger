@@ -166,3 +166,16 @@ After each successful stage, update this handoff (or its progress section) in Gi
 **Next active workstream: Stage 16 QA closure, then Stage 17 Tenant Management.** Do not jump directly to backend or store submission while prototype acceptance and tenant workflows remain incomplete.
 
 **Owner approval gates:** accounting ledger structure; backend provider and any cost; identity/document storage; native Android/iOS approach; store release.
+
+## 9. Mandatory handoff update gate (standing rule)
+
+This is a mandatory project rule for every stage from this point forward:
+
+1. A stage is successful only when its agreed scope is implemented, committed, deployed successfully where applicable, regression-checked, and accepted by the user. Never mark a stage successful solely because a commit or deployment succeeded.
+2. Immediately after each successful stage, update `HANDOFF_PROPLEGDER_2027.md` on the active GitHub repository's `main` branch **before starting the next stage**.
+3. The handoff update must record: stage number and scope; implementation summary; commit SHA; GitHub Actions/deployment run and result; browser/device QA actually performed (and tests not performed); known defects/limitations; user acceptance status; and the next stage with its planned scope.
+4. Verify the handoff file update is present on GitHub and report its commit SHA and link to the user. Do not say the handoff was updated until this verification succeeds.
+5. If the handoff update or verification fails, stop and resolve it before moving to the next stage.
+6. After every three consecutive successful stages, prepare a refreshed complete project handoff/roadmap checkpoint as well. This does not replace the per-stage update requirement.
+
+**Current checkpoint:** The latest application commit is `d3f07c2403b686be6381191fa554a5a6e7fff49f` (SOA preview handler and demo-data refresh fix), deployed successfully in Actions run `42684243624`. This is a deployment record, **not Stage 16 acceptance**. Stage 16 remains open pending user verification of the property SOA/P&L preview and financial data. Do not start Stage 17 until Stage 16 is accepted and this handoff is updated with the acceptance evidence.
