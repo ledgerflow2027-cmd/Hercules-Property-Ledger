@@ -105,37 +105,55 @@
 }
 </style>
 <style id="seamless-dashboard-carousel-loop">
+/* The viewport is stationary; only the inner duplicated track moves. */
 #dashboard .picture-track{
  display:block!important;
+ position:relative!important;
  width:100%!important;
  min-width:0!important;
+ max-width:100%!important;
  overflow:hidden!important;
+ direction:ltr!important;
  padding:2px 0 12px!important;
+ animation:none!important;
+ transform:none!important;
+ will-change:auto!important;
 }
 #dashboard .picture-loop-track{
  display:flex!important;
  flex-wrap:nowrap!important;
  align-items:stretch;
  width:max-content;
+ max-width:none;
  gap:0;
+ direction:ltr!important;
  will-change:transform;
  transform:translate3d(0,0,0);
  backface-visibility:hidden;
- animation:ledgerly-loop-left 36s linear infinite;
+ animation:ledgerly-loop-left 18s linear infinite!important;
 }
 #dashboard .picture-loop-group{
- display:flex;
- flex:0 0 auto;
- flex-wrap:nowrap;
+ display:flex!important;
+ flex:0 0 auto!important;
+ flex-wrap:nowrap!important;
  align-items:stretch;
- gap:4px;
- padding-right:4px;
+ gap:8px!important;
+ padding-right:8px!important;
+ direction:ltr!important;
 }
 #dashboard .picture-loop-group .picture-card{
- flex:0 0 clamp(148px,36vw,184px);
+ position:relative!important;
+ display:block!important;
+ box-sizing:border-box!important;
+ flex:0 0 clamp(148px,36vw,184px)!important;
+ width:clamp(148px,36vw,184px)!important;
+ min-width:clamp(148px,36vw,184px)!important;
+ max-width:clamp(148px,36vw,184px)!important;
+ margin:0!important;
+ flex-shrink:0!important;
 }
 #dashboard .picture-loop-track.picture-loop-reverse{
- animation-name:ledgerly-loop-right;
+ animation-name:ledgerly-loop-right!important;
 }
 @keyframes ledgerly-loop-left{
  from{transform:translate3d(0,0,0)}
@@ -146,7 +164,7 @@
  to{transform:translate3d(0,0,0)}
 }
 @media(max-width:599px){
- #dashboard .picture-loop-track{animation-duration:36s}
+ #dashboard .picture-loop-track{animation-duration:18s!important}
 }
 @media(prefers-reduced-motion:reduce){
  #dashboard .picture-loop-track{animation:none!important;transform:none!important}
