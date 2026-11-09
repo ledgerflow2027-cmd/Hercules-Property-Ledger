@@ -1194,6 +1194,10 @@ function renderDashboardSlides(){
  ];
  groups.forEach(([id,items,kind])=>{
   const host=$(id);if(!host)return;
+  // A rebuild starts a fresh track: reset the clone guard before adding slides.
+  // Otherwise later Dashboard visits rebuild only the originals while the CSS
+  // animation still assumes the track contains a duplicated sequence.
+  host.dataset.loopReady="false";
   host.innerHTML="";
   items.forEach(item=>dashPictureCard(host,item,kind,""));
   enableSlowPictureLoop(host);
