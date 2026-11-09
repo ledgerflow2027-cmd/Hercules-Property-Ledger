@@ -100,7 +100,7 @@
   <div class="field"><label for="language">🌐 Language</label><select id="language"><option value="en">English</option><option value="ar">العربية</option><option value="ur">اردو</option></select></div>
   <div class="field"><label for="country">🌍 Country / region</label><select id="country"><option value="AE">🇦🇪 United Arab Emirates</option><option value="SA">🇸🇦 Saudi Arabia</option><option value="QA">🇶🇦 Qatar</option><option value="KW">🇰🇼 Kuwait</option><option value="BH">🇧🇭 Bahrain</option><option value="OM">🇴🇲 Oman</option><option value="PK">🇵🇰 Pakistan</option><option value="IN">🇮🇳 India</option><option value="GB">🇬🇧 United Kingdom</option><option value="US">🇺🇸 United States</option></select></div><div class="field"><label for="welcomeCurrency">💱 Display currency</label><select id="welcomeCurrency"><option value="AED">AED — UAE dirham (د.إ)</option><option value="SAR">SAR — Saudi riyal (ر.س)</option><option value="QAR">QAR — Qatari riyal (ر.ق)</option><option value="KWD">KWD — Kuwaiti dinar (د.ك)</option><option value="BHD">BHD — Bahraini dinar (.د.ب)</option><option value="OMR">OMR — Omani rial (ر.ع.)</option><option value="PKR">PKR — Pakistani rupee (₨)</option><option value="INR">INR — Indian rupee (₹)</option><option value="GBP">GBP — British pound (£)</option><option value="USD">USD — US dollar ($)</option></select></div>
   <button class="primary" id="enter">🔓 Unlock workspace</button>
-  <div class="pillnote">4-digit preview PIN · Not a secure account login</div>
+  <div class="pillnote">4-digit preview PIN · Not a secure account login</div><div class="pillnote">Simple property management with clearer financial visibility for owners.</div>
  </div>
 </section>
 <main id="app" class="app hidden">
@@ -1266,7 +1266,7 @@ function enableSlowPictureLoop(host){
 }
 function dashLateTenantSamples(){
  try{const invoices=JSON.parse(localStorage.getItem("propledger.rentInvoices")||"[]"),props=JSON.parse(localStorage.getItem("propledger.properties")||"[]"),today=new Date().toISOString().slice(0,10),seen=new Set();
-  const late=invoices.filter(x=>x&&x.demoSample&&x.dueDate<today&&(Number(x.paidAmount||0)<Number(x.amount||0)||String(x.paidDate||"")>String(x.dueDate||""))).sort((a,b)=>String(b.dueDate).localeCompare(String(a.dueDate))),rows=[];
+  const late=invoices.filter(x=>x&&x.demoSample&&String(x.date||"").slice(0,7)===today.slice(0,7)&&x.dueDate<today&&(Number(x.paidAmount||0)<Number(x.amount||0)||String(x.paidDate||"")>String(x.dueDate||""))).sort((a,b)=>String(b.dueDate).localeCompare(String(a.dueDate))),rows=[];
   late.forEach(inv=>{const key=inv.tenantId||inv.propertyId;if(seen.has(key))return;seen.add(key);const p=props.find(x=>x.id===inv.propertyId),t=p?.tenant||{},idx=Math.max(0,props.findIndex(x=>x.id===inv.propertyId)),image=dashTenantSamples[idx%dashTenantSamples.length]||{},outstanding=Math.max(0,Number(inv.amount||0)-Number(inv.paidAmount||0));rows.push({title:t.name||inv.tenant||"Tenant",note:outstanding>0?"Overdue · "+inv.dueDate:"Paid late · "+(inv.paidDate||""),photo:t.photo||image.photo||"",emoji:"⚠️"})});
   return rows.length?rows:[{title:"No late rent",note:"All sample rents are up to date",emoji:"✅"}];
  }catch(e){return [{title:"Rent status unavailable",note:"Sample rent schedule not loaded",emoji:"⚠️"}]}
@@ -1384,7 +1384,7 @@ const DEMO_DATA_VERSION="propledger.demoData.v4";
      if(i===7&&index%6===3){paid=Math.round(amount*.6);payDate=period+"-22"}
      if(i===8&&[2,6,10,14,18,21].includes(index))paid=0;
      if(i===9&&index%7===4)payDate=period+"-25";
-     if(y===todayYear&&m===todayMonth){if(i===3||i===8)paid=0;if(i===4||i===9)paid=Math.round(amount*.35);if(paid>0)payDate=period+(i===0?"-03":i===1?"-07":"-08")}
+     if(y===todayYear&&m===todayMonth){if(i===3||i===8)paid=0;if(i===4||i===9)paid=Math.round(amount*.35);if(paid>0)payDate=period+((i===0||i===5)?"-03":(i===1||i===6)?"-07":"-08")}
      const rentInvoice=rentInvoices[rentInvoices.length-1];rentInvoice.paidAmount=paid;rentInvoice.paidDate=paid>0?payDate:"";rentInvoice.status=paid===0?"Overdue":paid<amount?"Partially paid":payDate>due?"Paid late":"Paid";
      if(paid>0){const rid="demo-rent-receipt-"+i+"-"+period;receipts.push({id:rid,number:"PR-"+period.replace("-","")+"-"+(i+1),date:payDate,propertyId:p.id,property:p.name,tenant:p.tenant.name,currency:cur,amount:paid,method:"Bank transfer",reference:"DEMO-RENT-"+period+"-"+(i+1),description:"Demonstration rent collection "+period,status:"Local preview",demoSample:true,invoiceId:invId});addJ("demo-rent-cash-"+i+"-"+period,"DEMO-RC-"+(i+1)+"-"+period,payDate,"rent received "+p.name,p.country,cur,[{account:"1020",debit:paid,credit:0,propertyId:p.id},{account:"1100",debit:0,credit:paid,propertyId:p.id}])}
     });
