@@ -104,6 +104,54 @@
   text-align:center!important
 }
 </style>
+<style id="seamless-dashboard-carousel-loop">
+#dashboard .picture-track{
+ display:block!important;
+ width:100%!important;
+ min-width:0!important;
+ overflow:hidden!important;
+ padding:2px 0 12px!important;
+}
+#dashboard .picture-loop-track{
+ display:flex!important;
+ flex-wrap:nowrap!important;
+ align-items:stretch;
+ width:max-content;
+ gap:0;
+ will-change:transform;
+ transform:translate3d(0,0,0);
+ backface-visibility:hidden;
+ animation:ledgerly-loop-left 100s linear infinite;
+}
+#dashboard .picture-loop-group{
+ display:flex;
+ flex:0 0 auto;
+ flex-wrap:nowrap;
+ align-items:stretch;
+ gap:4px;
+ padding-right:4px;
+}
+#dashboard .picture-loop-group .picture-card{
+ flex:0 0 clamp(148px,36vw,184px);
+}
+#dashboard .picture-loop-track.picture-loop-reverse{
+ animation-name:ledgerly-loop-right;
+}
+@keyframes ledgerly-loop-left{
+ from{transform:translate3d(0,0,0)}
+ to{transform:translate3d(-50%,0,0)}
+}
+@keyframes ledgerly-loop-right{
+ from{transform:translate3d(-50%,0,0)}
+ to{transform:translate3d(0,0,0)}
+}
+@media(max-width:599px){
+ #dashboard .picture-loop-track{animation-duration:100s}
+}
+@media(prefers-reduced-motion:reduce){
+ #dashboard .picture-loop-track{animation:none!important;transform:none!important}
+}
+</style>
 </head>
 <body>
 <section id="onboarding" class="hero">
@@ -1303,10 +1351,28 @@ const dashVendorSamples=[
  {title:"Carpenter",note:"Repairs & upkeep · Sample",photo:"Professional_male_carpenter_wearing_a_neat_plaid_work_shirt.jpg",emoji:"🪚"},
  {title:"Electrician",note:"Electrical · Sample",photo:"Professional_male_electrician_in_his_40s_wearing_a_yellow_hi.jpg",emoji:"⚡"}
 ];
-function enableSlowPictureLoop(host){
+function enableSlowPictureLoop(host,kind){
  if(host.dataset.loopReady==="true")return;
- const originals=Array.from(host.children);
- originals.forEach(node=>{const clone=node.cloneNode(true);clone.setAttribute("aria-hidden","true");host.appendChild(clone)});
+ const cards=Array.from(host.children);
+ if(!cards.length)return;
+ // Two identical, fixed-width groups let the animation wrap at an exact
+ // half-track distance. No JS timer or DOM reset runs at the loop boundary.
+ const track=document.createElement("div");
+ track.className="picture-loop-track"+(kind==="tenant"?" picture-loop-reverse":"");
+ const makeGroup=(clone=false)=>{
+  const group=document.createElement("div");
+  group.className="picture-loop-group";
+  group.setAttribute("aria-hidden",clone?"true":"false");
+  cards.forEach(card=>{
+   const node=clone?card.cloneNode(true):card;
+   if(clone)node.setAttribute("tabindex","-1");
+   node.querySelectorAll("img").forEach(img=>{img.loading="eager";img.decoding="async"});
+   group.appendChild(node);
+  });
+  return group;
+ };
+ track.append(makeGroup(false),makeGroup(true));
+ host.replaceChildren(track);
  host.dataset.loopReady="true";
 }
 function dashLateTenantSamples(){
@@ -1324,13 +1390,10 @@ function renderDashboardSlides(){
  ];
  groups.forEach(([id,items,kind])=>{
   const host=$(id);if(!host)return;
-  // A rebuild starts a fresh track: reset the clone guard before adding slides.
-  // Otherwise later Dashboard visits rebuild only the originals while the CSS
-  // animation still assumes the track contains a duplicated sequence.
   host.dataset.loopReady="false";
   host.innerHTML="";
   items.forEach(item=>dashPictureCard(host,item,kind,""));
-  enableSlowPictureLoop(host);
+  enableSlowPictureLoop(host,kind);
  });
 }
 function refreshPortfolioDashboard(){
