@@ -484,3 +484,15 @@ This per-change record supplements (and does not replace) the complete stage che
 - **QA:** The ten title-to-record mappings were checked against the seeded property data. No independent browser/iPhone test was performed.
 - **Acceptance:** Pending live deployment and user visual confirmation. Do not mark accepted until the updated live carousel and matching profile names are verified.
 - **Next action:** Retry/verify GitHub Pages deployment, then ask the user to compare a few carousel titles with the opened profile names.
+
+
+## 34. Dashboard tenant carousel opens the associated property profile — 11 November 2026
+
+- **Owner request:** When a user taps a tenant carousel picture on the dashboard, open that tenant's associated Property profile page, not the Tenants list page.
+- **Implementation:** Replaced generic tenant carousel samples with ten named seeded tenant entries, each carrying its tenant ID, matching property ID, tenant name, associated property name and region. The tenant carousel click route now resolves the associated property record, switches to the Properties screen and opens that exact property detail profile. If the associated property record cannot be resolved, the route safely falls back to the Properties screen. The separate Tenants navigation remains unchanged.
+- **Application commit:** `d2d32f4dbc89e362aa5050501bf120314ecc496a` — Link tenant carousel cards to associated property profiles.
+- **GitHub Pages:** [Run 42895642971](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42895642971) — completed successfully; conclusion: `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=d2d32f4
+- **QA:** GitHub Actions deployment and deployed head SHA verified. Tenant-to-property ID mappings and click-route source reviewed. No independent browser/iPhone interaction test was performed; owner should tap several tenant carousel pictures and confirm each opens the matching Property profile, not the Tenants list.
+- **Acceptance:** Deployment successful; live interaction verification and explicit owner acceptance pending. This does not close Stage 16 or authorize Stage 17.
+- **Next action:** Owner to test tenant carousel taps on the refreshed live app and confirm that the correct associated Property profile opens.
