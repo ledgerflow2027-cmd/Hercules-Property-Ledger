@@ -553,6 +553,79 @@
   box-sizing:border-box;
 }
 </style>
+<style id="report-period-balanced-box-layout">
+/* One predictable spacing rule for the report-period controls: equal columns,
+   equal 10px gaps, and matching inset from the card edges. */
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  justify-items:stretch!important;
+  gap:10px!important;
+  padding:12px!important;
+  width:100%!important;
+  max-width:1100px!important;
+  margin:0 auto 12px!important;
+  box-sizing:border-box!important;
+  min-width:0!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>*{
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>strong,
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>div,
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>span,
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>label[for="stage16SoaMonthFilter"]{
+  grid-column:1/-1!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>label:not([for="stage16SoaMonthFilter"]){
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:5px!important;
+  min-width:0!important;
+  flex:none!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range input,
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range button{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+#propertyDetailPanel .property-reports-card{
+  box-sizing:border-box!important;
+  padding:10px!important;
+  min-width:0!important;
+}
+#propertyDetailPanel .property-reports-card>.stage16-date-range{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  gap:10px!important;
+  width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+#propertyDetailPanel .property-reports-card>.stage16-date-range>*{
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+#propertyDetailPanel .property-reports-card>.stage16-date-range input{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+</style>
 </head>
 <body>
 <section id="onboarding" class="hero">
