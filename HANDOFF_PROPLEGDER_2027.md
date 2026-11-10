@@ -296,3 +296,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Browser/device QA:** not independently performed. Owner should verify on iPhone that both date inputs remain fully visible side-by-side at their screen width and that report generation still works.
 - **Acceptance status:** deployed; visual/device verification and explicit owner acceptance remain outstanding. Stage 16 remains open; Stage 17 remains blocked.
 - **Next action:** Owner to check the live Property reports card and confirm the 1 × 2 layout.
+
+
+## 19. Property reports date-field spacing refinement — 10 November 2026
+
+- **Owner instruction:** Use equal spacing at the left and right edges of the From/Till date fields and between the two fields.
+- **Implementation:** Added equal 8px horizontal inset and 8px column gap for normal mobile widths; at widths up to 359px, both inset and center gap are 6px. The two columns remain equal width and on one row.
+- **Application commit:** `ccb81d76227bb3ca279884678861086d952736f0` — Equalize side and center spacing in property report date row.
+- **GitHub Actions:** [Run 42824958084](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42824958084) — completed successfully; conclusion: `success`.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=ccb81d7
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed; iPhone visual verification remains pending.
+- **Acceptance status:** deployed; owner confirmation pending. Stage 16 remains open; Stage 17 remains blocked.
+- **Next action:** Owner to confirm equal side and center spacing on the live Property reports card.
