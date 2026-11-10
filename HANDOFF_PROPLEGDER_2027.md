@@ -335,3 +335,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Browser/device QA:** not independently performed. Owner should verify the revised height, readable date values, native date picker and side-by-side alignment on iPhone.
 - **Acceptance status:** deployed; visual/device verification and explicit owner acceptance remain outstanding. Stage 16 remains open; Stage 17 remains blocked.
 - **Next action:** Owner to inspect the updated date controls on the live iPhone app and confirm the size.
+
+
+## 22. Property page box sizing standardized to Associated tenant tiles — 10 November 2026
+
+- **Owner instruction:** Copy the box sizes of “Associated tenant” for all boxes on the Property page only.
+- **Implementation:** Standardized the Property page's property-list cards, property form controls, detail-section cards, information/KPI tiles, chart/summary tiles, report rows/tables and date controls to the compact Associated tenant tile sizing reference (consistent compact padding and 12px corner radius, with bounded widths and preserved responsive layouts). CSS is scoped to the Properties screen, property modal and property detail panel; other app sections are unchanged.
+- **Application commit:** `a4d91f56356b8ec87785303c6873297069356478` — Standardize Property page boxes to Associated tenant sizing.
+- **GitHub Actions:** [Run 42826807799](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42826807799) — completed successfully; conclusion: `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=a4d91f5
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed. Owner should inspect the Property list, Add/Edit Property form, Property profile cards, Associated tenant tiles and Property reports on iPhone. Confirm content remains readable and no fields or values clip/overflow.
+- **Acceptance status:** deployed successfully; visual/device verification and explicit owner acceptance pending. Stage 16 remains open; Stage 17 remains blocked.
+- **Next action:** Owner to verify the consistent Property-page box sizing on the live app and confirm acceptance.
