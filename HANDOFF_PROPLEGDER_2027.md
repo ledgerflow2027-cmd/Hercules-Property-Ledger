@@ -361,3 +361,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Browser/device QA:** not independently performed. Owner should open a Property profile, preview its SOA and verify From/Till sizing, equal alignment, responsive stacking and date selection on iPhone.
 - **Acceptance status:** deployed successfully; visual/device verification and explicit owner acceptance pending. Stage 16 remains open; Stage 17 remains blocked.
 - **Next action:** Owner to inspect the SOA preview From/Till controls on the live app and confirm acceptance.
+
+
+## 24. Property reports card standardized to Associated tenant structure — 10 November 2026
+
+- **Owner instruction:** Apply the Associated tenant compact-card structure to the Property reports card.
+- **Implementation:** Added a dedicated Property reports card class to both Property profile render paths. The card explicitly fills its available parent width, respects parent margins, uses automatic content-based height, 10px padding and 12px corner radius, and prevents horizontal overflow. The date row remains responsive within the card. Report action buttons wrap when needed and use consistent 8px gaps. Changes are scoped to Property reports cards only; other sections and report generation/actions are unchanged.
+- **Application commit:** `9050c18fb6b644bc83adc60653d89e05347a85b8` — Standardize Property reports card sizing.
+- **GitHub Actions:** [Run 42863513281](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42863513281) — completed successfully; conclusion: `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=9050c18
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed. Owner should inspect the Property reports card on iPhone and desktop, confirm full-width alignment, content-based height, equal spacing, readable From/Till values and report buttons, and verify no clipping/overflow.
+- **Acceptance status:** deployed successfully; visual/device verification and explicit owner acceptance pending. Stage 16 remains open; Stage 17 remains blocked.
+- **Next action:** Owner to verify the Property reports card on the live app and confirm acceptance.
