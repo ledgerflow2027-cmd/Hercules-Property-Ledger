@@ -360,12 +360,13 @@
 </style>
 
 <style id="stage16-property-date-compact">
-/* Compact mobile date controls while retaining readable native date values and the 1x2 row. */
+/* Increase the compact date controls by 50%, retaining the balanced 1x2 mobile row. */
 @media(max-width:767px){
   .detail-card .stage16-date-range{
-    width:85%!important;
+    width:100%!important;
     margin-inline:auto!important;
-    padding-inline:0!important;
+    padding-inline:8px!important;
+    box-sizing:border-box!important;
     gap:8px!important;
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
@@ -375,19 +376,19 @@
     gap:3px!important;
   }
   .detail-card .stage16-date-range>.field>label{
-    font-size:10px!important;
+    font-size:11px!important;
     line-height:1.1!important;
   }
   .detail-card .stage16-date-range input[type="date"]{
-    height:32px!important;
-    padding:4px 3px!important;
-    font-size:11px!important;
+    height:48px!important;
+    padding:6px 4px!important;
+    font-size:13px!important;
     line-height:1.1!important;
   }
 }
 @media(max-width:359px){
-  .detail-card .stage16-date-range{width:94%!important;gap:5px!important}
-  .detail-card .stage16-date-range input[type="date"]{height:30px!important;padding:3px 2px!important;font-size:10px!important}
+  .detail-card .stage16-date-range{gap:5px!important;padding-inline:6px!important}
+  .detail-card .stage16-date-range input[type="date"]{height:44px!important;padding:5px 2px!important;font-size:12px!important}
 }
 </style>
 
