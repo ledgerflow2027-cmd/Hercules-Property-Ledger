@@ -206,3 +206,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Browser/device QA:** not independently performed by the assistant. Owner must verify the property page, Statement of Account preview, Profit & Loss preview, date filters, and preview/download/share behaviour in the live app.
 - **Stage 16 status:** remains **open — deployment passed, browser QA and owner acceptance outstanding**. The tenant SOA must also be checked to ensure vendor bills/payments are not mixed into a tenant receivable running balance. Do not mark Stage 16 complete or begin Stage 17 until these checks pass and the owner explicitly accepts Stage 16.
 - **Next stage:** Stage 17 Tenant Management remains blocked by the Stage 16 acceptance gate.
+
+## 12. Blue outline icon refresh — 10 November 2026
+
+- **Owner request:** Replace the app's emoji glyphs with the blue outline-style icon treatment shown in the uploaded reference image (image1.jpeg).
+- **Implementation:** Added a self-contained inline SVG icon system to index.html. Emoji pictographs rendered in app text are converted into blue outlined SVG icons on white rounded-square tiles with subtle shadows. The conversion also observes dynamically added interface content so icons created by existing app actions receive the same treatment. Existing labels, button text, navigation targets and event handlers are retained. Country flag symbols in region selectors are intentionally left as flags; emoji inside native select menus are not replaced because browsers do not reliably render inline SVG within option labels.
+- **Application commit:** e907a781389de9998ab3a7474c9a488fddf6265b — Replace app emoji glyphs with blue outline icons.
+- **GitHub Actions:** [Run 42791227601](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42791227601) — completed successfully; conclusion: success; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=e907a78
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed by the assistant. Owner should inspect the dashboard, bottom navigation, action buttons, forms, carousel cards and dynamically opened panels on desktop/mobile. In particular, verify icon alignment and spacing in both English and RTL language layouts.
+- **Known limitations:** The conversion layer deliberately leaves country flags unchanged. Native select-option emoji are left as native text for compatibility. The visual result and all interactive flows still require owner browser/device verification.
+- **Acceptance status:** deployed successfully; owner visual QA and explicit acceptance outstanding. This change does not close Stage 16 or authorize Stage 17.
+- **Next action:** Owner to review the live icon styling. Continue Stage 16 acceptance checks separately; Stage 17 remains blocked until Stage 16 is explicitly accepted.
