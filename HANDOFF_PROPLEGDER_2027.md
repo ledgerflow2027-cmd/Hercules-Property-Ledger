@@ -399,3 +399,13 @@ This per-change record supplements (and does not replace) the complete stage che
 - Acceptance: restoration awaiting user confirmation. Do not retry the spacing adjustment until the restored app is confirmed.
 
 - User confirmation received after rollback: the restored app is confirmed by the user. The faulty report-spacing change remains reverted; no further layout changes are authorized by this confirmation.
+
+
+## 27. Property Reports date boxes reduced — 10 November 2026
+
+- User requested the From date and Till date boxes in the Property Reports card be reduced to half size.
+- Added a narrowly scoped CSS override to the Property Reports card only: date input height/min-height/max-height set to 24px (half the previous 48px setting), compact 11px text and label sizing, and reduced label/input gap. Widths, other form controls, card structure, and report actions were not intentionally changed.
+- App commit: `78b766d9ecd97cdc92a7411fca02ca0da2e2227c`.
+- GitHub Pages deployment run: [42873556016](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42873556016) — completed successfully; deployment head SHA matches app commit.
+- QA: deployment workflow verified. No visual browser/iPhone QA performed. The 24px native date input height may be tight on some mobile browsers; user visual confirmation is required before acceptance.
+- Acceptance: pending user confirmation.
