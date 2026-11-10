@@ -1702,17 +1702,32 @@ function stage16ClosePdfPreview(){
  if(stage16PreviewUrl){URL.revokeObjectURL(stage16PreviewUrl);stage16PreviewUrl=null}
  stage16PreviewBlob=null;
 }
-function stage16ShowPdfPreview(blob,fileName,title,shareText,previewRows,subtitle,summary){
+function stage16ShowPdfPreview(blob,fileName,title,shareText,previewRows,subtitle,summary,reportMeta={}){
  stage16ClosePdfPreview();stage16PreviewBlob=blob;stage16PreviewName=fileName;stage16PreviewUrl=URL.createObjectURL(blob);
  const modal=document.createElement("div");modal.id="stage16PdfPreviewModal";
  modal.style.cssText="position:fixed;inset:0;z-index:99999;background:rgba(10,18,30,.86);display:flex;flex-direction:column;padding:10px;box-sizing:border-box";
  modal.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;background:#10243d;color:#fff;padding:13px 16px;border-radius:12px 12px 0 0"><strong id="stage16PreviewTitle" style="font-size:15px;letter-spacing:.2px"></strong><button type="button" id="stage16PreviewClose" aria-label="Close preview" style="border:0;background:#ffffff22;color:#fff;border-radius:8px;padding:8px 12px;font-size:18px">✕</button></div><div id="stage16PreviewContent" role="document" aria-label="Report preview" style="background:#e9edf2;color:#172033;flex:1;min-height:0;overflow:auto;padding:14px;box-sizing:border-box"></div><div style="display:flex;gap:8px;flex-wrap:wrap;background:#fff;padding:12px;border-radius:0 0 12px 12px"><button type="button" id="stage16PreviewDownload" class="primary" style="flex:1;min-width:120px">⬇️ Download PDF</button><button type="button" id="stage16PreviewShare" class="soft" style="flex:1;min-width:120px">📲 Share PDF</button></div>';
  document.body.appendChild(modal);$("stage16PreviewTitle").textContent=title;
  const host=$("stage16PreviewContent"),rows=Array.isArray(previewRows)?previewRows:[],pageCount=Math.max(1,Math.ceil(rows.length/15)),isSoa=rows.some(r=>r&&typeof r==="object");
+ if(isSoa){
+  const filter=document.createElement("div");filter.style.cssText="max-width:1100px;margin:0 auto 12px;background:#fff;padding:12px 16px;border-radius:9px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(15,35,60,.08)";
+  const label=document.createElement("label");label.textContent="🔎 Filter month & year";label.style.cssText="font-size:12px;font-weight:700;color:#243b53";
+  const month=document.createElement("input");month.type="month";month.id="stage16SoaMonthFilter";month.style.cssText="padding:8px 10px;border:1px solid #ccd6e0;border-radius:6px;font:inherit;color:#243b53";
+  const clear=document.createElement("button");clear.type="button";clear.textContent="Show all months";clear.style.cssText="padding:8px 11px;border:1px solid #ccd6e0;border-radius:6px;background:#f5f7fa;color:#243b53";
+  const count=document.createElement("span");count.textContent=rows.filter(r=>r.kind==="transaction").length+" transactions";count.style.cssText="font-size:11px;color:#64748b;margin-left:auto";
+  label.htmlFor="stage16SoaMonthFilter";filter.append(label,month,clear,count);host.appendChild(filter);
+  month.addEventListener("input",()=>{let visible=0;host.querySelectorAll("tr[data-soa-date]").forEach(tr=>{const show=!month.value||tr.dataset.soaDate.startsWith(month.value);tr.style.display=show?"":"none";if(show)visible++});count.textContent=visible+" matching transactions";});
+  clear.addEventListener("click",()=>{month.value="";month.dispatchEvent(new Event("input"))});
+ }
  for(let page=0;page<pageCount;page++){
   const sheet=document.createElement("section");sheet.style.cssText="max-width:1100px;margin:0 auto 18px;background:#fff;padding:26px;box-shadow:0 3px 16px rgba(15,35,60,.12);box-sizing:border-box;min-height:360px;border-top:5px solid #173b60";
-  const brand=document.createElement("div");brand.textContent="PROPLEDDGER 2027  |  PROPERTY MANAGEMENT";brand.style.cssText="font-size:10px;font-weight:700;letter-spacing:1.2px;color:#617286;margin-bottom:14px";sheet.appendChild(brand);
-  const h=document.createElement("h2");h.textContent=title.replace(" PDF Preview","");h.style.cssText="margin:0 0 7px;font-size:22px;color:#142b45";sheet.appendChild(h);
+  const brand=document.createElement("div");brand.textContent="🏢 "+(reportMeta.appName||"PROPLEDDGER 2027")+"  |  PROPERTY MANAGEMENT";brand.style.cssText="font-size:10px;font-weight:700;letter-spacing:1.2px;color:#617286;margin-bottom:14px";sheet.appendChild(brand);
+  const h=document.createElement("h2");h.textContent=isSoa?"SOA — Statement of Account":title.replace(" PDF Preview","");h.style.cssText="margin:0 0 14px;font-size:22px;color:#142b45";sheet.appendChild(h);
+  if(isSoa){
+   const meta=document.createElement("div");meta.style.cssText="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 22px;padding:13px 15px;margin:0 0 16px;background:#f7f9fc;border:1px solid #e2e8f0;border-radius:7px";
+   [["Tenant Name",reportMeta.tenant||"Not specified"],["Property",reportMeta.property||"Not specified"],["Month",reportMeta.month||"Multiple months"],["From",reportMeta.from||""],["Till",reportMeta.till||""],["Currency",reportMeta.currency||""]];
+   [["Tenant Name",reportMeta.tenant||"Not specified"],["Property",reportMeta.property||"Not specified"],["Month",reportMeta.month||"Multiple months"],["From",reportMeta.from||""],["Till",reportMeta.till||""],["Currency",reportMeta.currency||""]].forEach(([k,v])=>{const item=document.createElement("div");const label=document.createElement("div");label.textContent=k+":";label.style.cssText="font-size:10px;color:#64748b;margin-bottom:3px";const value=document.createElement("strong");value.textContent=v;value.style.cssText="font-size:12px;color:#1e344d";item.append(label,value);meta.appendChild(item)});sheet.appendChild(meta);
+  }
   const sub=document.createElement("p");sub.textContent=subtitle||"";sub.style.cssText="margin:0 0 16px;color:#526071;font-size:12px";sheet.appendChild(sub);
   if(page===0&&isSoa&&summary&&typeof summary==="object"){
    const kpis=document.createElement("div");kpis.style.cssText="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 18px";
@@ -1724,7 +1739,7 @@ function stage16ShowPdfPreview(blob,fileName,title,shareText,previewRows,subtitl
    const headers=["Date","Description","Reference","Tenant / Vendor","Debit","Credit","Running balance"],thead=document.createElement("thead"),trh=document.createElement("tr");
    headers.forEach(label=>{const th=document.createElement("th");th.textContent=label;th.style.cssText="text-align:left;padding:10px 7px;background:#173b60;color:#fff;font-size:10px;white-space:nowrap";trh.appendChild(th)});thead.appendChild(trh);table.appendChild(thead);
    const tbody=document.createElement("tbody");
-   rows.slice(page*15,(page+1)*15).forEach((r)=>{const tr=document.createElement("tr");const vals=[r.date||"",r.description||"",r.reference||"",r.party||"",r.debit?Number(r.debit).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—",r.credit?Number(r.credit).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—",Number(r.balance||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})];vals.forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;td.style.cssText="padding:10px 7px;border-bottom:1px solid #e5eaf0;white-space:"+(i===1||i===3?"normal":"nowrap")+";color:"+(i===6?"#173b60":"#27364a")+";font-weight:"+(i===6?"700":"400");tr.appendChild(td)});if(r.kind==="opening"||r.kind==="closing"){tr.style.background="#edf3f8";tr.style.fontWeight="700"}tbody.appendChild(tr)});table.appendChild(tbody);wrap.appendChild(table);sheet.appendChild(wrap);
+   rows.slice(page*15,(page+1)*15).forEach((r)=>{const tr=document.createElement("tr");tr.dataset.soaDate=r.date||"";const vals=[r.date||"",r.description||"",r.reference||"",r.party||"",r.debit?Number(r.debit).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—",r.credit?Number(r.credit).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—",Number(r.balance||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})];vals.forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;td.style.cssText="padding:10px 7px;border-bottom:1px solid #e5eaf0;white-space:"+(i===1||i===3?"normal":"nowrap")+";color:"+(i===6?"#173b60":"#27364a")+";font-weight:"+(i===6?"700":"400");tr.appendChild(td)});if(r.kind==="opening"||r.kind==="closing"){tr.style.background="#edf3f8";tr.style.fontWeight="700"}tbody.appendChild(tr)});table.appendChild(tbody);wrap.appendChild(table);sheet.appendChild(wrap);
   }else{
    const table=document.createElement("div");table.style.cssText="border-top:1px solid #d9e0e8";rows.slice(page*15,(page+1)*15).forEach(line=>{const row=document.createElement("div");row.textContent=String(line);row.style.cssText="padding:9px 4px;border-bottom:1px solid #e5e9ef;font-size:12px;line-height:1.5;overflow-wrap:anywhere";table.appendChild(row)});sheet.appendChild(table);
   }
@@ -1754,7 +1769,9 @@ function stage16CreatePdf(id,type,from,to){
  }
  const subtitle=(p.name||"Property")+" | "+from+" to "+to+" | "+(p.tenant?.name||p.tenant?.fullName||"Property account")+" | Currency "+currency;
  const blob=stage16BuildPdf("Property "+type+" Statement",subtitle,rows,summary),fileName=(p.name||"property").replace(/[^a-z0-9]+/gi,"-")+"-"+type.toLowerCase()+"-"+from+"-to-"+to+".pdf";
- stage16ShowPdfPreview(blob,fileName,"Property "+type+" PDF Preview","Property "+type+" report for "+(p.name||"property")+" ("+from+" to "+to+").",rows,subtitle,summary);
+ const tenantName=p.tenant?.name||p.tenant?.fullName||p.tenantName||"Not specified";
+ const monthLabel=from.slice(0,7)===to.slice(0,7)?new Date(from+"T12:00:00").toLocaleDateString("en-US",{month:"long",year:"numeric"}):"Multiple months";
+ stage16ShowPdfPreview(blob,fileName,type==="SOA"?"SOA — Statement of Account":"Property "+type+" PDF Preview","Property "+type+" report for "+(p.name||"property")+" ("+from+" to "+to+").",rows,subtitle,summary,{appName:"Propledger 2027",tenant:tenantName,property:p.name||"Property",month:monthLabel,from,till:to,currency});
 }
 function openPropertyDetail(id){
  const p=getProperties().find(x=>x.id===id);if(!p)return;
