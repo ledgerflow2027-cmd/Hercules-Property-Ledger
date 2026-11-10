@@ -2272,7 +2272,7 @@ function stage16ShowPdfPreview(blob,fileName,title,shareText,previewRows,subtitl
  document.body.appendChild(modal);$("stage16PreviewTitle").textContent=title;
  const host=$("stage16PreviewContent"),rows=Array.isArray(previewRows)?previewRows:[],pageCount=Math.max(1,Math.ceil(rows.length/15)),isSoa=reportMeta.type==="SOA",isPL=reportMeta.type==="P&L";
  if(isSoa){
-  const filter=document.createElement("div");filter.className="stage16-soa-range";filter.style.cssText="max-width:1100px;margin:0 auto 12px;background:#fff;padding:13px 16px;border-radius:10px;display:flex;align-items:stretch;gap:10px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(15,35,60,.08);border:1px solid #dce4ed;box-sizing:border-box";
+  const filter=document.createElement("div");filter.className="stage16-soa-range";filter.style.cssText="width:100%;max-width:1100px;margin:0 auto 12px;background:#fff;padding:12px;border-radius:10px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch;gap:10px;box-shadow:0 2px 10px rgba(15,35,60,.08);border:1px solid #dce4ed;box-sizing:border-box";
   const rangeTitle=document.createElement("strong");rangeTitle.textContent="📅 Report period";rangeTitle.style.cssText="flex:0 0 100%;font-size:12px;color:#243b53";
   const fromWrap=document.createElement("label");fromWrap.textContent="From";fromWrap.style.cssText="display:grid;gap:5px;font-size:11px;font-weight:700;color:#52657a;flex:1 1 180px;min-width:0;max-width:100%;width:100%;box-sizing:border-box";
   const fromInput=document.createElement("input");fromInput.type="date";fromInput.id="stage16SoaFromFilter";fromInput.value=reportMeta.from||"";fromInput.style.cssText="width:100%;min-width:0;padding:9px 8px;border:1px solid #ccd6e0;border-radius:7px;font:inherit;color:#243b53";fromWrap.appendChild(fromInput);
@@ -2459,6 +2459,91 @@ button .outline-icon{color:#2878c7}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
 </script>
+
+
+<style id="stage16-report-period-clean-grid">
+/* Single source of truth for the SOA preview Report Period controls.
+   Two equal columns, fixed 10px gutters and 12px card inset. */
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  justify-items:stretch!important;
+  gap:10px!important;
+  width:100%!important;
+  max-width:1100px!important;
+  min-width:0!important;
+  margin:0 auto 12px!important;
+  padding:12px!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>*{
+  grid-column:auto;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>strong:first-child,
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>button:nth-of-type(1),
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>div[style*="height: 1px"],
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>label[for="stage16SoaMonthFilter"],
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>span{
+  grid-column:1/-1!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>label:has(#stage16SoaFromFilter),
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>label:has(#stage16SoaTillFilter){
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:5px!important;
+  flex:none!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:0!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent #stage16SoaFromFilter,
+#stage16PdfPreviewModal #stage16PreviewContent #stage16SoaTillFilter,
+#stage16PdfPreviewModal #stage16PreviewContent #stage16SoaMonthFilter{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:42px!important;
+  min-height:42px!important;
+  max-height:42px!important;
+  box-sizing:border-box!important;
+  padding:7px 8px!important;
+  border-radius:8px!important;
+  font-size:14px!important;
+  line-height:1.2!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>button:nth-of-type(2){
+  grid-column:2!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:7px 8px!important;
+  white-space:normal!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>button:nth-of-type(1){
+  grid-column:1/-1!important;
+}
+@media(max-width:359px){
+  #stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range{
+    gap:8px!important;
+    padding:10px!important;
+  }
+  #stage16PdfPreviewModal #stage16PreviewContent #stage16SoaFromFilter,
+  #stage16PdfPreviewModal #stage16PreviewContent #stage16SoaTillFilter,
+  #stage16PdfPreviewModal #stage16PreviewContent #stage16SoaMonthFilter,
+  #stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>button:nth-of-type(2){
+    font-size:12px!important;
+  }
+}
+</style>
 
 </body>
 </html>
