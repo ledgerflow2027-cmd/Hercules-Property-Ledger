@@ -194,3 +194,15 @@ For each change:
 7. A stage transition additionally requires the full stage acceptance criteria and explicit owner acceptance. A Handoff update does not itself constitute stage acceptance.
 
 This per-change record supplements (and does not replace) the complete stage checkpoint and the refreshed full handoff required after every three consecutive successful stages.
+
+
+## 11. Latest deployment checkpoint — 10 November 2026
+
+- **Application change:** Removed the always-visible property statement table and the transaction/status summary line from the property profile. The property page now presents the report period controls and explicit Statement of Account / Profit & Loss preview actions; report content is intended to appear only after the matching preview action is selected.
+- **Application commit:** `5e90f967bd2665d3812cdd31741937b063766423` — `Remove property statement table and status from profile`.
+- **GitHub Actions:** [Run 42781317855](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42781317855) — completed successfully; conclusion: `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=5e90f96
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed by the assistant. Owner must verify the property page, Statement of Account preview, Profit & Loss preview, date filters, and preview/download/share behaviour in the live app.
+- **Stage 16 status:** remains **open — deployment passed, browser QA and owner acceptance outstanding**. The tenant SOA must also be checked to ensure vendor bills/payments are not mixed into a tenant receivable running balance. Do not mark Stage 16 complete or begin Stage 17 until these checks pass and the owner explicitly accepts Stage 16.
+- **Next stage:** Stage 17 Tenant Management remains blocked by the Stage 16 acceptance gate.
