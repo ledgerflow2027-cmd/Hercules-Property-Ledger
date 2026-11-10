@@ -537,3 +537,14 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=dd2e7a3
 - **QA:** GitHub Actions deployment and matching head SHA verified. No independent browser/iPhone interaction test was performed. A tenant portrait appears only when an image is saved on that tenant record; when no tenant portrait exists, the directory and preview show the person placeholder rather than substituting the property image. Owner visual and interaction confirmation remains pending.
 - **Next action:** Owner to refresh the live app, verify a tenant with a saved photo in both the directory circle and full-screen preview, and confirm the second circle still shows the associated property photo.
+
+
+## 39. Direct tenant photo upload controls and startup parse-error fix — 11 November 2026
+
+- **Owner report:** Tenant portraits were missing from the Tenants directory and tenant profile preview. The existing tenant edit/save workflow had not been used, so the sample tenant records had no saved portrait image.
+- **Implementation:** Added direct **Add photo / Change photo** controls to each Tenants directory row and an **Add / change photo** action in the tenant profile preview. The picker processes the selected image with the existing image-compression helper, saves it to the tenant's `photo` field in the existing `propledger.properties` local-storage data, refreshes the directory, and reopens the profile when appropriate. These portraits are device-local and are not cloud-synced; the owner must select an image for each tenant.
+- **Startup error and correction:** The app reported `SyntaxError: Invalid escape in identifier: '\\'` and activated navigation fallback. The tenant photo picker helper had accidentally been joined to the following function with a literal backslash-n sequence. Replacing it with a real newline restored valid JavaScript parsing.
+- **Application commit:** `bac6e9f1d797ab232307d9f48b92800162fe5233` — Fix tenant photo helper script syntax.
+- **GitHub Pages:** [Run 42902148921](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42902148921) — completed successfully; conclusion: `success`; deployed head SHA exactly matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=bac6e9f1
+- **QA:** Verified latest `main` contains the photo-picker helper and Add/Change Photo controls, and verified the Pages workflow completed successfully with the exact application head SHA. No independent browser/iPhone interaction test was performed. Owner should upload tenant portraits and confirm the directory and preview display on the device.
