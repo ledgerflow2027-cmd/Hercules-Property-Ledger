@@ -358,6 +358,39 @@
   }
 }
 </style>
+
+<style id="stage16-property-date-compact">
+/* Compact mobile date controls while retaining readable native date values and the 1x2 row. */
+@media(max-width:767px){
+  .detail-card .stage16-date-range{
+    width:85%!important;
+    margin-inline:auto!important;
+    padding-inline:0!important;
+    gap:8px!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .detail-card .stage16-date-range>.field{
+    width:100%!important;
+    margin:2px 0!important;
+    gap:3px!important;
+  }
+  .detail-card .stage16-date-range>.field>label{
+    font-size:10px!important;
+    line-height:1.1!important;
+  }
+  .detail-card .stage16-date-range input[type="date"]{
+    height:32px!important;
+    padding:4px 3px!important;
+    font-size:11px!important;
+    line-height:1.1!important;
+  }
+}
+@media(max-width:359px){
+  .detail-card .stage16-date-range{width:94%!important;gap:5px!important}
+  .detail-card .stage16-date-range input[type="date"]{height:30px!important;padding:3px 2px!important;font-size:10px!important}
+}
+</style>
+
 </head>
 <body>
 <section id="onboarding" class="hero">
