@@ -548,3 +548,15 @@ This per-change record supplements (and does not replace) the complete stage che
 - **GitHub Pages:** [Run 42902148921](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42902148921) — completed successfully; conclusion: `success`; deployed head SHA exactly matches the application commit.
 - **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=bac6e9f1
 - **QA:** Verified latest `main` contains the photo-picker helper and Add/Change Photo controls, and verified the Pages workflow completed successfully with the exact application head SHA. No independent browser/iPhone interaction test was performed. Owner should upload tenant portraits and confirm the directory and preview display on the device.
+
+
+## 40. Tenant portraits populated from existing repository assets; remove directory Add Photo action — 11 November 2026
+
+- **Owner request/confirmation:** Populate the tenant portrait in both the Tenants footer directory and tenant profile using the tenant images already uploaded to the repository. Remove the unnecessary Add Photo button from the Tenants list. The owner subsequently confirmed: “Congrats - it’s working”.
+- **Implementation:** Matched the ten seeded demo tenant IDs to the exact portrait filenames already used by the dashboard tenant carousel. Added a migration in `getProperties()` that fills only missing tenant photo fields for those known demo IDs and preserves any existing tenant photo. Removed the Add/Change Photo action from directory rows; retained the eye preview and tenant profile photo display. The associated property thumbnail remains separate. No user-created tenant record is overwritten.
+- **Application commit:** `3c1964c7a024113f6c0baead59ea79db3883d324` — Show repository tenant portraits and simplify tenant list.
+- **GitHub Pages:** [Run 42904990664](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42904990664) — completed successfully; conclusion: `success`; deployed head SHA exactly matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=3c1964c7
+- **QA/acceptance:** GitHub Actions success and exact deployed head SHA verified. Owner visually confirmed the tenant portrait issue is working. No independent browser/iPhone test was performed by the assistant.
+- **Known limitation:** Tenant records continue to use device-local browser storage; the demo portrait migration only targets the ten known seeded demo tenant IDs and does not create cloud synchronization.
+- **Next action:** Keep this working tenant directory/profile implementation stable. Proceed only with the next owner-approved task after this handoff entry is verified on `main`.
