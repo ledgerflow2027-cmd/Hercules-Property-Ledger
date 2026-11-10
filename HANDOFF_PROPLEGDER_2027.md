@@ -571,3 +571,10 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=c61b64d
 - **QA:** Application source changes and successful GitHub Pages deployment/head SHA verified. No independent browser/iPhone visual QA was performed. Owner visual confirmation remains pending.
 - **Next action:** Owner to refresh the live app and confirm the larger footer icons remain visually balanced with the existing labels and footer layout.
+
+
+## 42. Deployment follow-through and 30-second recheck rule — 11 November 2026
+
+- **Owner instruction:** Do not stop work when a GitHub Pages deployment is queued or in progress. Recheck the relevant GitHub Actions run after 30 seconds and continue checking until a terminal result is reached. Then verify the deployed head SHA, update and verify this Handoff on `main`, and provide the refreshed live URL. Report failures and unresolved states honestly; never claim deployment or browser QA without evidence.
+- **Execution limitation:** Thirty-second checks can be performed as follow-through while the deployment task is actively being worked in the conversation. The available scheduled automation service does not support intervals more frequent than daily, and no supported on-screen live countdown widget was available in this session. Do not claim unattended 30-second background monitoring or a running visual timer unless that capability becomes available.
+- **Applied to current footer icon change:** Application commit `c61b64df3e861eddceac079adc11d5d1f0ab1f78` reached successful GitHub Pages run `42905823172`; Section 41 records the implementation and QA limitation.
