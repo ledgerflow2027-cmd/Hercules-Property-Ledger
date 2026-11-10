@@ -1164,7 +1164,7 @@
  </div>
 </div>
 <nav class="bottom" aria-label="Main navigation">
-  <button class="navbtn active" data-screen="dashboard"><b>⌂</b>Dashboard</button>
+  <button class="navbtn active" data-screen="dashboard" aria-label="Home"><b><span class="outline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7H10v7H4a1 1 0 0 1-1-1z"/></svg></span></b>Home</button>
   <button class="navbtn" data-screen="properties"><b>🏘️</b>Properties</button>
   <button class="navbtn" data-screen="vendors"><b>🧰</b>Vendors</button>
   <button class="navbtn" data-screen="tenants"><b><svg class="blue-line-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19v-1.2a5.5 5.5 0 0 1 11 0V19M16 5.2a3.2 3.2 0 0 1 0 6.1M17 14a5 5 0 0 1 3.5 4.8V19"/></svg></b>Tenants</button>
@@ -2542,5 +2542,24 @@ button .outline-icon{color:#2878c7}
 }
 </style>
 
+
+<style id="footer-tab-icon-motion">
+/* Gentle pulse with a soft light flash; keep navigation labels and hit targets steady. */
+.bottom .navbtn .outline-icon,
+.bottom .navbtn .blue-line-icon{
+  animation:footer-tab-icon-pulse 2.2s ease-in-out infinite;
+  transform-origin:center;
+  will-change:transform,filter;
+}
+.bottom .navbtn:nth-child(2) .outline-icon,.bottom .navbtn:nth-child(2) .blue-line-icon{animation-delay:.22s}
+.bottom .navbtn:nth-child(3) .outline-icon,.bottom .navbtn:nth-child(3) .blue-line-icon{animation-delay:.44s}
+.bottom .navbtn:nth-child(4) .outline-icon,.bottom .navbtn:nth-child(4) .blue-line-icon{animation-delay:.66s}
+.bottom .navbtn:nth-child(5) .outline-icon,.bottom .navbtn:nth-child(5) .blue-line-icon{animation-delay:.88s}
+@keyframes footer-tab-icon-pulse{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(40,120,199,0))}
+  50%{transform:scale(1.09);filter:drop-shadow(0 0 5px rgba(40,120,199,.48)) brightness(1.12)}
+}
+@media(prefers-reduced-motion:reduce){.bottom .navbtn .outline-icon,.bottom .navbtn .blue-line-icon{animation:none!important;will-change:auto}}
+</style>
 </body>
 </html>
