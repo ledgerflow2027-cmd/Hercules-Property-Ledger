@@ -219,3 +219,17 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Known limitations:** The conversion layer deliberately leaves country flags unchanged. Native select-option emoji are left as native text for compatibility. The visual result and all interactive flows still require owner browser/device verification.
 - **Acceptance status:** deployed successfully; owner visual QA and explicit acceptance outstanding. This change does not close Stage 16 or authorize Stage 17.
 - **Next action:** Owner to review the live icon styling. Continue Stage 16 acceptance checks separately; Stage 17 remains blocked until Stage 16 is explicitly accepted.
+
+
+## 13. Tenancy contract actions — 10 November 2026
+
+- **Owner request:** Remove the old “Tenancy contract” card and replace it with two clearly labelled actions: “Preview tenancy contract” and “Create tenancy contract”.
+- **Implementation:** The old card was removed. “Preview tenancy contract” opens Document Studio with a tenancy draft for the selected property. “Create tenancy contract” opens Document Studio with the selected property and tenancy draft type preselected, ready for the draft-generation/review workflow. Existing Document Studio print/save PDF and sharing actions remain available.
+- **Application commit:** `a190e3a9622bd37a6a7ad671f515428bc3a7b342` — Replace tenancy contract card with preview and create buttons.
+- **GitHub Actions:** [Run 42791987106](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42791987106) — completed successfully; conclusion: `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=a190e3a
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed by the assistant. Owner should verify both actions on the live app, including selected-property context, draft preview, create workflow, and PDF/share actions.
+- **Known limitation:** The tenancy document is a draft template, not a legally validated or signing-ready contract. Review and local legal validation are required before operational use.
+- **Acceptance status:** deployed successfully; browser/device QA and explicit owner acceptance outstanding. This change does not close Stage 16 or authorize Stage 17.
+- **Next action:** Owner to verify both tenancy contract actions in the live app. Continue Stage 16 acceptance checks separately; Stage 17 remains blocked until Stage 16 is explicitly accepted.
