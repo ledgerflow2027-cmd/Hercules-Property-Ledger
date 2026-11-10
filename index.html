@@ -313,6 +313,49 @@
   }
 }
 </style>
+<style id="stage16-property-date-one-row">
+/* Property reports: keep From and Till side by side (one row, two columns) on phones. */
+.detail-card .stage16-date-range{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:end!important;
+  gap:8px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+.detail-card .stage16-date-range>.field{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:4px 0!important;
+}
+.detail-card .stage16-date-range>.field>label{
+  font-size:11px!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+}
+.detail-card .stage16-date-range input[type="date"]{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:44px!important;
+  box-sizing:border-box!important;
+  padding:8px 4px!important;
+  font-size:13px!important;
+  line-height:1.2!important;
+}
+@media(max-width:359px){
+  .detail-card .stage16-date-range{gap:6px!important}
+  .detail-card .stage16-date-range input[type="date"]{
+    padding:7px 2px!important;
+    font-size:12px!important;
+  }
+}
+</style>
 </head>
 <body>
 <section id="onboarding" class="hero">
