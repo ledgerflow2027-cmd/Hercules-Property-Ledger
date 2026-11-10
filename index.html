@@ -1743,7 +1743,7 @@ function openProfile(kind,id,row){
 }
 $("closeProfile")?.addEventListener("click",()=>{$("profileDetail").classList.remove("open");document.body.style.overflow=""});
 $("propertyList")?.addEventListener("click",e=>{const row=e.target.closest(".item");if(!row)return;openProfile("property",row.dataset.savedProperty,row)});
- function handleDashboardSlide(e){const card=e.target.closest(".picture-card[data-dashboard-kind]");if(!card)return;const kind=card.dataset.dashboardKind,id=card.dataset.dashboardId;if(kind==="property"){const record=getProperties().find(x=>x.id===id);if(!record){showScreen("properties");return}showScreen("properties");openProfile("property",id,card);return}if(kind==="vendor"){if(!id){showScreen("vendors");return}const record=getVendors().find(x=>x.id===id);if(record){showScreen("vendors");openProfile("vendor",id,card)}else showScreen("vendors");return}showScreen(kind==="tenant"?"tenants":"properties")}
+ function handleDashboardSlide(e){const card=e.target.closest(".picture-card[data-dashboard-kind]");if(!card)return;const kind=card.dataset.dashboardKind,id=card.dataset.dashboardId;if(kind==="property"){const record=getProperties().find(x=>x.id===id);if(!record){showScreen("properties");return}showScreen("properties");openProfile("property",id,card);return}if(kind==="tenant"){const record=getProperties().find(x=>x.id===id);if(!record){showScreen("properties");return}showScreen("properties");openProfile("property",id,card);return}if(kind==="vendor"){if(!id){showScreen("vendors");return}const record=getVendors().find(x=>x.id===id);if(record){showScreen("vendors");openProfile("vendor",id,card)}else showScreen("vendors");return}showScreen("properties")}
  ["dashboardProperties","dashboardTenants","dashboardVendors"].forEach(id=>{const host=$(id);host?.addEventListener("click",handleDashboardSlide);host?.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){const card=e.target.closest(".picture-card[data-dashboard-kind]");if(card){e.preventDefault();card.click()}}})});
 $("vendorList")?.addEventListener("click",e=>{const row=e.target.closest(".item");if(!row)return;openProfile("vendor",row.dataset.savedVendor,row)});
 
@@ -1920,18 +1920,16 @@ const dashPropertySamples=[
  {propertyId:"demo-property-pk-05",title:"Islamabad F-7 House",note:"Shared amenities · Sample",photo:"Upscale_apartment_community_clubhouse_and_pool_area_outdoor.jpg",emoji:"🏊"}
 ];
 const dashTenantSamples=[
- {title:"Resident profile 01",note:"Sample profile · no rent status",photo:"Man_in_his_30s_wearing_sweater_over_collared_shirt_approacha.jpg",emoji:"🧑"},
- {title:"Resident profile 02",note:"Sample profile · no rent status",photo:"Professional_man_wearing_casual_suit_jacket_and_open-collar.jpg",emoji:"👨"},
- {title:"Resident profile 03",note:"Sample profile · no rent status",photo:"Professional_woman_in_her_30s_wearing_beige_cardigan_and_blo.jpg",emoji:"👩"},
- {title:"Resident profile 04",note:"Sample profile · no rent status",photo:"Professional_young_woman_in_casual_business_attire_navy_blaz.jpg",emoji:"👩"},
- {title:"Resident profile 05",note:"Sample profile · no rent status",photo:"Woman_in_business_casual_attire_wearing_dark_cardigan_warm_s.jpg",emoji:"👩"},
- {title:"Resident profile 06",note:"Sample profile · no rent status",photo:"Woman_in_business_casual_attire_wearing_dark_cardigan_warm_s (1).jpg",emoji:"👩"},
- {title:"Resident profile 07",note:"Sample profile · no rent status",photo:"Woman_in_professional_casual_wear_striped_blouse_confident_p.jpg",emoji:"👩"},
- {title:"Resident profile 08",note:"Sample profile · no rent status",photo:"Young_man_in_smart_casual_outfit_light_blue_button-down_shir.jpg",emoji:"👨"},
- {title:"Resident profile 09",note:"Sample profile · no rent status",photo:"Young_man_in_smart_casual_wear_wearing_henley_shirt_and_blaz.jpg",emoji:"👨"},
- {title:"Resident profile 10",note:"Sample profile · no rent status",photo:"Young_professional_man_wearing_polo_shirt_and_blazer_friendl.jpg",emoji:"👨"},
- {title:"Resident profile 11",note:"Sample profile · no rent status",photo:"Young_woman_professional_wearing_light_pink_blouse_friendly.jpg",emoji:"👩"},
- {title:"Resident profile 12",note:"Sample profile · no rent status",photo:"Young_woman_professional_wearing_light_pink_blouse_friendly (1).jpg",emoji:"👩"}
+ {tenantId:"demo-tenant-01",propertyId:"demo-property-uae-01",title:"Amira Hassan",note:"Marina View Apartment 101 · UAE",photo:"Professional_woman_in_her_30s_wearing_beige_cardigan_and_blo.jpg",emoji:"👤"},
+ {tenantId:"demo-tenant-02",propertyId:"demo-property-uae-02",title:"Omar Khalid",note:"Palm Garden Villa · UAE",photo:"Professional_man_wearing_casual_suit_jacket_and_open-collar.jpg",emoji:"👤"},
+ {tenantId:"demo-tenant-03",propertyId:"demo-property-uae-03",title:"Sara Mahmood",note:"Creekside Residences · UAE",photo:"Professional_young_woman_in_casual_business_attire_navy_blaz.jpg",emoji:"👤"},
+ {tenantId:"demo-tenant-04",propertyId:"demo-property-uae-04",title:"Mariam Saeed",note:"Jumeirah Court Residence · UAE",photo:"Woman_in_business_casual_attire_wearing_dark_cardigan_warm_s.jpg",emoji:"👤"},
+ {tenantId:"demo-tenant-05",propertyId:"demo-property-uae-05",title:"Yousef Nasser",note:"Sharjah Garden Homes · UAE",photo:"Young_man_in_smart_casual_outfit_light_blue_button-down_shir.jpg",emoji:"👤"},
+ {tenantId:"demo-tenant-06",propertyId:"demo-property-pk-01",title:"Hamza Raza",note:"Gulberg Family Apartment · Pakistan",photo:"Young_man_in_smart_casual_wear_wearing_henley_shirt_and_blaz.jpg",emoji:"👤"},
+ {tenantId:"demo-tenant-07",propertyId:"demo-property-pk-02",title:"Ayesha Noor",note:"Clifton Corner House · Pakistan",photo:"Woman_in_professional_casual_wear_striped_blouse_confident_p.jpg",emoji:"👤"},
+ {tenantId:"demo-tenant-08",propertyId:"demo-property-pk-03",title:"Bilal Ahmed",note:"DHA Lahore Residence · Pakistan",photo:"Young_professional_man_wearing_polo_shirt_and_blazer_friendl.jpg",emoji:"👤"},
+ {tenantId:"demo-tenant-09",propertyId:"demo-property-pk-04",title:"Zara Iqbal",note:"Bahria Heights Apartment · Pakistan",photo:"Young_woman_professional_wearing_light_pink_blouse_friendly.jpg",emoji:"👤"},
+ {tenantId:"demo-tenant-10",propertyId:"demo-property-pk-05",title:"Usman Tariq",note:"Islamabad F-7 House · Pakistan",photo:"Man_in_his_30s_wearing_sweater_over_collared_shirt_approacha.jpg",emoji:"👤"}
 ];
 const dashVendorSamples=[
  {title:"Cleaning professional",note:"Property care · Sample",photo:"Professional_female_cleaning_service_worker_wearing_a_crisp.jpg",emoji:"🧹"},
@@ -1979,12 +1977,8 @@ function enableSlowPictureLoop(host,kind){
  host.dataset.loopReady="true";
 }
 function dashLateTenantSamples(){
- // The dashboard tenant carousel is a directory preview, not a late-only filter.
- // Always render every seeded tenant profile so all 12 are reachable in the stream.
- return dashTenantSamples.map((sample,index)=>({
-  ...sample,
-  note:"Tenant profile "+String(index+1).padStart(2,"0")+" · Sample"
- }));
+ // Display each seeded tenant with the property it is associated with.
+ return dashTenantSamples;
 }
 function renderDashboardSlides(){
  const groups=[
