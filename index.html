@@ -1725,7 +1725,6 @@ function stage16ShowPdfPreview(blob,fileName,title,shareText,previewRows,subtitl
   const h=document.createElement("h2");h.textContent=isSoa?"SOA — Statement of Account":title.replace(" PDF Preview","");h.style.cssText="margin:0 0 14px;font-size:22px;color:#142b45";sheet.appendChild(h);
   if(isSoa){
    const meta=document.createElement("div");meta.style.cssText="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 22px;padding:13px 15px;margin:0 0 16px;background:#f7f9fc;border:1px solid #e2e8f0;border-radius:7px";
-   [["Tenant Name",reportMeta.tenant||"Not specified"],["Property",reportMeta.property||"Not specified"],["Month",reportMeta.month||"Multiple months"],["From",reportMeta.from||""],["Till",reportMeta.till||""],["Currency",reportMeta.currency||""]];
    [["Tenant Name",reportMeta.tenant||"Not specified"],["Property",reportMeta.property||"Not specified"],["Month",reportMeta.month||"Multiple months"],["From",reportMeta.from||""],["Till",reportMeta.till||""],["Currency",reportMeta.currency||""]].forEach(([k,v])=>{const item=document.createElement("div");const label=document.createElement("div");label.textContent=k+":";label.style.cssText="font-size:10px;color:#64748b;margin-bottom:3px";const value=document.createElement("strong");value.textContent=v;value.style.cssText="font-size:12px;color:#1e344d";item.append(label,value);meta.appendChild(item)});sheet.appendChild(meta);
   }
   const sub=document.createElement("p");sub.textContent=subtitle||"";sub.style.cssText="margin:0 0 16px;color:#526071;font-size:12px";sheet.appendChild(sub);
@@ -1768,7 +1767,7 @@ function stage16CreatePdf(id,type,from,to){
   summary="Total income "+currency+" "+d.rent.reduce((a,x)=>a+(Number(x.amount)||0),0).toFixed(2)+"; expenses "+currency+" "+d.bills.reduce((a,x)=>a+(Number(x.amount)||0),0).toFixed(2);
  }
  const subtitle=(p.name||"Property")+" | "+from+" to "+to+" | "+(p.tenant?.name||p.tenant?.fullName||"Property account")+" | Currency "+currency;
- const blob=stage16BuildPdf("Property "+type+" Statement",subtitle,rows,summary),fileName=(p.name||"property").replace(/[^a-z0-9]+/gi,"-")+"-"+type.toLowerCase()+"-"+from+"-to-"+to+".pdf";
+ const blob=stage16BuildPdf(type==="SOA"?"SOA - Statement of Account":"Property "+type+" Statement",subtitle,rows,summary),fileName=(p.name||"property").replace(/[^a-z0-9]+/gi,"-")+"-"+type.toLowerCase()+"-"+from+"-to-"+to+".pdf";
  const tenantName=p.tenant?.name||p.tenant?.fullName||p.tenantName||"Not specified";
  const monthLabel=from.slice(0,7)===to.slice(0,7)?new Date(from+"T12:00:00").toLocaleDateString("en-US",{month:"long",year:"numeric"}):"Multiple months";
  stage16ShowPdfPreview(blob,fileName,type==="SOA"?"SOA — Statement of Account":"Property "+type+" PDF Preview","Property "+type+" report for "+(p.name||"property")+" ("+from+" to "+to+").",rows,subtitle,summary,{appName:"Propledger 2027",tenant:tenantName,property:p.name||"Property",month:monthLabel,from,till:to,currency});
