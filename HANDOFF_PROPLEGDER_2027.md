@@ -448,3 +448,12 @@ This per-change record supplements (and does not replace) the complete stage che
 - **QA:** Application source diff reviewed and GitHub Pages deployment verified. No independent visual browser/iPhone QA performed. User must inspect the SOA preview on iPhone for actual native date-control rendering, equal side/centre spacing, month row spacing and absence of clipping.
 - **Acceptance:** Deployment successful; visual verification and explicit user acceptance pending. Stage 16 remains open; Stage 17 remains blocked.
 - **Next action:** User to refresh the live app, open the SOA PDF Preview and inspect the Report Period card. Do not proceed to the next stage until user accepts the result.
+
+
+## 31. User acceptance — SOA Report Period layout — 10 November 2026
+
+- **User confirmation:** User explicitly confirmed: “Okay - page is fixed”.
+- **Accepted scope:** SOA PDF Preview Report Period card layout rebuilt in section 30; From/Till equal compact columns, month filter / Show all months row, consistent spacing and card inset.
+- **Status:** Accepted by user. Do not modify this accepted layout unless the user requests a change.
+- **Stage 16:** This specific Report Period layout issue is closed. Overall Stage 16 remains open for any other outstanding SOA/P&L requirements and is not automatically marked complete.
+- **Stage 17:** Do not begin until the user explicitly confirms that all remaining Stage 16 requirements are complete.
