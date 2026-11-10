@@ -348,3 +348,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Browser/device QA:** not independently performed. Owner should inspect the Property list, Add/Edit Property form, Property profile cards, Associated tenant tiles and Property reports on iPhone. Confirm content remains readable and no fields or values clip/overflow.
 - **Acceptance status:** deployed successfully; visual/device verification and explicit owner acceptance pending. Stage 16 remains open; Stage 17 remains blocked.
 - **Next action:** Owner to verify the consistent Property-page box sizing on the live app and confirm acceptance.
+
+
+## 23. SOA From/Till boxes aligned to Associated tenant sizing — 10 November 2026
+
+- **Owner instruction:** Copy the “Associated tenant” card box size and alignment for all SOA From/Till boxes; use automatic alignment.
+- **Implementation:** Updated only the SOA PDF preview's From/Till date controls. Both date inputs now use matching 58px compact tile sizing, 10px padding and 12px corner radius. CSS grid auto-fit keeps the two equal-width fields aligned side by side when the available width permits and stacks them automatically only when necessary. Other app screens and SOA report data/actions are unchanged.
+- **Application commit:** `e3caec5cdd33d7caedefe2cbd1cc81ba92c852bd` — Match SOA From and Till boxes to Associated tenant sizing.
+- **GitHub Actions:** [Run 42828465030](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42828465030) — completed successfully; conclusion: `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=e3caec5
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed. Owner should open a Property profile, preview its SOA and verify From/Till sizing, equal alignment, responsive stacking and date selection on iPhone.
+- **Acceptance status:** deployed successfully; visual/device verification and explicit owner acceptance pending. Stage 16 remains open; Stage 17 remains blocked.
+- **Next action:** Owner to inspect the SOA preview From/Till controls on the live app and confirm acceptance.
