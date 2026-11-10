@@ -578,3 +578,14 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Owner instruction:** Do not stop work when a GitHub Pages deployment is queued or in progress. Recheck the relevant GitHub Actions run after 30 seconds and continue checking until a terminal result is reached. Then verify the deployed head SHA, update and verify this Handoff on `main`, and provide the refreshed live URL. Report failures and unresolved states honestly; never claim deployment or browser QA without evidence.
 - **Execution limitation:** Thirty-second checks can be performed as follow-through while the deployment task is actively being worked in the conversation. The available scheduled automation service does not support intervals more frequent than daily, and no supported on-screen live countdown widget was available in this session. Do not claim unattended 30-second background monitoring or a running visual timer unless that capability becomes available.
 - **Applied to current footer icon change:** Application commit `c61b64df3e861eddceac079adc11d5d1f0ab1f78` reached successful GitHub Pages run `42905823172`; Section 41 records the implementation and QA limitation.
+
+
+## 43. Rename Dashboard tab to Home and add pulsing footer icons — 11 November 2026
+
+- **Owner request:** Rename the footer tab “Dashboard” to “Home”, use a suitable matching icon, and add pulse/flash effects to all tab icons.
+- **Implementation:** Renamed only the visible footer label to “Home” and replaced the old house glyph with the app's matching blue outline home icon. The underlying `data-screen="dashboard"` route and dashboard screen remain unchanged. Added a gentle scale pulse with a soft blue glow to all five footer icons, staggered across the tabs; labels and button hit areas remain still. The animation is disabled when the device requests reduced motion. Existing icon styles and footer layout are preserved.
+- **Application commit:** `65eeb79b22e09f908ec6808d08022d5ed6d08d61` — Rename Dashboard tab to Home and animate navigation icons.
+- **GitHub Pages:** [Run 42906923454](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42906923454) — completed successfully; conclusion: `success`; deployed head SHA exactly matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=65eeb79
+- **QA:** Source markup/CSS reviewed and GitHub Pages deployment plus exact deployed head SHA verified. No independent browser/iPhone visual QA was performed. Owner visual confirmation remains pending.
+- **Next action:** Owner to refresh the live app and confirm the Home icon/label and the pulse/flash effect on all five footer tabs.
