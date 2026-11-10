@@ -374,3 +374,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Browser/device QA:** not independently performed. Owner should inspect the Property reports card on iPhone and desktop, confirm full-width alignment, content-based height, equal spacing, readable From/Till values and report buttons, and verify no clipping/overflow.
 - **Acceptance status:** deployed successfully; visual/device verification and explicit owner acceptance pending. Stage 16 remains open; Stage 17 remains blocked.
 - **Next action:** Owner to verify the Property reports card on the live app and confirm acceptance.
+
+## 25. Report Period cards corrected with balanced spacing — 10 November 2026
+
+- **Owner instruction:** Fix the Report Period card and apply one simple layout rule: boxes must fit the available card space, with equal spacing at the left edge, between boxes and at the right edge.
+- **Root cause identified:** The SOA preview Report Period card used a flex row with fixed minimum field bases (180px), allowing controls to wrap unpredictably on mobile. A previous CSS rule also forced every button in the card onto a full-width row, disrupting the month-filter controls.
+- **Implementation:** Replaced the Report Period card's flex behavior with a strict two-column CSS grid using equal `minmax(0,1fr)` columns, 10px grid gaps, 12px card inset, and width/box-sizing constraints on every child control. The title, divider, transaction count and Apply dates action span the full card width; From/Till and month-filter controls align in equal columns. The Property profile's From/Till row also uses equal columns, 10px gap and bounded full-width controls within the card's 10px inset. Rules are scoped to the report cards; unrelated app forms are unchanged.
+- **Application commit:** `8f34b96fe7c668b4101b76bbe4cb6f9b992c1f3d` — Align report period filter actions to balanced grid.
+- **GitHub Actions:** [Run 42865875225](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42865875225) — completed successfully; conclusion: `success`; deployed head SHA matches the application commit. Earlier superseded run 42865831090 was cancelled; the final run for the latest code succeeded.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=8f34b96
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed. Owner should inspect the Property reports card and SOA preview Report Period card on iPhone; confirm equal From/Till widths, matching side/center spacing, month filter layout, Apply dates action, and no clipping or horizontal overflow.
+- **Acceptance status:** deployed successfully; visual/device verification and explicit owner acceptance pending. Stage 16 remains open; Stage 17 remains blocked.
+- **Next action:** Owner to refresh the live app and inspect the Report Period card. If any control still looks uneven, capture the exact screen and we will correct the measured issue rather than layering broad CSS guesses.
