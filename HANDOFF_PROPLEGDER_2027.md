@@ -507,3 +507,14 @@ This per-change record supplements (and does not replace) the complete stage che
 - **QA:** Source changes and GitHub Pages deployment/head SHA verified. No independent browser/iPhone interaction test was performed. Download is a text profile summary; WhatsApp sharing sends a prefilled text summary, not the tenant's private photo or documents. Tenant records remain stored locally on this device and are not cloud-synced.
 - **Acceptance:** Deployment successful; owner visual and interaction confirmation pending. Do not mark accepted until owner checks the footer, circular photos, full-screen preview, download and WhatsApp action.
 - **Next action:** Owner to refresh the live app, open Tenants from the footer, and test the preview and profile actions before moving to the next stage.
+
+
+## 36. Tenant directory controls use blue outline icons — 11 November 2026
+
+- **Request:** Apply the previously selected blue outline-style icon treatment to the newly added tenant-directory controls.
+- **Implementation:** Updated the Tenants footer navigation icon, tenant-profile preview eye, Download profile action, and WhatsApp share action to consistent blue outline-style icons. The styling uses blue strokes with no filled emoji glyphs, matching the app's established blue-line visual direction.
+- **Application commit:** `1d48556470b926c59737091618ac06f5dc7bf59d` — Use blue outline icons in tenant directory.
+- **GitHub Pages:** [Run 42898284753](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42898284753) — completed successfully on 11 November 2026; conclusion: `success`; deployed head SHA exactly matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=1d48556
+- **QA:** GitHub Actions deployment, successful Pages deploy job, and matching head SHA verified. No independent browser/iPhone interaction test was performed. Owner visual and interaction confirmation remains pending.
+- **Next action:** Owner to refresh the live app and confirm the blue outline appearance of the Tenants footer icon, preview eye, Download profile, and WhatsApp share controls before moving to the next stage.
