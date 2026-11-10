@@ -590,15 +590,6 @@ This per-change record supplements (and does not replace) the complete stage che
 - **QA:** Source markup/CSS reviewed and GitHub Pages deployment plus exact deployed head SHA verified. No independent browser/iPhone visual QA was performed. Owner visual confirmation remains pending.
 - **Next action:** Owner to refresh the live app and confirm the Home icon/label and the pulse/flash effect on all five footer tabs.
 
-## 44. Standardize all footer tab icons to match Tenants — 11 November 2026
-
-- **Owner request:** The Tenants footer icon had a different visual/effect treatment; make the other footer tabs match it.
-- **Implementation:** Converted all five footer tab icons (Home, Properties, Vendors, Tenants and More) to the same blue-line SVG treatment. Standardized the icon footprint at 35px, removed the boxed tile treatment from the other icons, and applied one synchronized 2.2-second pulse with a soft blue glow to every tab. Footer labels, navigation routes and hit areas remain unchanged. The animation respects reduced-motion preferences.
-- **Application commit:** `92f98de904ff0278f9be8acdbad1a99a14afacdb` — Make all footer tab icons match Tenants pulse effect.
-- **GitHub Pages:** [Run 42908261649](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42908261649) — completed successfully; conclusion: `success`; deployed head SHA exactly matches the application commit.
-- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=92f98de
-- **QA:** Latest source and Actions deployment/head SHA verified. No independent browser/iPhone visual QA was performed; owner visual confirmation remains pending.
-- **Next action:** Owner to refresh the live app and confirm all footer icons now have the same blue outline style and synchronized pulse as Tenants.
 ## 44. Make all footer tab icon effects match the Tenants icon — 11 November 2026
 
 - **Owner request:** The Tenants footer icon's effect looked different from the other footer icons; make the other three match the Tenants effect.
