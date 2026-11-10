@@ -186,6 +186,133 @@
  #dashboard .picture-loop-track{animation:none!important;transform:none!important}
 }
 </style>
+<style id="stage16-date-and-soa-overflow-final">
+/* Mobile-safe Stage 16 report date controls: stack fields so native date text has room. */
+#propertyDetailContent .detail-card .stage16-date-range,
+.detail-card .stage16-date-range{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:10px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+.detail-card .stage16-date-range>.field{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:4px 0!important;
+}
+.detail-card .stage16-date-range input[type="date"]{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:48px!important;
+  box-sizing:border-box!important;
+  padding:10px 12px!important;
+  font-size:16px!important;
+  line-height:1.2!important;
+}
+/* The SOA preview filter is generated dynamically; force a single-column layout. */
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  align-items:stretch!important;
+  gap:9px!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  padding:12px!important;
+  overflow:hidden!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>*{
+  min-width:0!important;
+  max-width:100%!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range label{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:6px!important;
+  flex:none!important;
+  min-width:0!important;
+  max-width:100%!important;
+  width:100%!important;
+  overflow:hidden!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range input[type="date"],
+#stage16PdfPreviewModal #stage16PreviewContent #stage16SoaMonthFilter{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:48px!important;
+  box-sizing:border-box!important;
+  padding:10px 9px!important;
+  font-size:16px!important;
+  line-height:1.2!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range button{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range [style*="flex: 0 0 100%"]{
+  grid-column:1!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range [style*="height: 1px"]{
+  grid-column:1!important;
+}
+/* Keep SOA summary figures and metadata inside their cards on phone screens. */
+#stage16PdfPreviewModal #stage16PreviewContent section{
+  width:100%!important;
+  max-width:100%!important;
+  padding:clamp(12px,4vw,26px)!important;
+  min-width:0!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent section > div[style*="grid-template-columns: repeat(4"]{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent section > div[style*="grid-template-columns: repeat(4"] > div{
+  min-width:0!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent section > div[style*="grid-template-columns: repeat(4"] strong{
+  display:block!important;
+  max-width:100%!important;
+  min-width:0!important;
+  font-size:clamp(11px,3.2vw,13px)!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent section > div[style*="grid-template-columns: repeat(2"]{
+  min-width:0!important;
+  max-width:100%!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent section > div[style*="grid-template-columns: repeat(2"] strong{
+  display:block!important;
+  max-width:100%!important;
+  min-width:0!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent section > div[style*="Tenant Name"] strong,
+#stage16PdfPreviewModal #stage16PreviewContent section strong{
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+@media(max-width:360px){
+  #stage16PdfPreviewModal #stage16PreviewContent section > div[style*="grid-template-columns: repeat(4"]{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+}
+</style>
 </head>
 <body>
 <section id="onboarding" class="hero">
