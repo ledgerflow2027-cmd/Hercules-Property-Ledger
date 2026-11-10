@@ -649,6 +649,68 @@
 }
 </style>
 
+
+<style id="soa-preview-report-period-compact-fix">
+/* Correct the SOA PREVIEW modal shown in the supplied screenshot.
+   The earlier 24px rule targeted the property profile, not this modal. */
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:start!important;
+  align-content:start!important;
+  gap:10px!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>label:not([for="stage16SoaMonthFilter"]){
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  align-content:start!important;
+  gap:5px!important;
+  min-width:0!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range input[type="date"]{
+  display:block!important;
+  width:100%!important;
+  height:48px!important;
+  min-height:48px!important;
+  max-height:48px!important;
+  padding:5px 8px!important;
+  margin:0!important;
+  font-size:14px!important;
+  line-height:1.2!important;
+  box-sizing:border-box!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>label[for="stage16SoaMonthFilter"]{
+  grid-column:1/-1!important;
+  margin:0!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent #stage16SoaMonthFilter{
+  grid-column:1!important;
+  width:100%!important;
+  height:48px!important;
+  min-height:48px!important;
+  max-height:48px!important;
+  padding:5px 8px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>button:not(#stage16SoaMonthFilter){
+  grid-column:1/-1!important;
+  min-height:48px!important;
+  height:48px!important;
+  padding:8px 12px!important;
+  box-sizing:border-box!important;
+}
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>button#stage16SoaMonthClear,
+#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>button:last-of-type{
+  grid-column:2!important;
+  width:100%!important;
+  min-height:48px!important;
+  height:48px!important;
+  padding:5px 8px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+</style>
 </head>
 <body>
 <section id="onboarding" class="hero">
