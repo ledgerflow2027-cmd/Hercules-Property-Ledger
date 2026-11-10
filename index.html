@@ -1667,25 +1667,34 @@ function stage16RenderPropertyFinancials(id){
 }
 function stage16PdfEscape(value){return String(value??"").replace(/[^\x20-\x7E]/g," ").replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)")}
 function stage16BuildPdf(title,subtitle,rows,summary){
+ const isSoa=title.toLowerCase().includes("soa")&&rows.some(r=>r&&typeof r==="object");
  const pages=[];for(let i=0;i<rows.length;i+=15)pages.push(rows.slice(i,i+15));if(!pages.length)pages.push(["No activity recorded for this selected period."]);
- const objects=[null];
- objects[1]="<< /Type /Catalog /Pages 2 0 R >>";
- objects[2]="<< /Type /Pages /Kids "+pages.map((_,i)=>(4+i*2)+" 0 R").join(" ")+" /Count "+pages.length+" >>";
- objects[3]="<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
+ const objects=[null];objects[1]="<< /Type /Catalog /Pages 2 0 R >>";objects[2]="<< /Type /Pages /Kids "+pages.map((_,i)=>(4+i*2)+" 0 R").join(" ")+" /Count "+pages.length+" >>";objects[3]="<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
  pages.forEach((page,i)=>{
-  const pageObj=4+i*2,streamObj=pageObj+1;
-  let content="BT /F1 15 Tf 42 800 Td ("+stage16PdfEscape(title)+") Tj 0 -25 Td /F1 9 Tf ("+stage16PdfEscape(subtitle)+") Tj 0 -18 Td ("+stage16PdfEscape(summary)+") Tj 0 -26 Td /F1 8 Tf ";
-  page.forEach((line,j)=>{content+="("+stage16PdfEscape(line)+") Tj 0 -30 Td ";});
-  content+="0 -20 Td ("+"Page "+(i+1)+" of "+pages.length+") Tj ET";
-  objects[pageObj]="<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents "+streamObj+" 0 R >>";
+  const pageObj=4+i*2,streamObj=pageObj+1;let content="";
+  if(isSoa){
+   const cols=[40,105,220,310,465,555,645,735],labels=["DATE","DESCRIPTION","REFERENCE","TENANT / VENDOR","DEBIT","CREDIT","BALANCE"];
+   content="BT /F1 16 Tf 40 555 Td ("+stage16PdfEscape(title)+") Tj ET\nBT /F1 8 Tf 40 538 Td ("+stage16PdfEscape(subtitle)+") Tj ET\nBT /F1 8 Tf 40 520 Td ("+stage16PdfEscape(summary.text||"")+") Tj ET\n";
+   content+="0.90 G 40 506 m 802 506 l S 0 G\n";
+   labels.forEach((v,j)=>{content+="BT /F1 7 Tf 1 0 0 1 "+cols[j]+" 492 Tm ("+v+") Tj ET\n"});
+   content+="0.65 G 40 484 m 802 484 l S 0 G\n";
+   page.forEach((r,j)=>{
+    const y=468-j*27,vals=[r.kind==="opening"||r.kind==="closing"?"":r.date||"",r.description||"",r.reference||"",r.party||"",r.debit?Number(r.debit).toFixed(2):"",r.credit?Number(r.credit).toFixed(2):"",Number(r.balance||0).toFixed(2)];
+    vals.forEach((v,k)=>{const max=[10,17,14,23,12,12,13][k];const clean=String(v).length>max?String(v).slice(0,max-1)+"…":String(v);content+="BT /F1 "+(r.kind==="opening"||r.kind==="closing"?8:7)+" Tf 1 0 0 1 "+cols[k]+" "+y+" Tm ("+stage16PdfEscape(clean.replace("…","..."))+") Tj ET\n"});
+    if(r.kind==="opening"||r.kind==="closing")content+="0.88 G 40 "+(y-7)+" m 802 "+(y-7)+" l S 0 G\n";
+   });
+   content+="BT /F1 7 Tf 1 0 0 1 740 24 Tm (Page "+(i+1)+" of "+pages.length+") Tj ET";
+  }else{
+   content="BT /F1 15 Tf 42 800 Td ("+stage16PdfEscape(title)+") Tj 0 -25 Td /F1 9 Tf ("+stage16PdfEscape(subtitle)+") Tj 0 -18 Td ("+stage16PdfEscape(summary)+") Tj 0 -26 Td /F1 8 Tf ";
+   page.forEach(line=>{content+="("+stage16PdfEscape(line)+") Tj 0 -30 Td ";});content+="0 -20 Td (Page "+(i+1)+" of "+pages.length+") Tj ET";
+  }
+  const media=isSoa?"[0 0 842 595]":"[0 0 595 842]";
+  objects[pageObj]="<< /Type /Page /Parent 2 0 R /MediaBox "+media+" /Resources << /Font << /F1 3 0 R >> >> /Contents "+streamObj+" 0 R >>";
   objects[streamObj]="<< /Length "+content.length+" >>\nstream\n"+content+"\nendstream";
  });
- let pdf="%PDF-1.4\n",offsets=[0];
- for(let i=1;i<objects.length;i++){offsets[i]=pdf.length;pdf+=i+" 0 obj\n"+objects[i]+"\nendobj\n";}
- const xref=pdf.length;pdf+="xref\n0 "+objects.length+"\n0000000000 65535 f \n";
- for(let i=1;i<objects.length;i++)pdf+=String(offsets[i]).padStart(10,"0")+" 00000 n \n";
- pdf+="trailer\n<< /Size "+objects.length+" /Root 1 0 R >>\nstartxref\n"+xref+"\n%%EOF";
- return new Blob([pdf],{type:"application/pdf"});
+ let pdf="%PDF-1.4\n",offsets=[0];for(let i=1;i<objects.length;i++){offsets[i]=pdf.length;pdf+=i+" 0 obj\n"+objects[i]+"\nendobj\n";}
+ const xref=pdf.length;pdf+="xref\n0 "+objects.length+"\n0000000000 65535 f \n";for(let i=1;i<objects.length;i++)pdf+=String(offsets[i]).padStart(10,"0")+" 00000 n \n";
+ pdf+="trailer\n<< /Size "+objects.length+" /Root 1 0 R >>\nstartxref\n"+xref+"\n%%EOF";return new Blob([pdf],{type:"application/pdf"});
 }
 let stage16PreviewBlob=null,stage16PreviewUrl=null,stage16PreviewName="";
 function stage16ClosePdfPreview(){
@@ -1694,73 +1703,58 @@ function stage16ClosePdfPreview(){
  stage16PreviewBlob=null;
 }
 function stage16ShowPdfPreview(blob,fileName,title,shareText,previewRows,subtitle,summary){
- stage16ClosePdfPreview();
- stage16PreviewBlob=blob;stage16PreviewName=fileName;stage16PreviewUrl=URL.createObjectURL(blob);
+ stage16ClosePdfPreview();stage16PreviewBlob=blob;stage16PreviewName=fileName;stage16PreviewUrl=URL.createObjectURL(blob);
  const modal=document.createElement("div");modal.id="stage16PdfPreviewModal";
- modal.style.cssText="position:fixed;inset:0;z-index:99999;background:rgba(10,18,30,.82);display:flex;flex-direction:column;padding:12px;box-sizing:border-box";
- modal.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;color:#172033;padding:12px;border-radius:12px 12px 0 0"><strong id="stage16PreviewTitle" style="font-size:15px"></strong><button type="button" id="stage16PreviewClose" aria-label="Close preview" style="border:0;background:#eef1f5;border-radius:8px;padding:8px 12px;font-size:18px">✕</button></div><div id="stage16PreviewContent" role="document" aria-label="Report preview" style="background:#f2f4f7;color:#172033;flex:1;min-height:0;overflow:auto;padding:18px;box-sizing:border-box"></div><div style="display:flex;gap:8px;flex-wrap:wrap;background:#fff;padding:12px;border-radius:0 0 12px 12px"><button type="button" id="stage16PreviewDownload" class="primary" style="flex:1;min-width:120px">⬇️ Download PDF</button><button type="button" id="stage16PreviewShare" class="soft" style="flex:1;min-width:120px">📲 Share PDF</button></div>';
- document.body.appendChild(modal);
- $("stage16PreviewTitle").textContent=title;
- const host=$("stage16PreviewContent");
- const pageRows=Array.isArray(previewRows)?previewRows:["No report rows were supplied."];
- const pageCount=Math.max(1,Math.ceil(pageRows.length/15));
+ modal.style.cssText="position:fixed;inset:0;z-index:99999;background:rgba(10,18,30,.86);display:flex;flex-direction:column;padding:10px;box-sizing:border-box";
+ modal.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;background:#10243d;color:#fff;padding:13px 16px;border-radius:12px 12px 0 0"><strong id="stage16PreviewTitle" style="font-size:15px;letter-spacing:.2px"></strong><button type="button" id="stage16PreviewClose" aria-label="Close preview" style="border:0;background:#ffffff22;color:#fff;border-radius:8px;padding:8px 12px;font-size:18px">✕</button></div><div id="stage16PreviewContent" role="document" aria-label="Report preview" style="background:#e9edf2;color:#172033;flex:1;min-height:0;overflow:auto;padding:14px;box-sizing:border-box"></div><div style="display:flex;gap:8px;flex-wrap:wrap;background:#fff;padding:12px;border-radius:0 0 12px 12px"><button type="button" id="stage16PreviewDownload" class="primary" style="flex:1;min-width:120px">⬇️ Download PDF</button><button type="button" id="stage16PreviewShare" class="soft" style="flex:1;min-width:120px">📲 Share PDF</button></div>';
+ document.body.appendChild(modal);$("stage16PreviewTitle").textContent=title;
+ const host=$("stage16PreviewContent"),rows=Array.isArray(previewRows)?previewRows:[],pageCount=Math.max(1,Math.ceil(rows.length/15)),isSoa=rows.some(r=>r&&typeof r==="object");
  for(let page=0;page<pageCount;page++){
-  const sheet=document.createElement("section");
-  sheet.style.cssText="max-width:900px;margin:0 auto 18px;background:#fff;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.08);box-sizing:border-box;min-height:360px";
-  const h=document.createElement("h2");h.textContent=title.replace(" PDF Preview"," Report");h.style.cssText="margin:0 0 8px;font-size:20px;color:#172033";sheet.appendChild(h);
-  const sub=document.createElement("p");sub.textContent=subtitle||"";sub.style.cssText="margin:0 0 8px;color:#526071;font-size:12px";sheet.appendChild(sub);
-  if(page===0&&summary){const sm=document.createElement("p");sm.textContent=summary;sm.style.cssText="margin:0 0 16px;padding:10px;background:#f4f7fb;border-radius:6px;font-size:12px";sheet.appendChild(sm)}
-  const table=document.createElement("div");table.style.cssText="border-top:1px solid #d9e0e8";
-  pageRows.slice(page*15,(page+1)*15).forEach((line,index)=>{const row=document.createElement("div");row.textContent=String(line);row.style.cssText="padding:9px 4px;border-bottom:1px solid #e5e9ef;font-size:12px;line-height:1.5;overflow-wrap:anywhere";table.appendChild(row)});
-  sheet.appendChild(table);
-  const foot=document.createElement("p");foot.textContent="Page "+(page+1)+" of "+pageCount;foot.style.cssText="margin:18px 0 0;text-align:right;color:#788493;font-size:11px";sheet.appendChild(foot);
-  host.appendChild(sheet);
+  const sheet=document.createElement("section");sheet.style.cssText="max-width:1100px;margin:0 auto 18px;background:#fff;padding:26px;box-shadow:0 3px 16px rgba(15,35,60,.12);box-sizing:border-box;min-height:360px;border-top:5px solid #173b60";
+  const brand=document.createElement("div");brand.textContent="PROPLEDDGER 2027  |  PROPERTY MANAGEMENT";brand.style.cssText="font-size:10px;font-weight:700;letter-spacing:1.2px;color:#617286;margin-bottom:14px";sheet.appendChild(brand);
+  const h=document.createElement("h2");h.textContent=title.replace(" PDF Preview","");h.style.cssText="margin:0 0 7px;font-size:22px;color:#142b45";sheet.appendChild(h);
+  const sub=document.createElement("p");sub.textContent=subtitle||"";sub.style.cssText="margin:0 0 16px;color:#526071;font-size:12px";sheet.appendChild(sub);
+  if(page===0&&isSoa&&summary&&typeof summary==="object"){
+   const kpis=document.createElement("div");kpis.style.cssText="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 18px";
+   [["Opening balance",summary.opening],["Rent billed",summary.billed],["Rent received",summary.received],["Closing balance",summary.closing]].forEach(([label,value])=>{const card=document.createElement("div");card.style.cssText="background:#f3f6fa;border:1px solid #e1e7ee;border-radius:7px;padding:10px";const small=document.createElement("div");small.textContent=label;small.style.cssText="font-size:10px;color:#66768a;margin-bottom:5px";const strong=document.createElement("strong");strong.textContent=summary.currency+" "+Number(value||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});strong.style.cssText="font-size:13px;color:#183653";card.append(small,strong);kpis.appendChild(card)});sheet.appendChild(kpis);
+  }else if(page===0&&summary){const sm=document.createElement("p");sm.textContent=String(summary);sm.style.cssText="margin:0 0 16px;padding:10px;background:#f4f7fb;border-radius:6px;font-size:12px";sheet.appendChild(sm)}
+  if(isSoa){
+   const wrap=document.createElement("div");wrap.style.cssText="overflow-x:auto";
+   const table=document.createElement("table");table.style.cssText="width:100%;border-collapse:collapse;min-width:850px;font-size:11px";
+   const headers=["Date","Description","Reference","Tenant / Vendor","Debit","Credit","Running balance"],thead=document.createElement("thead"),trh=document.createElement("tr");
+   headers.forEach(label=>{const th=document.createElement("th");th.textContent=label;th.style.cssText="text-align:left;padding:10px 7px;background:#173b60;color:#fff;font-size:10px;white-space:nowrap";trh.appendChild(th)});thead.appendChild(trh);table.appendChild(thead);
+   const tbody=document.createElement("tbody");
+   rows.slice(page*15,(page+1)*15).forEach((r)=>{const tr=document.createElement("tr");const vals=[r.date||"",r.description||"",r.reference||"",r.party||"",r.debit?Number(r.debit).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—",r.credit?Number(r.credit).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—",Number(r.balance||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})];vals.forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;td.style.cssText="padding:10px 7px;border-bottom:1px solid #e5eaf0;white-space:"+(i===1||i===3?"normal":"nowrap")+";color:"+(i===6?"#173b60":"#27364a")+";font-weight:"+(i===6?"700":"400");tr.appendChild(td)});if(r.kind==="opening"||r.kind==="closing"){tr.style.background="#edf3f8";tr.style.fontWeight="700"}tbody.appendChild(tr)});table.appendChild(tbody);wrap.appendChild(table);sheet.appendChild(wrap);
+  }else{
+   const table=document.createElement("div");table.style.cssText="border-top:1px solid #d9e0e8";rows.slice(page*15,(page+1)*15).forEach(line=>{const row=document.createElement("div");row.textContent=String(line);row.style.cssText="padding:9px 4px;border-bottom:1px solid #e5e9ef;font-size:12px;line-height:1.5;overflow-wrap:anywhere";table.appendChild(row)});sheet.appendChild(table);
+  }
+  const foot=document.createElement("p");foot.textContent="Propledger 2027 • Generated report • Page "+(page+1)+" of "+pageCount;foot.style.cssText="margin:20px 0 0;text-align:right;color:#788493;font-size:10px";sheet.appendChild(foot);host.appendChild(sheet);
  }
- $("stage16PreviewClose").addEventListener("click",stage16ClosePdfPreview);
- modal.addEventListener("click",e=>{if(e.target===modal)stage16ClosePdfPreview()});
- $("stage16PreviewDownload").addEventListener("click",()=>{
-  const downloadUrl=URL.createObjectURL(stage16PreviewBlob),a=document.createElement("a");
-  a.href=downloadUrl;a.download=stage16PreviewName;document.body.appendChild(a);a.click();a.remove();
-  setTimeout(()=>URL.revokeObjectURL(downloadUrl),30000);
- });
- $("stage16PreviewShare").addEventListener("click",async()=>{
-  const file=new File([stage16PreviewBlob],stage16PreviewName,{type:"application/pdf"});
-  try{
-   if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
-    await navigator.share({files:[file],title:title,text:shareText});
-   }else{
-    const wa="https://wa.me/?text="+encodeURIComponent(shareText+" Please find the PDF report attached.");
-    window.open(wa,"_blank","noopener");
-    alert("WhatsApp is open. Download the PDF, then attach it to your WhatsApp message. Your report has not been sent automatically.");
-   }
-  }catch(err){if(err?.name!=="AbortError")alert("Sharing was not completed. Please download the PDF and attach it in WhatsApp.")}
- });
+ $("stage16PreviewClose").addEventListener("click",stage16ClosePdfPreview);modal.addEventListener("click",e=>{if(e.target===modal)stage16ClosePdfPreview()});
+ $("stage16PreviewDownload").addEventListener("click",()=>{const u=URL.createObjectURL(stage16PreviewBlob),a=document.createElement("a");a.href=u;a.download=stage16PreviewName;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),30000)});
+ $("stage16PreviewShare").addEventListener("click",async()=>{const file=new File([stage16PreviewBlob],stage16PreviewName,{type:"application/pdf"});try{if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:title,text:shareText});else{window.open("https://wa.me/?text="+encodeURIComponent(shareText+" Please find the PDF report attached."),"_blank","noopener");alert("WhatsApp is open. Download the PDF, then attach it to your message.")}}catch(err){if(err?.name!=="AbortError")alert("Sharing was not completed. Please download the PDF and attach it in WhatsApp.")}});
 }
 function stage16CreatePdf(id,type,from,to){
-  const p=getProperties().find(x=>x.id===id);if(!p)return;
-  if(from>to){alert("From date must be earlier than or equal to To date.");return}
-  const d=stage16PeriodRows(id,from,to),currency=p.country==="PK"?"PKR":"AED";
-  let rows=[],summary="";
-  if(type==="SOA"){
-   const opening=stage16OpeningBalance(id,from);
-   const entries=[
-    ...d.rent.map(x=>({date:x.date,kind:"Rent billed",ref:x.number,party:x.tenant,income:Number(x.amount)||0,expense:0,settle:0,status:"Rent charge"})),
-    ...d.receipts.map(x=>({date:x.date,kind:"Rent received",ref:x.number,party:x.tenant,income:0,expense:0,settle:Number(x.amount)||0,status:"Receipt recorded"})),
-    ...d.bills.map(x=>({date:x.date,kind:"Vendor expense",ref:x.number,party:x.vendor,income:0,expense:Number(x.amount)||0,settle:0,status:"Expense recorded"})),
-    ...d.payments.map(x=>({date:x.date,kind:"Vendor payment",ref:x.number,party:x.vendor,income:0,expense:0,settle:Number(x.amount)||0,status:"Payment recorded"}))
-   ].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-   let balance=opening;
-   rows=["OPENING BALANCE | "+currency+" "+opening.toFixed(2),...entries.map(x=>{balance+=x.income+x.expense-x.settle;return [x.date,x.kind,x.ref||"",x.party||"",x.income?("Income "+currency+" "+x.income.toFixed(2)):"",x.expense?("Expense "+currency+" "+x.expense.toFixed(2)):"",x.settle?("Received/paid "+currency+" "+x.settle.toFixed(2)):"",x.status,"Balance "+currency+" "+balance.toFixed(2)].filter(Boolean).join(" | ")}),"CLOSING BALANCE | "+currency+" "+balance.toFixed(2)];
-   summary="Complete property SOA: "+p.name+"; "+from+" to "+to+". Income billed "+currency+" "+d.rent.reduce((a,x)=>a+(Number(x.amount)||0),0).toFixed(2)+"; expenses "+currency+" "+d.bills.reduce((a,x)=>a+(Number(x.amount)||0),0).toFixed(2)+".";
-  }else{
-   const months=stage16MonthKeys(from.slice(0,7),to.slice(0,7));
-   rows=months.map(m=>{const inc=d.rent.filter(x=>String(x.date).slice(0,7)===m).reduce((a,x)=>a+(Number(x.amount)||0),0),exp=d.bills.filter(x=>String(x.date).slice(0,7)===m).reduce((a,x)=>a+(Number(x.amount)||0),0);return m+" | Rent income "+currency+" "+inc.toFixed(2)+" | Vendor expenses "+currency+" "+exp.toFixed(2)+" | Net "+currency+" "+(inc-exp).toFixed(2)});
-   summary="Total income "+currency+" "+d.rent.reduce((a,x)=>a+(Number(x.amount)||0),0).toFixed(2)+"; expenses "+currency+" "+d.bills.reduce((a,x)=>a+(Number(x.amount)||0),0).toFixed(2);
-  }
-  const subtitle=(p.name||"Property")+" | "+from+" to "+to+" | Display currency "+currency+" (label only; no conversion)";
-  const blob=stage16BuildPdf("Property "+type+" Report",subtitle,rows,summary);
-  const fileName=(p.name||"property").replace(/[^a-z0-9]+/gi,"-")+"-"+type.replace(/[^a-z0-9]+/gi,"-")+"-"+from+"-to-"+to+".pdf";
-  stage16ShowPdfPreview(blob,fileName,"Property "+type+" PDF Preview", "Property "+type+" report for "+(p.name||"property")+" ("+from+" to "+to+").",rows,subtitle,summary);
+ const p=getProperties().find(x=>x.id===id);if(!p)return;if(from>to){alert("From date must be earlier than or equal to To date.");return}
+ const d=stage16PeriodRows(id,from,to),currency=p.country==="PK"?"PKR":"AED";let rows=[],summary="";
+ if(type==="SOA"){
+  const opening=stage16OpeningBalance(id,from),entries=[
+   ...d.rent.map(x=>({date:String(x.date||"").slice(0,10),description:"Rent billed",reference:x.number||"",party:x.tenant||"",debit:Number(x.amount)||0,credit:0})),
+   ...d.receipts.map(x=>({date:String(x.date||"").slice(0,10),description:"Rent received",reference:x.number||"",party:x.tenant||"",debit:0,credit:Number(x.amount)||0})),
+   ...d.bills.map(x=>({date:String(x.date||"").slice(0,10),description:"Vendor expense",reference:x.number||"",party:x.vendor||"",debit:Number(x.amount)||0,credit:0})),
+   ...d.payments.map(x=>({date:String(x.date||"").slice(0,10),description:"Vendor payment",reference:x.number||"",party:x.vendor||"",debit:0,credit:Number(x.amount)||0}))
+  ].sort((a,b)=>a.date.localeCompare(b.date)||a.description.localeCompare(b.description));
+  let balance=opening;rows.push({kind:"opening",description:"OPENING BALANCE",debit:0,credit:0,balance});
+  entries.forEach(x=>{balance+=x.debit-x.credit;rows.push({...x,kind:"transaction",balance})});
+  rows.push({kind:"closing",description:"CLOSING BALANCE",debit:0,credit:0,balance});
+  summary={currency,opening,billed:d.rent.reduce((a,x)=>a+(Number(x.amount)||0),0),received:d.receipts.reduce((a,x)=>a+(Number(x.amount)||0),0),expenses:d.bills.reduce((a,x)=>a+(Number(x.amount)||0),0),vendorPaid:d.payments.reduce((a,x)=>a+(Number(x.amount)||0),0),closing:balance};
+ }else{
+  const months=stage16MonthKeys(from.slice(0,7),to.slice(0,7));rows=months.map(m=>{const inc=d.rent.filter(x=>String(x.date).slice(0,7)===m).reduce((a,x)=>a+(Number(x.amount)||0),0),exp=d.bills.filter(x=>String(x.date).slice(0,7)===m).reduce((a,x)=>a+(Number(x.amount)||0),0);return m+" | Rent income "+currency+" "+inc.toFixed(2)+" | Vendor expenses "+currency+" "+exp.toFixed(2)+" | Net "+currency+" "+(inc-exp).toFixed(2)});
+  summary="Total income "+currency+" "+d.rent.reduce((a,x)=>a+(Number(x.amount)||0),0).toFixed(2)+"; expenses "+currency+" "+d.bills.reduce((a,x)=>a+(Number(x.amount)||0),0).toFixed(2);
+ }
+ const subtitle=(p.name||"Property")+" | "+from+" to "+to+" | "+(p.tenant?.name||p.tenant?.fullName||"Property account")+" | Currency "+currency;
+ const blob=stage16BuildPdf("Property "+type+" Statement",subtitle,rows,summary),fileName=(p.name||"property").replace(/[^a-z0-9]+/gi,"-")+"-"+type.toLowerCase()+"-"+from+"-to-"+to+".pdf";
+ stage16ShowPdfPreview(blob,fileName,"Property "+type+" PDF Preview","Property "+type+" report for "+(p.name||"property")+" ("+from+" to "+to+").",rows,subtitle,summary);
 }
 function openPropertyDetail(id){
  const p=getProperties().find(x=>x.id===id);if(!p)return;
