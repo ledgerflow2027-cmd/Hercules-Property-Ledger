@@ -309,3 +309,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Browser/device QA:** not independently performed; iPhone visual verification remains pending.
 - **Acceptance status:** deployed; owner confirmation pending. Stage 16 remains open; Stage 17 remains blocked.
 - **Next action:** Owner to confirm equal side and center spacing on the live Property reports card.
+
+
+## 20. Property reports mobile date-box size refinement — 10 November 2026
+
+- **Owner instruction:** Reduce the From/Till date boxes by 2× while retaining the side-by-side 1 × 2 mobile layout and balanced spacing.
+- **Implementation:** Added a final mobile-only compact rule for the Property reports date row. The row is narrowed to 85% of the card width and centered; both date controls remain equal-width columns. Control height is reduced from 44px to 32px, with smaller padding and labels. On very narrow screens the row widens to 94% to preserve date-value readability and remains two columns.
+- **Application commit:** `99eed60d439289a79e8a1e1acb56a807544d38af` — Make property report date boxes more compact on mobile.
+- **GitHub Actions:** [Run 42825541488](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42825541488) — completed successfully; conclusion: `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=99eed60
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed. Owner should verify date values remain readable and the native date picker is usable on iPhone, alongside the balanced left/center/right spacing.
+- **Acceptance status:** deployed; visual/device verification and explicit owner acceptance remain outstanding. Stage 16 remains open; Stage 17 remains blocked.
+- **Next action:** Owner to inspect the compact From/Till row on the live iPhone app and confirm whether the reduced size is acceptable.
