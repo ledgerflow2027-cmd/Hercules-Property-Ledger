@@ -480,6 +480,54 @@
   flex:1 1 0;
 }
 </style>
+
+<style id="app-universal-input-grid-sizing">
+/* Consistent, responsive sizing for editable controls across the app.
+   Only form fields and recognized form rows are targeted; display cards/buttons are untouched. */
+:where(.field,.property-form,.receipt-form,.form-grid,.form-row,.field-row,.stage16-date-range) {
+  min-width:0;
+}
+:where(.field,.property-form,.receipt-form,.form-grid,.form-row,.field-row,.stage16-date-range) > :where(input,select,textarea) {
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+}
+:where(.field,.property-form,.receipt-form) :where(input,select,textarea) {
+  box-sizing:border-box;
+  min-width:0;
+  max-width:100%;
+}
+:where(.two,.form-grid,.form-row,.field-row,.stage16-date-range) {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  align-items:stretch;
+  gap:10px;
+  width:100%;
+  min-width:0;
+}
+:where(.two,.form-grid,.form-row,.field-row,.stage16-date-range) > * {
+  min-width:0;
+  width:100%;
+  max-width:100%;
+}
+:where(.two,.form-grid,.form-row,.field-row,.stage16-date-range) :where(input,select,textarea) {
+  display:block;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  box-sizing:border-box;
+}
+:where(.field,.property-form,.receipt-form) :where(input,select,textarea) {
+  border-radius:12px;
+}
+@media(max-width:359px) {
+  :where(.two,.form-grid,.form-row,.field-row,.stage16-date-range) {
+    gap:6px;
+  }
+}
+</style>
+
 </head>
 <body>
 <section id="onboarding" class="hero">
