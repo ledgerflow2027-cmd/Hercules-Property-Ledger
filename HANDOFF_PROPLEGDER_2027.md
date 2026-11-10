@@ -270,3 +270,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Browser/device QA:** not independently performed. Owner confirmation is still required on iPhone for both Property reports and SOA preview date controls, including narrow-screen layout, and for the SOA/P&L preview actions.
 - **Acceptance status:** deployed successfully; visual/device verification and explicit owner acceptance remain outstanding. Stage 16 remains open; Stage 17 remains blocked.
 - **Next action:** Owner to verify the live layout and confirm whether both date-range cards are now correct.
+
+
+## 17. Mobile Property date fields and SOA value overflow correction — 10 November 2026
+
+- **Owner feedback:** Previous responsive change did not resolve the From/Till field sizing and SOA values overflowing their cards.
+- **Implementation:** Property report date controls now use a single-column layout with full-width, bounded inputs and a consistent 48px control height. The dynamically generated SOA date filter is forced into a single-column layout with bounded labels, inputs and action buttons. SOA summary KPI cards use fewer columns on mobile, and displayed amounts/metadata are allowed to wrap inside their cards rather than overflow. Existing date values, report generation and preview actions are retained.
+- **Application commit:** `e66c6cadd746f7674092e0cb6839cbdf4a1e318a` — Fix mobile report date fields and SOA value overflow.
+- **GitHub Actions:** [Run 42815736840](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42815736840) — completed successfully; conclusion: `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=e66c6ca
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed. Owner must verify on iPhone that the Property report From/Till inputs fit fully inside the card, SOA preview From/Till inputs fit, and SOA summary amounts and metadata remain within their boxes. Check SOA/P&L preview and download/share actions as regression checks.
+- **Acceptance status:** deployed successfully; visual/device verification and explicit owner acceptance outstanding. Stage 16 remains open; Stage 17 remains blocked.
+- **Next action:** Owner to test the live page and report whether the date fields and SOA figures now fit correctly.
