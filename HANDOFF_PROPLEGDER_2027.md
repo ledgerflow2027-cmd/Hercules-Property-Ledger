@@ -179,3 +179,18 @@ This is a mandatory project rule for every stage from this point forward:
 6. After every three consecutive successful stages, prepare a refreshed complete project handoff/roadmap checkpoint as well. This does not replace the per-stage update requirement.
 
 **Current checkpoint:** The latest application commit is `d3f07c2403b686be6381191fa554a5a6e7fff49f` (SOA preview handler and demo-data refresh fix), deployed successfully in Actions run `42684243624`. This is a deployment record, **not Stage 16 acceptance**. Stage 16 remains open pending user verification of the property SOA/P&L preview and financial data. Do not start Stage 17 until Stage 16 is accepted and this handoff is updated with the acceptance evidence.
+
+## 10. Expanded rule — update Handoff after every successful change
+
+The owner requires the Handoff to be updated **after every successful change**, not only at the end of a numbered stage. This rule applies to every agreed code, UI, content, configuration, data-seed or deployment change made to the project.
+
+For each change:
+1. Implement the agreed change and preserve existing working functionality.
+2. Commit the application change to the active repository.
+3. Run the relevant deployment/build checks and record the actual result. Perform browser/device testing when available; clearly state when it was not performed and request owner verification where needed.
+4. Immediately update this Handoff on `main` with the change description, application commit SHA, deployment run/result, tests actually performed, outstanding issues and acceptance status.
+5. Verify the Handoff update is visible on GitHub and provide the owner with its commit SHA and link.
+6. **Do not begin another project change or move to another stage until the Handoff update has been committed and verified.** If deployment or QA is pending or fails, record that honestly; do not label the change successful or the stage complete.
+7. A stage transition additionally requires the full stage acceptance criteria and explicit owner acceptance. A Handoff update does not itself constitute stage acceptance.
+
+This per-change record supplements (and does not replace) the complete stage checkpoint and the refreshed full handoff required after every three consecutive successful stages.
