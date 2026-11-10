@@ -1810,5 +1810,99 @@ function openPropertyDetail(id){
 
 window.__ledgerlyMainReady=true;
 </script>
+
+<style id="propledger-blue-outline-icons">
+/* Blue outline icon system, inspired by the owner's reference image. */
+.outline-icon{display:inline-grid;place-items:center;vertical-align:middle;width:1.9em;height:1.9em;flex:0 0 auto;margin:0 .16em .08em 0;border:1px solid #e8eef8;border-radius:.48em;background:#fff;box-shadow:0 2px 7px rgba(40,91,160,.10);color:#2878c7;line-height:1}
+.outline-icon svg{display:block;width:72%;height:72%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.navbtn .outline-icon{width:27px;height:27px;margin:0 auto 3px;border-radius:8px}
+.navbtn.active .outline-icon{color:#1768b4;background:#f8fbff;border-color:#cfe2f8}
+.dashboard-actions .outline-icon,.tile .outline-icon{width:36px;height:36px;border-radius:10px;margin:0 auto 6px}
+.avatar .outline-icon,.mini-art .outline-icon,.picture-card-art .outline-icon{width:1.8em;height:1.8em;margin:0;border-radius:9px}
+h1 .outline-icon,h2 .outline-icon,h3 .outline-icon,.page-title .outline-icon{width:1.55em;height:1.55em;border-radius:7px}
+button .outline-icon{color:#2878c7}
+@media(prefers-reduced-motion:reduce){.outline-icon{transition:none}}
+</style>
+<script id="propledger-blue-outline-icons">
+(()=>{
+ const paths={
+  home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7H10v7H4a1 1 0 0 1-1-1z"/>',
+  building:'<path d="M4 21V4l8-2 8 2v17M8 7h2m4 0h2M8 11h2m4 0h2M8 15h2m4 0h2M10 21v-3h4v3"/>',
+  people:'<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5v1"/>',
+  receipt:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6M9 16h3"/>',
+  wallet:'<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20v16H6a3 3 0 0 1-3-3V7a.5.5 0 0 1 1-.5z"/><path d="M3 8h17v4h-5a2 2 0 0 0 0 4h5M15 14h.01"/>',
+  card:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/>',
+  money:'<circle cx="12" cy="12" r="9"/><path d="M15 8.5c-.7-.7-1.7-1-3-1-1.7 0-3 .9-3 2.2s1.3 2.1 3 2.3 3 1 3 2.3-1.3 2.2-3 2.2c-1.3 0-2.3-.4-3-1M12 5.5v13"/>',
+  tools:'<path d="M14 7a5 5 0 0 0-6.5 6.5L3 18l3 3 4.5-4.5A5 5 0 0 0 17 10l-3 3-3-3z"/>',
+  chart:'<path d="M4 19V5M4 19h17M7 15l4-4 3 2 6-7"/>',
+  document:'<path d="M6 3h8l5 5v13H6zM14 3v6h5M9 13h7M9 17h7"/>',
+  edit:'<path d="m4 16-.8 4.8L8 20l11-11-4-4zM13.5 6.5l4 4M4 21h16"/>',
+  save:'<path d="M5 3h12l4 4v14H3V3zM7 3v6h10V3M7 21v-6h10v6"/>',
+  search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.7 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.7-1l-1.7.7-1.4-2.4 1.4-1.1a7 7 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.7-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.7 1l1.7-.7 1.4 2.4-1.4 1.1a7 7 0 0 1 0 2z"/>',
+  lock:'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+  bell:'<path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18M8 14h3m-3 3h3"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  camera:'<path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="14" r="4"/>',
+  upload:'<path d="M12 16V4m-5 5 5-5 5 5M4 16v4h16v-4"/>',
+  trash:'<path d="M4 7h16M9 7V4h6v3m-9 0 1 14h10l1-14M10 11v6m4-6v6"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 1 1 4.5 1.8c-1.2 1.1-2 1.5-2 3M12 17h.01"/>',
+  folder:'<path d="M3 6h7l2 2h9v11H3z"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1M14 11a5 5 0 0 0-7.1 0l-2 2A5 5 0 0 0 12 20l1.1-1.1"/>',
+  check:'<circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  shield:'<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/>',
+  sparkle:'<path d="m12 3 1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7zM19 16l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/>',
+  cloud:'<path d="M7 18a5 5 0 1 1 1-9.9A6 6 0 0 1 20 10a4 4 0 0 1 0 8z"/>',
+  pin:'<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="2.5"/>',
+  menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+  arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>'
+ };
+ const exact={
+ '🏠':'home','🏡':'home','🏘':'building','🏢':'building','🏙':'building','🏬':'building','🏛':'building','👤':'people','🧑':'people','👩':'people','👨':'people','🧕':'people','👷':'people','🤝':'people',
+ '🧾':'receipt','📑':'receipt','📒':'receipt','🗃':'folder','🗂':'folder','📁':'folder','📄':'document','📖':'document','📚':'document',
+ '💳':'card','💰':'money','💸':'money','💱':'money','🏦':'building','🧰':'tools','🧹':'tools','🪛':'tools','🔧':'tools','🛠':'tools','🪚':'tools',
+ '📊':'chart','📈':'chart','📉':'chart','🥧':'chart','✏':'edit','🖌':'edit','💾':'save','🔎':'search','⚙':'settings','🔐':'lock','🔒':'lock','🔓':'lock','🌐':'globe','🌍':'globe','🔔':'bell','🗓':'calendar','📅':'calendar','⏰':'clock',
+ '👁':'eye','📷':'camera','🖼':'camera','📤':'upload','⬇':'upload','🗑':'trash','❔':'help','🔗':'link','✅':'check','🟢':'check','⚠':'help','✨':'sparkle','🚀':'sparkle','☁':'cloud','📌':'pin','📎':'link','📩':'document','📲':'card','⚖':'document','💧':'cloud','🧩':'settings','📢':'bell','💻':'document','🧪':'check','🌱':'sparkle','🌿':'sparkle','❄':'sparkle','⚡':'sparkle','🌊':'cloud','↩':'arrow','➕':'check','🟣':'check'
+ };
+ const emojiRE=/\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?)*|[✏⚙⚠❔↩➕⬇]/gu;
+ const flags=/^[\u{1F1E6}-\u{1F1FF}]{2}$/u;
+ function iconFor(g){
+  if(flags.test(g)) return null;
+  const base=Array.from(g)[0];
+  return exact[base]||'sparkle';
+ }
+ function convertTextNode(node){
+  const value=node.nodeValue;
+  if(!value||!emojiRE.test(value)) {emojiRE.lastIndex=0;return;}
+  emojiRE.lastIndex=0;
+  const frag=document.createDocumentFragment();let last=0,match;
+  while((match=emojiRE.exec(value))){
+   const g=match[0],name=iconFor(g);
+   if(!name) continue;
+   if(match.index>last) frag.append(document.createTextNode(value.slice(last,match.index)));
+   const span=document.createElement('span');span.className='outline-icon';span.setAttribute('aria-hidden','true');span.title='';
+   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('focusable','false');
+   const group=document.createElementNS('http://www.w3.org/2000/svg','g');group.innerHTML=paths[name];svg.append(group);span.append(svg);frag.append(span);last=match.index+g.length;
+  }
+  if(last===0)return;
+  if(last<value.length)frag.append(document.createTextNode(value.slice(last)));
+  node.parentNode.replaceChild(frag,node);
+ }
+ function scan(root){
+  if(!root)return;
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(n){
+   const p=n.parentElement;if(!p||p.closest('script,style,textarea,select,option,.outline-icon,[contenteditable="true"]'))return NodeFilter.FILTER_REJECT;
+   return NodeFilter.FILTER_ACCEPT;
+  }});
+  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);nodes.forEach(convertTextNode);
+ }
+ function start(){scan(document.body);const observer=new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{if(node.nodeType===Node.TEXT_NODE)convertTextNode(node);else if(node.nodeType===Node.ELEMENT_NODE)scan(node);})));observer.observe(document.body,{childList:true,subtree:true});}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();
+</script>
+
 </body>
 </html>
