@@ -258,3 +258,15 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Browser/device QA:** not independently performed by the assistant. Owner should verify both the Property reports card and SOA preview date controls on iPhone, including a narrow viewport, and confirm SOA/P&L actions remain functional.
 - **Acceptance status:** code committed; deployment pending at this checkpoint; visual/device QA and owner acceptance outstanding. Stage 16 remains open and Stage 17 remains blocked.
 - **Next action:** Verify deployment completion, then owner to check both cards on the live app.
+
+
+## 16. Property report and SOA date-field fix — deployment confirmation — 10 November 2026
+
+- **Application change:** Responsive From/Till date-field layout fix covering both Property reports and the dynamically generated SOA preview.
+- **Application commit:** `27e132d7c4759069ccd200966dd3b4d3f0f4692a`.
+- **GitHub Actions:** [Run 42814787364](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42814787364) — completed successfully; conclusion: `success`. This deployment run used Handoff commit `fcfadbcbaedea449cb60fe34b0ae2e211738a6a0`, which includes the application fix.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=27e132d
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed. Owner confirmation is still required on iPhone for both Property reports and SOA preview date controls, including narrow-screen layout, and for the SOA/P&L preview actions.
+- **Acceptance status:** deployed successfully; visual/device verification and explicit owner acceptance remain outstanding. Stage 16 remains open; Stage 17 remains blocked.
+- **Next action:** Owner to verify the live layout and confirm whether both date-range cards are now correct.
