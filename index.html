@@ -528,6 +528,31 @@
 }
 </style>
 
+<style id="property-reports-from-till-equal-gap">
+/* Keep Property Reports From/Till controls in equal 1x2 columns with a clear gap, including narrow phones. */
+#propertyDetailPanel .property-reports-card > .stage16-date-range{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:stretch;
+  column-gap:10px!important;
+  row-gap:10px;
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+}
+#propertyDetailPanel .property-reports-card > .stage16-date-range > .field{
+  min-width:0;
+  width:100%;
+  margin:0;
+}
+#propertyDetailPanel .property-reports-card > .stage16-date-range input[type="date"]{
+  display:block;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  box-sizing:border-box;
+}
+</style>
 </head>
 <body>
 <section id="onboarding" class="hero">
