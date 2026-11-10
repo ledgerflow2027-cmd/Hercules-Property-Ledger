@@ -457,3 +457,17 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Status:** Accepted by user. Do not modify this accepted layout unless the user requests a change.
 - **Stage 16:** This specific Report Period layout issue is closed. Overall Stage 16 remains open for any other outstanding SOA/P&L requirements and is not automatically marked complete.
 - **Stage 17:** Do not begin until the user explicitly confirms that all remaining Stage 16 requirements are complete.
+
+
+
+## 32. Dashboard property carousel opens the selected property profile — 11 November 2026
+
+- **User-reported issue:** Dashboard property carousel cards were not connected to the individual property profile detail view; tapping a card could route to the Properties list.
+- **Root cause:** `dashPropertySamples` contained only display text and image filenames. `renderDashboardSlides()` passed an empty ID to `dashPictureCard()`, so every property slide received an empty `data-dashboard-id`. The click handler therefore took its no-ID fallback to the Properties list instead of opening the selected profile.
+- **Implementation:** Added a `propertyId` to each of the ten property carousel sample items, matching each image to its corresponding seeded property record (`demo-property-uae-01` through `demo-property-uae-05` and `demo-property-pk-01` through `demo-property-pk-05`). The renderer now passes that ID into the card. The property click route resolves the matching saved/demo record and opens the existing `openProfile("property", id, card)` profile detail view. Missing records safely fall back to the Properties screen. Tenant and vendor carousel behaviour was not intentionally changed.
+- **Application commit:** `072f387ab88811c5484945cb3ceb0af8cc7eff49` — Connect dashboard property carousel to selected property profiles.
+- **GitHub Pages:** [Run 42893553267](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42893553267) — completed successfully; conclusion `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=072f387
+- **QA:** Source mapping and route reviewed; GitHub Pages deployment verified. No independent browser/iPhone interaction test was performed. User should tap several carousel slides and confirm each opens the matching property profile, not the Properties list.
+- **Acceptance:** Pending user confirmation. Do not mark the issue accepted until the user verifies it.
+- **Next action:** User to refresh the live app and tap a property carousel card. If the profile still does not open, capture the exact slide selected and the resulting screen before changing the route again.
