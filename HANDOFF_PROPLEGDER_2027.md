@@ -322,3 +322,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Browser/device QA:** not independently performed. Owner should verify date values remain readable and the native date picker is usable on iPhone, alongside the balanced left/center/right spacing.
 - **Acceptance status:** deployed; visual/device verification and explicit owner acceptance remain outstanding. Stage 16 remains open; Stage 17 remains blocked.
 - **Next action:** Owner to inspect the compact From/Till row on the live iPhone app and confirm whether the reduced size is acceptable.
+
+
+## 21. Property reports date-box size increased by 50% — 10 November 2026
+
+- **Owner instruction:** Increase the compact From/Till date-box size by 0.5× (50%), keeping both fields on the same mobile row.
+- **Implementation:** Increased the mobile date-input height from 32px to 48px (44px on very narrow screens), increased date text and label sizing, and widened the centered date row to the full available card width while retaining equal columns, 8px outer inset and center gap (6px outer inset / 5px center gap on very narrow screens).
+- **Application commit:** `6aa055ed6f846724fdaaff88fde0ad1a29c9a100` — Increase property report date box size by 50 percent.
+- **GitHub Actions:** [Run 42826080639](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42826080639) — completed successfully; conclusion: `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=6aa055e
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed. Owner should verify the revised height, readable date values, native date picker and side-by-side alignment on iPhone.
+- **Acceptance status:** deployed; visual/device verification and explicit owner acceptance remain outstanding. Stage 16 remains open; Stage 17 remains blocked.
+- **Next action:** Owner to inspect the updated date controls on the live iPhone app and confirm the size.
