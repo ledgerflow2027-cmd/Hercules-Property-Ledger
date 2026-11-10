@@ -233,3 +233,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Known limitation:** The tenancy document is a draft template, not a legally validated or signing-ready contract. Review and local legal validation are required before operational use.
 - **Acceptance status:** deployed successfully; browser/device QA and explicit owner acceptance outstanding. This change does not close Stage 16 or authorize Stage 17.
 - **Next action:** Owner to verify both tenancy contract actions in the live app. Continue Stage 16 acceptance checks separately; Stage 17 remains blocked until Stage 16 is explicitly accepted.
+
+
+## 14. Property report date-field layout fix — 10 November 2026
+
+- **Owner request:** Fix the property report “From” and “Till” date boxes overlapping and date values extending outside their input boxes.
+- **Implementation:** Added a scoped responsive CSS fix for the property profile report card. The two-column grid now uses shrinkable `minmax(0,1fr)` tracks; each field and native date input is constrained to the card width with `min-width:0`, `max-width:100%`, and border-box sizing. Reduced input padding/font size on normal phone widths and stacks the fields vertically on screens narrower than 360px. Existing date values, report handlers and SOA/P&L actions are unchanged.
+- **Application commit:** `6d3d80d0e41c81b7d3d75e507802e5f8c20d8eb6` — Fix property report date input overflow.
+- **GitHub Actions:** [Run 42814201437](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42814201437) — completed successfully; conclusion: `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=6d3d80d
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed by the assistant. Owner should check the From/Till controls on the live app at normal iPhone width and a very narrow viewport, confirm both dates remain inside their boxes, and verify SOA/P&L preview actions still work.
+- **Acceptance status:** code committed and deployment successful; owner visual/device verification and acceptance outstanding. Stage 16 remains open; Stage 17 remains blocked pending the separate Stage 16 acceptance criteria.
+- **Next action:** Owner to verify the date controls in the live app before any further project change.
