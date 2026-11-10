@@ -518,3 +518,22 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=1d48556
 - **QA:** GitHub Actions deployment, successful Pages deploy job, and matching head SHA verified. No independent browser/iPhone interaction test was performed. Owner visual and interaction confirmation remains pending.
 - **Next action:** Owner to refresh the live app and confirm the blue outline appearance of the Tenants footer icon, preview eye, Download profile, and WhatsApp share controls before moving to the next stage.
+
+## 37. Tenant profile JavaScript syntax correction — 11 November 2026
+
+- **Reported issue:** The app displayed a startup error: `SyntaxError: Unexpected identifier 'blue'`, and navigation fallback was activated.
+- **Cause and fix:** SVG attributes in the tenant profile Download and WhatsApp action markup used unescaped double quotes inside a JavaScript string. The SVG attributes were changed to safely single-quoted HTML attributes without changing the blue outline icon design.
+- **Application commit:** `3a39a9c65734cdc44b60a9f7a79aed0fabb6b79f` — Fix tenant profile SVG string syntax.
+- **GitHub Pages:** [Run 42899155887](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42899155887) — completed successfully; conclusion: `success`; deployed head SHA exactly matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=3a39a9c
+- **QA:** Successful GitHub Pages deployment and matching head SHA verified. No independent browser/iPhone interaction test was performed; owner confirmation remains pending.
+
+## 38. Tenant portrait display in directory and profile preview — 11 November 2026
+
+- **Owner report:** The Tenants directory showed the associated property photo but not the tenant's own portrait in its circle. Opening the tenant preview also did not show the tenant profile photo.
+- **Implementation:** Added a shared tenant-photo resolver that reads the tenant's saved `photo`, `profilePhoto`, `avatar`, or `image` field. The first circular thumbnail in each Tenants row now explicitly uses the tenant portrait; the second circle continues to show the associated property's first photo. The full-screen tenant profile header now displays the tenant portrait, with a neutral person placeholder if no tenant photo is saved. Existing property association, preview routing, edit controls, and local-device storage are retained.
+- **Application commit:** `dd2e7a32f00e456a3242489245f5fbc72d60cf56` — Show tenant profile photos in directory and preview.
+- **GitHub Pages:** [Run 42899994248](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42899994248) — completed successfully; conclusion: `success`; deployed head SHA exactly matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=dd2e7a3
+- **QA:** GitHub Actions deployment and matching head SHA verified. No independent browser/iPhone interaction test was performed. A tenant portrait appears only when an image is saved on that tenant record; when no tenant portrait exists, the directory and preview show the person placeholder rather than substituting the property image. Owner visual and interaction confirmation remains pending.
+- **Next action:** Owner to refresh the live app, verify a tenant with a saved photo in both the directory circle and full-screen preview, and confirm the second circle still shows the associated property photo.
