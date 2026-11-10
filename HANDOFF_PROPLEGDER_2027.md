@@ -409,3 +409,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - GitHub Pages deployment run: [42873556016](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42873556016) — completed successfully; deployment head SHA matches app commit.
 - QA: deployment workflow verified. No visual browser/iPhone QA performed. The 24px native date input height may be tight on some mobile browsers; user visual confirmation is required before acceptance.
 - Acceptance: pending user confirmation.
+
+
+## 28. SOA preview Report Period controls compacted — 10 November 2026
+
+- User supplied a screenshot showing the Report Period card inside the SOA PDF Preview modal. The From/Till date controls were excessively tall; the month input and Show all months control touched with no visible centre gap.
+- **Root cause:** The previous 24px sizing rule was scoped to `#propertyDetailPanel .property-reports-card`, which is the Property Profile card. The screenshot instead showed the dynamically generated SOA preview modal: `#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range`. Therefore the previous change did not affect the pictured controls.
+- **Implementation:** Added a narrowly scoped override to the SOA preview modal. From/Till date inputs are explicitly 48px high with bounded box sizing and compact padding; the two labels remain equal grid columns with a 10px gap. The month filter and Show all months controls are placed in separate equal columns with the same gap. Apply dates remains full width. No report calculation or transaction logic was changed.
+- **Application commit:** `2f87f133d0f6567b5da17a61ab1921695fd20d52` — Fix SOA preview report period control sizing.
+- **GitHub Pages:** [Run 42874337014](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42874337014) — completed successfully; conclusion `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=2f87f13
+- **QA:** Source diff reviewed and GitHub Pages deployment verified. No independent visual browser/iPhone test performed. User visual verification remains required, especially that the native date controls render at 48px and month controls show the 10px centre gap.
+- **Acceptance:** Pending user confirmation. Stage 16 remains open; Stage 17 remains blocked.
+- **Next action:** User to refresh the live app, open the SOA preview and inspect this exact Report Period card before further changes.
