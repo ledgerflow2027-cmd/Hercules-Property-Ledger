@@ -600,3 +600,13 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=92f98de
 - **QA:** Footer markup and CSS reviewed; GitHub Pages run and exact deployed head SHA verified. No independent browser/iPhone visual QA was performed. Owner visual confirmation remains pending.
 - **Next action:** Owner to refresh the live app and confirm the footer icons now all have the same effect as Tenants.
+
+## 45. Full-screen tenant profile photo viewer — 11 November 2026
+
+- **Owner request:** Allow the user to tap the tenant profile picture on the Tenant Profile page and view the complete image at full screen.
+- **Implementation:** Made the tenant profile photo an accessible tap/click target. Tapping opens a dark full-screen image viewer that displays the entire photo using `object-fit: contain`, preserving its aspect ratio without cropping. Added a clear close control, tap-outside dismissal, and Escape-key dismissal. Keyboard activation is supported. The existing photo upload/change action, tenant profile content, and tenant data remain unchanged. If no tenant photo exists, the placeholder is not made into a misleading image viewer.
+- **Application commit:** `0a00bc06ddef7dd9f2386deb22ed69cc41e2cba0` — Open tenant profile photo in full-screen viewer.
+- **GitHub Pages:** [Run 42910798692](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42910798692) — completed successfully; conclusion: `success`; deployed head SHA exactly matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=0a00bc0
+- **QA:** Source implementation and successful Pages deployment/head SHA verified. No independent browser/iPhone visual QA was performed; owner visual confirmation remains pending.
+- **Next action:** Owner to open a tenant profile and tap its profile photo to verify the full-screen viewer on the iPhone.
