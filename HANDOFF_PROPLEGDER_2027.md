@@ -422,3 +422,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **QA:** Source diff reviewed and GitHub Pages deployment verified. No independent visual browser/iPhone test performed. User visual verification remains required, especially that the native date controls render at 48px and month controls show the 10px centre gap.
 - **Acceptance:** Pending user confirmation. Stage 16 remains open; Stage 17 remains blocked.
 - **Next action:** User to refresh the live app, open the SOA preview and inspect this exact Report Period card before further changes.
+
+
+## 29. SOA preview date-field specificity conflict corrected — 10 November 2026
+
+- User reported that the previous SOA preview layout update produced no visible change.
+- **Root cause confirmed in source:** The existing exact-ID selector `#stage16PdfPreviewModal #stage16PreviewContent #stage16SoaFromFilter` and matching Till selector imposed `height:58px!important` and `min-height:58px!important`. The previous generic `.stage16-soa-range input[type="date"]` selector had lower CSS specificity and therefore could not override those three-ID rules, even though it appeared later in the stylesheet.
+- **Implementation:** Added a new override using the same three-ID selectors as the legacy rule, setting From and Till to 29px (half of 58px), including min/max height, compact padding, 12px text, and `-webkit-appearance:none` / `appearance:none` to reduce native iOS control sizing interference. Other report controls and calculations were not changed in this patch.
+- **Application commit:** `dd3b63c69442e0ebdb82cd9e6aa80463b703973f` — Override exact SOA date field sizing rule.
+- **GitHub Pages:** [Run 42875445964](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42875445964) — completed successfully; conclusion `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=dd3b63c
+- **QA:** Source specificity conflict identified and exact-ID override reviewed; GitHub Pages job and deployment verified. No independent browser/iPhone visual test performed. User visual confirmation is still required; native iOS date text clipping must be checked at 29px.
+- **Acceptance:** Pending user confirmation. Stage 16 remains open; Stage 17 remains blocked.
+- **Next action:** User to open the SOA preview and confirm whether the From/Till controls are visibly reduced. Do not apply further CSS changes without checking the rendered result.
