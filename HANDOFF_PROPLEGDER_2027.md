@@ -387,3 +387,13 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Browser/device QA:** not independently performed. Owner should inspect the Property reports card and SOA preview Report Period card on iPhone; confirm equal From/Till widths, matching side/center spacing, month filter layout, Apply dates action, and no clipping or horizontal overflow.
 - **Acceptance status:** deployed successfully; visual/device verification and explicit owner acceptance pending. Stage 16 remains open; Stage 17 remains blocked.
 - **Next action:** Owner to refresh the live app and inspect the Report Period card. If any control still looks uneven, capture the exact screen and we will correct the measured issue rather than layering broad CSS guesses.
+
+
+## 26. Reverted faulty Property Reports date-spacing update — 10 November 2026
+
+- User reported that the Property Reports From/Till layout became unusable after commit `d15b25553e828493968702be5949202d293bab74`.
+- Investigation found that the commit accidentally replaced most of `index.html` (557 deletions) rather than applying only the intended CSS adjustment.
+- Restored the complete `index.html` from the preceding known-good app commit `f140b2ddd93c54c456e0e5673962cf884b2db7a5` (300,617 characters) in restoration commit `88a561719a713323b08103ba9b18201568d661f9`.
+- GitHub Pages deployment run: [42866804075](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42866804075) — completed successfully; deployment head SHA matches restoration commit.
+- QA: GitHub Actions deployment verified. No independent visual browser/iPhone QA performed. User should refresh the live app and confirm the prior layout is restored.
+- Acceptance: restoration awaiting user confirmation. Do not retry the spacing adjustment until the restored app is confirmed.
