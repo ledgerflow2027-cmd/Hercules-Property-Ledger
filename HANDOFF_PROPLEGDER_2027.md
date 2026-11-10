@@ -246,3 +246,15 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Browser/device QA:** not independently performed by the assistant. Owner should check the From/Till controls on the live app at normal iPhone width and a very narrow viewport, confirm both dates remain inside their boxes, and verify SOA/P&L preview actions still work.
 - **Acceptance status:** code committed and deployment successful; owner visual/device verification and acceptance outstanding. Stage 16 remains open; Stage 17 remains blocked pending the separate Stage 16 acceptance criteria.
 - **Next action:** Owner to verify the date controls in the live app before any further project change.
+
+
+## 15. Property report and SOA date-field overlap fix — 10 November 2026
+
+- **Owner request:** Correct overlapping / overflowing From and Till date boxes in both the Property reports card and the Statement of Account (SOA) preview card.
+- **Implementation:** Applied a shared, specifically classed responsive layout to both property-report date-range blocks, including the alternate property-detail preview. Both columns use shrinkable grid tracks and bounded date inputs; on very narrow screens the fields stack vertically. Fixed the dynamically generated SOA preview filter separately: From/Till labels can shrink and wrap, and their date inputs are constrained to the available card width. Existing selected dates, validation and report actions are retained.
+- **Application commit:** `27e132d7c4759069ccd200966dd3b4d3f0f4692a` — Fix property report and SOA date field overlap.
+- **GitHub Actions:** [Run 42814672944](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42814672944) — deployment in progress at handoff update time; final result to be recorded after completion.
+- **Live URL after deployment:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=27e132d
+- **Browser/device QA:** not independently performed by the assistant. Owner should verify both the Property reports card and SOA preview date controls on iPhone, including a narrow viewport, and confirm SOA/P&L actions remain functional.
+- **Acceptance status:** code committed; deployment pending at this checkpoint; visual/device QA and owner acceptance outstanding. Stage 16 remains open and Stage 17 remains blocked.
+- **Next action:** Verify deployment completion, then owner to check both cards on the live app.
