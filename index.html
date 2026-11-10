@@ -1744,6 +1744,8 @@ function openPropertyDetail(id){
  $("editPropertyDetail")?.addEventListener("click",()=>{closePropertyDetail();openProperty(id)});
  $("stage16From")?.addEventListener("change",()=>stage16RenderPropertyFinancials(id));$("stage16Till")?.addEventListener("change",()=>stage16RenderPropertyFinancials(id));
  stage16RenderPropertyFinancials(id);
+ $("stage16SOAPdf")?.addEventListener("click",()=>{try{stage16CreatePdf(id,"SOA",$("stage16From")?.value||"2025-11-01",$("stage16Till")?.value||new Date().toISOString().slice(0,10));}catch(error){console.error("Property SOA preview failed",error);alert("The SOA preview could not be created. Please refresh the app and try again.");}});
+ $("stage16PLPdf")?.addEventListener("click",()=>{try{stage16CreatePdf(id,"P&L",$("stage16From")?.value||"2025-11-01",$("stage16Till")?.value||new Date().toISOString().slice(0,10));}catch(error){console.error("Property P&L preview failed",error);alert("The P&L preview could not be created. Please refresh the app and try again.");}});
 }
 
 window.__ledgerlyMainReady=true;
