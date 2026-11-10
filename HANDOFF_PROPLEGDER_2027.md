@@ -471,3 +471,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **QA:** Source mapping and route reviewed; GitHub Pages deployment verified. No independent browser/iPhone interaction test was performed. User should tap several carousel slides and confirm each opens the matching property profile, not the Properties list.
 - **Acceptance:** Pending user confirmation. Do not mark the issue accepted until the user verifies it.
 - **Next action:** User to refresh the live app and tap a property carousel card. If the profile still does not open, capture the exact slide selected and the resulting screen before changing the route again.
+
+
+
+## 33. Dashboard property carousel titles aligned with property profiles — 11 November 2026
+
+- **User-reported issue:** The selected property profile opened and its picture matched the carousel slide, but the property name shown in the profile did not match the name on the carousel tab.
+- **Root cause:** The ten dashboard property carousel entries used generic sample titles (for example, “Mediterranean villa” and “Suburban family home”), while the seeded property records displayed their actual names. The property IDs and photo mappings were already pointing to the intended records; the mismatch was in the carousel title text.
+- **Implementation:** Replaced all ten generic carousel titles with the exact names from their corresponding seeded property records: Marina View Apartment 101; Palm Garden Villa; Creekside Residences; Jumeirah Court Residence; Sharjah Garden Homes; Gulberg Family Apartment; Clifton Corner House; DHA Lahore Residence; Bahria Heights Apartment; and Islamabad F-7 House. Property IDs, photos, profile routing, and other carousel types were not changed.
+- **Application commit:** `e7eda9ea2bccd63ce445d43cff300ad1b95bda13` — Match dashboard property carousel titles to profile names.
+- **GitHub Pages:** [Run 42894169394](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42894169394) — deployment did not complete. The site artifact uploaded successfully, but the Deploy to Pages step failed while fetching artifact metadata and reported that no `github-pages` artifact was found. Retrying the failed job produced the same failure. The workflow head SHA matches the application commit, but the live deployment is **not yet verified**.
+- **QA:** The ten title-to-record mappings were checked against the seeded property data. No independent browser/iPhone test was performed.
+- **Acceptance:** Pending live deployment and user visual confirmation. Do not mark accepted until the updated live carousel and matching profile names are verified.
+- **Next action:** Retry/verify GitHub Pages deployment, then ask the user to compare a few carousel titles with the opened profile names.
