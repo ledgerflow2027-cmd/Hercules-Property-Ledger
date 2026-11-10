@@ -667,17 +667,22 @@
   gap:5px!important;
   min-width:0!important;
 }
-#stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range input[type="date"]{
+/* Match the three-ID specificity of the legacy From/Till rule at lines 435-447.
+   Half of its forced 58px height is 29px; disable iOS native sizing so it obeys. */
+#stage16PdfPreviewModal #stage16PreviewContent #stage16SoaFromFilter,
+#stage16PdfPreviewModal #stage16PreviewContent #stage16SoaTillFilter{
   display:block!important;
   width:100%!important;
-  height:48px!important;
-  min-height:48px!important;
-  max-height:48px!important;
-  padding:5px 8px!important;
+  height:29px!important;
+  min-height:29px!important;
+  max-height:29px!important;
+  padding:2px 6px!important;
   margin:0!important;
-  font-size:14px!important;
-  line-height:1.2!important;
+  font-size:12px!important;
+  line-height:1!important;
   box-sizing:border-box!important;
+  -webkit-appearance:none!important;
+  appearance:none!important;
 }
 #stage16PdfPreviewModal #stage16PreviewContent .stage16-soa-range>label[for="stage16SoaMonthFilter"]{
   grid-column:1/-1!important;
