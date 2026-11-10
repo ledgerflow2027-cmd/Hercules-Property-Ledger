@@ -435,3 +435,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **QA:** Source specificity conflict identified and exact-ID override reviewed; GitHub Pages job and deployment verified. No independent browser/iPhone visual test performed. User visual confirmation is still required; native iOS date text clipping must be checked at 29px.
 - **Acceptance:** Pending user confirmation. Stage 16 remains open; Stage 17 remains blocked.
 - **Next action:** User to open the SOA preview and confirm whether the From/Till controls are visibly reduced. Do not apply further CSS changes without checking the rendered result.
+
+
+## 30. SOA preview Report Period rebuilt with equal compact grid — 10 November 2026
+
+- **Owner approval:** User approved rebuilding the SOA preview Report Period controls using a simple equal-column layout rather than continuing to stack CSS sizing overrides.
+- **Source inspection:** Confirmed the SOA preview controls are dynamically created in the SOA PDF preview renderer. The Report Period container contained inline flex layout and several overlapping legacy CSS rules, including conflicting grid definitions and date input heights.
+- **Implementation:** Changed the dynamically generated Report Period container to a two-column CSS grid and added a final scoped layout definition for this SOA preview card. From/Till use equal `minmax(0,1fr)` columns; the month filter and Show all months occupy a separate equal-width row; title, Apply dates, divider and transaction count span the card. The card uses a 12px inset and 10px gutters (8px on very narrow screens). Date/month controls target 42px height with compact padding. All rules are scoped to the SOA preview Report Period; report calculations, date validation, month filtering, PDF preview, download and sharing logic were not changed.
+- **Application commit:** `b33113e9a7f3184211e7e551e28fa369f0cf586f` — Rebuild SOA Report Period controls with equal compact grid.
+- **GitHub Pages:** [Run 42881494674](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42881494674) — completed successfully; conclusion `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=b33113e
+- **QA:** Application source diff reviewed and GitHub Pages deployment verified. No independent visual browser/iPhone QA performed. User must inspect the SOA preview on iPhone for actual native date-control rendering, equal side/centre spacing, month row spacing and absence of clipping.
+- **Acceptance:** Deployment successful; visual verification and explicit user acceptance pending. Stage 16 remains open; Stage 17 remains blocked.
+- **Next action:** User to refresh the live app, open the SOA PDF Preview and inspect the Report Period card. Do not proceed to the next stage until user accepts the result.
