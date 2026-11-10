@@ -283,3 +283,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Browser/device QA:** not independently performed. Owner must verify on iPhone that the Property report From/Till inputs fit fully inside the card, SOA preview From/Till inputs fit, and SOA summary amounts and metadata remain within their boxes. Check SOA/P&L preview and download/share actions as regression checks.
 - **Acceptance status:** deployed successfully; visual/device verification and explicit owner acceptance outstanding. Stage 16 remains open; Stage 17 remains blocked.
 - **Next action:** Owner to test the live page and report whether the date fields and SOA figures now fit correctly.
+
+
+## 18. Property reports mobile date layout — From/Till side-by-side — 10 November 2026
+
+- **Owner instruction:** Set the Property reports card to a standard mobile layout with From and Till on the same line, a 1 × 2 grid (one row, two columns).
+- **Implementation:** Added a final scoped responsive rule for `.stage16-date-range` within detail cards. From and Till each occupy one equal-width column on the same row, with compact labels, bounded native date inputs, and tighter spacing for very narrow phones. This applies to both Property reports card renderings.
+- **Application commit:** `5505853329beb89d3a8e87d18ebf78ea39c567a4` — Keep property report From and Till fields on one mobile row.
+- **GitHub Actions:** [Run 42824645006](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42824645006) — completed successfully; conclusion: `success`.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=5505853
+- **Automated deployment check:** passed.
+- **Browser/device QA:** not independently performed. Owner should verify on iPhone that both date inputs remain fully visible side-by-side at their screen width and that report generation still works.
+- **Acceptance status:** deployed; visual/device verification and explicit owner acceptance remain outstanding. Stage 16 remains open; Stage 17 remains blocked.
+- **Next action:** Owner to check the live Property reports card and confirm the 1 × 2 layout.
