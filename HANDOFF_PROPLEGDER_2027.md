@@ -397,3 +397,5 @@ This per-change record supplements (and does not replace) the complete stage che
 - GitHub Pages deployment run: [42866804075](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42866804075) — completed successfully; deployment head SHA matches restoration commit.
 - QA: GitHub Actions deployment verified. No independent visual browser/iPhone QA performed. User should refresh the live app and confirm the prior layout is restored.
 - Acceptance: restoration awaiting user confirmation. Do not retry the spacing adjustment until the restored app is confirmed.
+
+- User confirmation received after rollback: the restored app is confirmed by the user. The faulty report-spacing change remains reverted; no further layout changes are authorized by this confirmation.
