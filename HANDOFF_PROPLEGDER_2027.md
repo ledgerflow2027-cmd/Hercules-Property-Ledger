@@ -560,3 +560,14 @@ This per-change record supplements (and does not replace) the complete stage che
 - **QA/acceptance:** GitHub Actions success and exact deployed head SHA verified. Owner visually confirmed the tenant portrait issue is working. No independent browser/iPhone test was performed by the assistant.
 - **Known limitation:** Tenant records continue to use device-local browser storage; the demo portrait migration only targets the ten known seeded demo tenant IDs and does not create cloud synchronization.
 - **Next action:** Keep this working tenant directory/profile implementation stable. Proceed only with the next owner-approved task after this handoff entry is verified on `main`.
+
+
+## 41. Footer blue navigation icons increased by 50 percent — 11 November 2026
+
+- **Owner request:** Increase the size of the blue outline icons in the fixed footer by 0.5X (50 percent larger).
+- **Implementation:** Increased the footer outline icon tile from 27px to 41px and the blue-line SVG icon from 23px to 35px (approximately 1.5 times the original dimensions). Adjusted the tile corner radius from 8px to 10px. Footer grid, labels, navigation actions and other layout settings were left unchanged.
+- **Application commit:** `c61b64df3e861eddceac079adc11d5d1f0ab1f78` — Increase blue footer navigation icons by 50 percent.
+- **GitHub Pages:** [Run 42905823172](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42905823172) — completed successfully; conclusion: `success`; deployed head SHA exactly matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=c61b64d
+- **QA:** Application source changes and successful GitHub Pages deployment/head SHA verified. No independent browser/iPhone visual QA was performed. Owner visual confirmation remains pending.
+- **Next action:** Owner to refresh the live app and confirm the larger footer icons remain visually balanced with the existing labels and footer layout.
