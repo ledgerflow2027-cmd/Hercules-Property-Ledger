@@ -1743,7 +1743,7 @@ function openProfile(kind,id,row){
 }
 $("closeProfile")?.addEventListener("click",()=>{$("profileDetail").classList.remove("open");document.body.style.overflow=""});
 $("propertyList")?.addEventListener("click",e=>{const row=e.target.closest(".item");if(!row)return;openProfile("property",row.dataset.savedProperty,row)});
- function handleDashboardSlide(e){const card=e.target.closest(".picture-card[data-dashboard-kind]");if(!card)return;const kind=card.dataset.dashboardKind,id=card.dataset.dashboardId;if(!id){showScreen(kind==="vendor"?"vendors":"properties");return}if(kind==="vendor"){showScreen("vendors");const record=getVendors().find(x=>x.id===id);if(record)openProfile("vendor",id,card)}else{showScreen("properties");const record=getProperties().find(x=>x.id===id);if(record)openProfile("property",id,card)}}
+ function handleDashboardSlide(e){const card=e.target.closest(".picture-card[data-dashboard-kind]");if(!card)return;const kind=card.dataset.dashboardKind,id=card.dataset.dashboardId;if(kind==="property"){const record=getProperties().find(x=>x.id===id);if(!record){showScreen("properties");return}showScreen("properties");openProfile("property",id,card);return}if(kind==="vendor"){if(!id){showScreen("vendors");return}const record=getVendors().find(x=>x.id===id);if(record){showScreen("vendors");openProfile("vendor",id,card)}else showScreen("vendors");return}showScreen(kind==="tenant"?"tenants":"properties")}
  ["dashboardProperties","dashboardTenants","dashboardVendors"].forEach(id=>{const host=$(id);host?.addEventListener("click",handleDashboardSlide);host?.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){const card=e.target.closest(".picture-card[data-dashboard-kind]");if(card){e.preventDefault();card.click()}}})});
 $("vendorList")?.addEventListener("click",e=>{const row=e.target.closest(".item");if(!row)return;openProfile("vendor",row.dataset.savedVendor,row)});
 
@@ -1908,16 +1908,16 @@ function dashPictureCard(host,item,kind,id){
 }
 // Sample images are served from this repository alongside index.html.
 const dashPropertySamples=[
- {title:"Mediterranean villa",note:"Residential · Sample",photo:"Beautiful_Mediterranean_villa_with_white_stucco_walls_terrac.jpg",emoji:"🏡"},
- {title:"Suburban family home",note:"Residential · Sample",photo:"Charming_suburban_house_with_front_porch_brick_and_siding_ex.jpg",emoji:"🏠"},
- {title:"Contemporary home",note:"Residential · Sample",photo:"Contemporary_single-family_home_with_wood_and_white_exterior.jpg",emoji:"🏡"},
- {title:"Curved condominium",note:"Multi-unit · Sample",photo:"Elegant_condominium_building_curved_architecture_balconies_w.jpg",emoji:"🏢"},
- {title:"Luxury high-rise",note:"Multi-unit · Sample",photo:"Luxury_high-rise_apartment_complex_glass_and_steel_facade_ur.jpg",emoji:"🏙️"},
- {title:"Minimalist modern home",note:"Residential · Sample",photo:"Minimalist_modern_home_concrete_and_wood_materials_flat_roof (3).jpg",emoji:"🏠"},
- {title:"Modern apartment",note:"Multi-unit · Sample",photo:"Modern_luxury_apartment_building_exterior_at_dusk_warm_inter.jpg",emoji:"🏢"},
- {title:"Townhouse community",note:"Residential · Sample",photo:"Modern_townhouse_complex_three-story_units_contemporary_desi.jpg",emoji:"🏘️"},
- {title:"Victorian residence",note:"Residential · Sample",photo:"Renovated_Victorian_house_colorful_exterior_bay_windows_mani.jpg",emoji:"🏡"},
- {title:"Community pool",note:"Shared amenities · Sample",photo:"Upscale_apartment_community_clubhouse_and_pool_area_outdoor.jpg",emoji:"🏊"}
+ {propertyId:"demo-property-uae-01",title:"Mediterranean villa",note:"Residential · Sample",photo:"Beautiful_Mediterranean_villa_with_white_stucco_walls_terrac.jpg",emoji:"🏡"},
+ {propertyId:"demo-property-uae-02",title:"Suburban family home",note:"Residential · Sample",photo:"Charming_suburban_house_with_front_porch_brick_and_siding_ex.jpg",emoji:"🏠"},
+ {propertyId:"demo-property-uae-03",title:"Contemporary home",note:"Residential · Sample",photo:"Contemporary_single-family_home_with_wood_and_white_exterior.jpg",emoji:"🏡"},
+ {propertyId:"demo-property-uae-04",title:"Curved condominium",note:"Multi-unit · Sample",photo:"Elegant_condominium_building_curved_architecture_balconies_w.jpg",emoji:"🏢"},
+ {propertyId:"demo-property-uae-05",title:"Luxury high-rise",note:"Multi-unit · Sample",photo:"Luxury_high-rise_apartment_complex_glass_and_steel_facade_ur.jpg",emoji:"🏙️"},
+ {propertyId:"demo-property-pk-01",title:"Minimalist modern home",note:"Residential · Sample",photo:"Minimalist_modern_home_concrete_and_wood_materials_flat_roof (3).jpg",emoji:"🏠"},
+ {propertyId:"demo-property-pk-02",title:"Modern apartment",note:"Multi-unit · Sample",photo:"Modern_luxury_apartment_building_exterior_at_dusk_warm_inter.jpg",emoji:"🏢"},
+ {propertyId:"demo-property-pk-03",title:"Townhouse community",note:"Residential · Sample",photo:"Modern_townhouse_complex_three-story_units_contemporary_desi.jpg",emoji:"🏘️"},
+ {propertyId:"demo-property-pk-04",title:"Victorian residence",note:"Residential · Sample",photo:"Renovated_Victorian_house_colorful_exterior_bay_windows_mani.jpg",emoji:"🏡"},
+ {propertyId:"demo-property-pk-05",title:"Community pool",note:"Shared amenities · Sample",photo:"Upscale_apartment_community_clubhouse_and_pool_area_outdoor.jpg",emoji:"🏊"}
 ];
 const dashTenantSamples=[
  {title:"Resident profile 01",note:"Sample profile · no rent status",photo:"Man_in_his_30s_wearing_sweater_over_collared_shirt_approacha.jpg",emoji:"🧑"},
@@ -1996,7 +1996,7 @@ function renderDashboardSlides(){
   const host=$(id);if(!host)return;
   host.dataset.loopReady="false";
   host.innerHTML="";
-  items.forEach(item=>dashPictureCard(host,item,kind,""));
+  items.forEach(item=>dashPictureCard(host,item,kind,item.propertyId||""));
   enableSlowPictureLoop(host,kind);
  });
 }
