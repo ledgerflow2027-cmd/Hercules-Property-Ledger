@@ -496,3 +496,14 @@ This per-change record supplements (and does not replace) the complete stage che
 - **QA:** GitHub Actions deployment and deployed head SHA verified. Tenant-to-property ID mappings and click-route source reviewed. No independent browser/iPhone interaction test was performed; owner should tap several tenant carousel pictures and confirm each opens the matching Property profile, not the Tenants list.
 - **Acceptance:** Deployment successful; live interaction verification and explicit owner acceptance pending. This does not close Stage 16 or authorize Stage 17.
 - **Next action:** Owner to test tenant carousel taps on the refreshed live app and confirm that the correct associated Property profile opens.
+
+## 35. Tenant directory footer, circular photos, profile preview and sharing — 11 November 2026
+
+- **Owner request:** Add a Tenants button to the fixed footer that opens the tenant list. Each tenant row should show the tenant profile photo and associated property photo in circles, with an eye preview action. The full-screen tenant profile should offer download and WhatsApp sharing.
+- **Implementation:** Added a dedicated Tenants item to the bottom navigation and adjusted the footer to five equal columns. Tenant directory rows now show the tenant image and first associated property image in circular thumbnails, with clear fallbacks when either photo is unavailable. Each row and its eye button open the full-screen tenant detail panel. The profile now displays the tenant portrait and includes a Download profile action that creates a local text summary and a WhatsApp action that opens a prefilled message with tenant/property and lease summary details. Existing tenant editing and local-device data handling are retained.
+- **Application commit:** `d454f998df3a3ca6d88d9e7be6515fcfe80eaedb` — Add tenant directory footer and profile actions.
+- **GitHub Pages:** [Run 42897882099](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42897882099) — completed successfully; conclusion: `success`; deployed head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=d454f99
+- **QA:** Source changes and GitHub Pages deployment/head SHA verified. No independent browser/iPhone interaction test was performed. Download is a text profile summary; WhatsApp sharing sends a prefilled text summary, not the tenant's private photo or documents. Tenant records remain stored locally on this device and are not cloud-synced.
+- **Acceptance:** Deployment successful; owner visual and interaction confirmation pending. Do not mark accepted until owner checks the footer, circular photos, full-screen preview, download and WhatsApp action.
+- **Next action:** Owner to refresh the live app, open Tenants from the footer, and test the preview and profile actions before moving to the next stage.
