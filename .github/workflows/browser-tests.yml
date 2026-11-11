@@ -1,0 +1,68 @@
+name: Propledger Live Browser Tests
+
+on:
+  workflow_run:
+    workflows: ["Deploy Ledgerly to GitHub Pages"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: propledger-live-browser-tests
+  cancel-in-progress: false
+
+jobs:
+  browser-tests:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout deployed source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Wait for GitHub Pages deployment to become available
+        run: |
+          for attempt in {1..18}; do
+            status=$(curl -L -s -o /dev/null -w "%{http_code}" "${BASE_URL}")
+            echo "Attempt ${attempt}: HTTP ${status}"
+            if [ "${status}" = "200" ]; then exit 0; fi
+            sleep 10
+          done
+          echo "GitHub Pages did not return HTTP 200 in the allotted wait period."
+          exit 1
+        env:
+          BASE_URL: https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/
+
+      - name: Run desktop and mobile browser tests
+        run: npm run test:e2e
+        env:
+          CI: true
+          BASE_URL: https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/
+
+      - name: Upload browser screenshots, traces and report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: propledger-browser-test-results
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: warn
+          retention-days: 14
