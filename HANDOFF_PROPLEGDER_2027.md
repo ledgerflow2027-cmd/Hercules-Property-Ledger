@@ -675,3 +675,6 @@ This per-change record supplements (and does not replace) the complete stage che
 
 
 **Initial-run setup correction:** The first browser workflow attempt stopped at Node setup because the repository does not have an npm lockfile and setup-node's npm cache requires one. Removed the cache option (no application change); the next deployment will trigger a fresh browser-test run. This is a test-runner setup issue, not an application failure. Fix commit: `8b631caa19f7d8e041e2161e75233ef4696403ca`.
+
+
+**Runner compatibility correction:** The first full test setup then exposed that GitHub's current `ubuntu-latest` image is Ubuntu 26.04, which Playwright 1.56.1 does not yet support for Chromium dependency installation. Pinned the browser-test job to `ubuntu-24.04`, a supported runner, before the next run. This is an automation-host compatibility issue; the app itself was not tested in that failed attempt. Fix commit: `060c48f36472d4e76fa79e439710705e8c9668c4`.
