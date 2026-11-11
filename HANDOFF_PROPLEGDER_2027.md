@@ -678,3 +678,13 @@ This per-change record supplements (and does not replace) the complete stage che
 
 
 **Runner compatibility correction:** The first full test setup then exposed that GitHub's current `ubuntu-latest` image is Ubuntu 26.04, which Playwright 1.56.1 does not yet support for Chromium dependency installation. Pinned the browser-test job to `ubuntu-24.04`, a supported runner, before the next run. This is an automation-host compatibility issue; the app itself was not tested in that failed attempt. Fix commit: `060c48f36472d4e76fa79e439710705e8c9668c4`.
+
+
+
+## 50. Browser-test URL correction and tenant photo review — 11 November 2026
+
+- The first full Playwright run (Actions run [43021660317](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/43021660317)) failed because the test used `page.goto("/")`. On GitHub Pages project hosting, that resolves to the domain root instead of the app's `/Hercules-Property-Ledger/` path, producing a 404 and causing the subsequent navigation selectors to time out. This is a test URL bug, not evidence that the app's own page returned an error at its project URL.
+- Corrected both test navigations to `page.goto("./")` in commit `a2559133b483829f6722ef95a0a01ffd7ca78299`. Pages deployment run [43022724487](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/43022724487) was queued at the time of this note; its post-deployment browser test must be checked before declaring automation operational.
+- Existing Property Profile Details layout retains the 3:1 property-to-tenant width ratio and equal image-panel heights. Tenant images use `object-fit:cover`; source-specific crop rules currently include Marium Saeed at 70%, Ayesha Noor at 41%, Zara Iqbal at 50%, and the remaining seeded portraits at 50%.
+- The automated browser uses a clean profile and cannot see private photos or tenant records stored only in the owner's iPhone localStorage. It can inspect seeded/demo portraits and produce screenshots once the URL correction passes. Do not claim private-device photos have been visually checked from the CI run.
+- Next: verify deployment run 43022724487, then its triggered browser run and screenshot artifact. Review the property-profile screenshot before tuning any tenant-specific crop; preserve the 3:1/equal-height layout.
