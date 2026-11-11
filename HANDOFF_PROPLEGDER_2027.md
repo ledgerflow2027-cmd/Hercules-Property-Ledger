@@ -672,3 +672,6 @@ This per-change record supplements (and does not replace) the complete stage che
 **QA status:** Automation files are committed. First live run must complete before this system is considered validated; record its Actions result and any test failures here. Browser test results will be accessible from the workflow run's artifacts.
 
 **New routine:** For future changes, deploy first, then inspect the corresponding browser-test workflow and artifacts. If tests fail, investigate and fix before reporting the update as complete; rerun the browser checks after redeployment.
+
+
+**Initial-run setup correction:** The first browser workflow attempt stopped at Node setup because the repository does not have an npm lockfile and setup-node's npm cache requires one. Removed the cache option (no application change); the next deployment will trigger a fresh browser-test run. This is a test-runner setup issue, not an application failure. Fix commit: `8b631caa19f7d8e041e2161e75233ef4696403ca`.
