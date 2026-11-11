@@ -623,3 +623,14 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Known limitation:** The tenancy document is a draft template, not a legally validated or signing-ready contract. Review and legal adaptation are required before real-world use.
 - **Acceptance:** Deployment passed; owner interaction verification and explicit acceptance remain pending. This update does not close Stage 16 or authorize Stage 17.
 - **Next action:** Owner to test Preview tenancy contract and Create tenancy contract on the refreshed live app. Keep the existing tenant and property workflows stable.
+
+
+## 47. Tenant portrait centering follow-through — 11 November 2026
+
+- **Owner request:** Continue centering each tenant portrait individually in the Property Profile Details page, using the previously successful Marium-specific crop method as the reference. Preserve the property-to-tenant display width ratio of 3:1 and keep both image panels the same height.
+- **Implementation:** Reviewed the original tenant portrait files and retained image-specific CSS selectors so each crop is scoped to its own source image. Refined the crop positions for Amira Hassan, Omar Khalid, Yousef Nasser, and Usman Tariq to 50% center. Existing individual positions for Marium Saeed (70%), Ayesha Noor (45%), and the other tenant portraits were retained. No shared layout dimensions or image source files were changed.
+- **Application commit:** `d93a8150aa4783cc95511d310042f261b97d9957` — Refine remaining tenant portrait centering individually.
+- **GitHub Pages:** Run [43018792547](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/43018792547) — completed successfully; conclusion: `success`; the run's head SHA matches the application commit.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=d93a815
+- **QA:** Source changes and successful GitHub Pages workflow were verified. No independent browser/iPhone visual QA was performed. Owner visual confirmation remains pending.
+- **Next action:** Owner to refresh the live app and review all tenant faces in Property Profile Details. If any portrait is still off-center, adjust only that tenant's source-specific `object-position`, following the Marium method; do not alter the shared 3:1 layout.
