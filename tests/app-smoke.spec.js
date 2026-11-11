@@ -117,7 +117,11 @@ test("seeded property profile shows aligned property and tenant photos", async (
   });
   expect(layout.propertyHeight).toBeGreaterThan(0);
   expect(Math.abs(layout.propertyHeight - layout.tenantHeight)).toBeLessThanOrEqual(1);
-  expect(layout.columns).toMatch(/3fr/);
+  const columnWidths = layout.columns.split(/\\s+/).map(value => Number.parseFloat(value));
+  expect(columnWidths).toHaveLength(2);
+  expect(columnWidths[0]).toBeGreaterThan(0);
+  expect(columnWidths[1]).toBeGreaterThan(0);
+  expect(Math.abs(columnWidths[0] / columnWidths[1] - 3)).toBeLessThanOrEqual(0.02);
   expect(layout.objectFit).toBe("cover");
   expect(layout.objectPosition).toBe("center center");
 
