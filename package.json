@@ -1,0 +1,12 @@
+{
+  "name": "propledger-browser-tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Automated browser smoke tests for the Propledger GitHub Pages app",
+  "scripts": {
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
+}
