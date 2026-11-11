@@ -610,3 +610,16 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=0a00bc0
 - **QA:** Source implementation and successful Pages deployment/head SHA verified. No independent browser/iPhone visual QA was performed; owner visual confirmation remains pending.
 - **Next action:** Owner to open a tenant profile and tap its profile photo to verify the full-screen viewer on the iPhone.
+
+
+## 46. Tenancy contract actions and deployment verification — 11 November 2026
+
+- **Owner request:** Replace the old Tenancy contract card with two clear actions: **Preview tenancy contract** and **Create tenancy contract**.
+- **Implementation:** Removed the old placeholder card. Preview opens Document Studio with a tenancy draft for the selected property. Create opens Document Studio with the selected property and tenancy draft type preselected, ready for the user to generate and review the draft. Existing Document Studio print/save PDF and share actions remain available.
+- **Application commit:** `a190e3a9622bd37a6a7ad671f515428bc3a7b342` — Replace tenancy contract card with preview and create buttons.
+- **GitHub Pages:** [Run 42791987106](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/actions/runs/42791987106) — completed successfully; conclusion: `success`; the deployed head SHA exactly matches the application commit. The Deploy to Pages job and final deployment step both completed successfully.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=a190e3a
+- **QA:** Application commit, completed GitHub Actions run, successful Deploy to Pages step, and exact deployed head SHA verified. No independent browser/iPhone interaction test was performed; owner should test both buttons from a property profile and confirm the selected property and draft type are carried into Document Studio.
+- **Known limitation:** The tenancy document is a draft template, not a legally validated or signing-ready contract. Review and legal adaptation are required before real-world use.
+- **Acceptance:** Deployment passed; owner interaction verification and explicit acceptance remain pending. This update does not close Stage 16 or authorize Stage 17.
+- **Next action:** Owner to test Preview tenancy contract and Create tenancy contract on the refreshed live app. Keep the existing tenant and property workflows stable.
