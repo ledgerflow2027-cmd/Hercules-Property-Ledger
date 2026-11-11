@@ -40,6 +40,7 @@ async function seedPropertyProfileFixture(page) {
 async function unlockWorkspace(page) {
   await page.goto("./", { waitUntil: "networkidle" });
   await expect(page.locator("#onboarding")).toBeVisible();
+  await page.locator("#previewPin").fill("1234");
   await page.locator("#enter").click();
   await expect(page.locator("#app")).toBeVisible();
   await expect(page.locator('nav[aria-label="Main navigation"]')).toBeVisible();
@@ -56,6 +57,7 @@ test("live Propledger loads and core screens render without runtime errors", asy
   await expect(page.locator("#onboarding")).toBeVisible();
 
   // The app intentionally hides its main navigation until the preview workspace is unlocked.
+  await page.locator("#previewPin").fill("1234");
   await page.locator("#enter").click();
   await expect(page.locator("#app")).toBeVisible();
   await expect(page.locator('nav[aria-label="Main navigation"]')).toBeVisible();
