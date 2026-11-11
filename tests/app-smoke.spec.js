@@ -123,7 +123,7 @@ test("seeded property profile shows aligned property and tenant photos", async (
   expect(columnWidths[1]).toBeGreaterThan(0);
   expect(Math.abs(columnWidths[0] / columnWidths[1] - 3)).toBeLessThanOrEqual(0.02);
   expect(layout.objectFit).toBe("cover");
-  expect(layout.objectPosition).toBe("center center");
+  expect(["center center", "50% 50%"]).toContain(layout.objectPosition);
 
   await page.screenshot({
     path: testInfo.outputPath(`${testInfo.project.name}-seeded-property-profile.png`),
