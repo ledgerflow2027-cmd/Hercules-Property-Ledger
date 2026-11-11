@@ -1695,6 +1695,13 @@ renderProperties();renderVendors();
 function detailEscape(value){return String(value??"—").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]))}
 function detailCurrency(country){return country==="PK"?"PKR":"AED"}
 function detailPhotoGallery(photos){const valid=(photos||[]).filter(Boolean);return valid.length?'<div class="detail-gallery">'+valid.map(src=>'<img src="'+src+'" alt="Property photo">').join("")+'</div>':'<div class="empty-state">📷 No photos added yet</div>'}
+function detailPropertyTenantPhotoPair(photos,tenant){
+ const propertyPhoto=(photos||[]).filter(Boolean)[0]||"";
+ const tenantPhoto=tenant?.photo||"";
+ const frame='height:clamp(150px,38vw,220px);min-height:clamp(150px,38vw,220px);max-height:clamp(150px,38vw,220px);min-width:0;overflow:hidden;border-radius:14px;background:#eef3fa;display:grid;place-items:center';
+ const photo=(src,alt,empty)=>src?'<img src="'+detailEscape(src)+'" alt="'+alt+'" style="display:block;width:100%;height:100%;min-height:0;max-height:100%;object-fit:cover">':'<div class="empty-state" style="width:100%;height:100%;min-height:0;display:grid;place-items:center;text-align:center">📷 '+empty+'</div>';
+ return '<div class="property-tenant-photo-pair" style="display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:8px;align-items:stretch;margin-top:14px"><div style="'+frame+'">'+photo(propertyPhoto,"Property photo","No property photo")+'</div><div style="'+frame+'">'+photo(tenantPhoto,"Associated tenant photo","No tenant photo")+'</div></div>';
+}
 function detailCharts(kind){
  const titles=kind==="property"?["Income vs expenses","Monthly rent trend","Occupancy trend","Expense categories"]:["Service spend mix","Monthly service trend","Vendor activity","Category distribution"];
  return '<div class="chart-grid">'+
@@ -1717,7 +1724,7 @@ function openProfile(kind,id,row){
  if(isProperty){
   const tenant=record?.tenant||{};
   const photos=record?.photos||[];
-  htmlOut='<div class="detail-hero"><span class="demo-tag">'+(demo?"DEMO RECORD":"LOCAL PREVIEW RECORD")+'</span><h2>🏠 '+detailEscape(name)+'</h2><p>'+detailEscape(record?.type||"Property portfolio item")+' • '+detailEscape(record?.city||"Sample location")+'</p>'+detailPhotoGallery(photos)+'</div>'+
+  htmlOut='<div class="detail-hero"><span class="demo-tag">'+(demo?"DEMO RECORD":"LOCAL PREVIEW RECORD")+'</span><h2>🏠 '+detailEscape(name)+'</h2><p>'+detailEscape(record?.type||"Property portfolio item")+' • '+detailEscape(record?.city||"Sample location")+'</p>'+detailPropertyTenantPhotoPair(photos,tenant)+(photos.filter(Boolean).length>1?detailPhotoGallery(photos.filter(Boolean).slice(1)):"")+'</div>'+
   '<div class="detail-card"><h3>🏢 Property information</h3><div class="detail-kv">'+
   '<div><small>Property type</small><strong>'+detailEscape(record?.type||"Residential")+'</strong></div>'+
   '<div><small>Country / currency</small><strong>'+detailEscape(country==="PK"?"Pakistan / PKR":"UAE / AED")+'</strong></div>'+
