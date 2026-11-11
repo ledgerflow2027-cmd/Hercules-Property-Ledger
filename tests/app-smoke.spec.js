@@ -12,7 +12,7 @@ test("live Propledger loads and core screens render without runtime errors", asy
   const pageErrors = [];
   page.on("pageerror", error => pageErrors.push(error.message));
 
-  const response = await page.goto("/", { waitUntil: "networkidle" });
+  const response = await page.goto("./", { waitUntil: "networkidle" });
   expect(response, "The live app should return an HTTP response").not.toBeNull();
   expect(response.status(), "The live app should return HTTP 200").toBe(200);
   await expect(page).toHaveTitle(/Propledger/i);
@@ -34,7 +34,7 @@ test("live Propledger loads and core screens render without runtime errors", asy
 });
 
 test("property profile detail opens from the Properties screen when a demo property is available", async ({ page }, testInfo) => {
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("./", { waitUntil: "networkidle" });
   await page.locator('[data-screen="properties"]').first().click();
   await expect(page.locator("#properties")).toBeVisible();
 
