@@ -645,3 +645,30 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=e5dd501
 - **QA:** Original source portraits and crop code were inspected. Independent browser/iPhone visual QA has not yet been performed; owner visual confirmation remains pending.
 - **Next action:** Verify the GitHub Pages deployment and ask the owner to refresh the live app and review Ayesha's and Zara's faces. If either remains off-centre, tune only that tenant's source-specific crop using the Marium method.
+
+
+## 49. Automated live browser testing (11 November 2026)
+
+**Owner approval:** The user approved adding automated browser testing after every prompt-driven deployment.
+
+**Implementation committed to `main`:**
+- `package.json` — Playwright test dependency and `npm run test:e2e` command.
+- `playwright.config.js` — Chromium desktop and mobile-emulation projects, HTML/list reporting, failure screenshots and traces.
+- `tests/app-smoke.spec.js` — opens the deployed GitHub Pages URL, checks HTTP 200 and the Propledger page title, visits Home, Properties, Vendors, Tenants and More, captures a screenshot for each, and checks for uncaught JavaScript errors/runtime-warning banner. It also attempts the property profile details view when a local property record is available; otherwise that optional test is skipped.
+- `.github/workflows/browser-tests.yml` — starts after the Pages deployment workflow completes successfully, waits for the live URL to return HTTP 200, runs the desktop and mobile Chromium checks, and uploads screenshots, traces and the HTML report as a 14-day GitHub Actions artifact. It also supports manual `workflow_dispatch` runs.
+
+**Important boundaries:**
+- Browser checks use a clean GitHub-hosted browser context. They do not access the owner's private iPhone localStorage, personal uploads or device-specific state.
+- Mobile coverage is Chromium emulation of an iPhone-sized viewport, not Safari on the physical iPhone.
+- Screenshots and automated smoke checks are evidence for review, not a guarantee that every business workflow or every visual detail is correct. User-specific data and complex workflows may still need targeted testing.
+- A successful Pages deployment and a successful browser test are reported separately. Do not call a change visually accepted solely because deployment passed.
+
+**Initial implementation commits:**
+- `3f8fd379ae38d24aa217bbb701045b720a994f15` — Playwright package setup.
+- `695ea286d7200e2be7e3cde6bb78f1bb74fd4289` — browser configuration.
+- `fc1b9b31d31d91d7b8fe4bc226c97d6849dc667d` — smoke tests and screenshots.
+- `a1fc2d9ac1ad80c33078d0d1413ce7eeb0295084` — post-deployment browser workflow.
+
+**QA status:** Automation files are committed. First live run must complete before this system is considered validated; record its Actions result and any test failures here. Browser test results will be accessible from the workflow run's artifacts.
+
+**New routine:** For future changes, deploy first, then inspect the corresponding browser-test workflow and artifacts. If tests fail, investigate and fix before reporting the update as complete; rerun the browser checks after redeployment.
