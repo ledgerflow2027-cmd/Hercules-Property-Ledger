@@ -634,3 +634,14 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=d93a815
 - **QA:** Source changes and successful GitHub Pages workflow were verified. No independent browser/iPhone visual QA was performed. Owner visual confirmation remains pending.
 - **Next action:** Owner to refresh the live app and review all tenant faces in Property Profile Details. If any portrait is still off-center, adjust only that tenant's source-specific `object-position`, following the Marium method; do not alter the shared 3:1 layout.
+
+
+## 48. Ayesha Noor and Zara Iqbal portrait centering — 11 November 2026
+
+- **Owner request:** Centre Ayesha Noor's and Zara Iqbal's tenant profile photos in the Property Profile Details page, using the same tenant-specific source-image crop technique previously used for Marium. Preserve the existing 3:1 property-to-tenant photo width ratio and equal image-panel heights.
+- **Implementation:** Inspected the original Ayesha and Zara portrait files and added/updated source-specific crop positions in the Property Profile Details rendering path and its companion photo-pair rendering path. Ayesha Noor is set to `41% center`; Zara Iqbal is set to `50% center`. The Marium crop remains unchanged at `70% center`. No shared layout dimensions or source image files were changed.
+- **Application commit:** `e5dd50177b4dd270e01cee10e38c51d8ccbcf70d` — Center Ayesha Noor and Zara Iqbal tenant portraits.
+- **GitHub Pages:** Deployment run will be recorded after its final result is confirmed.
+- **Live URL:** https://ledgerflow2027-cmd.github.io/Hercules-Property-Ledger/?v=e5dd501
+- **QA:** Original source portraits and crop code were inspected. Independent browser/iPhone visual QA has not yet been performed; owner visual confirmation remains pending.
+- **Next action:** Verify the GitHub Pages deployment and ask the owner to refresh the live app and review Ayesha's and Zara's faces. If either remains off-centre, tune only that tenant's source-specific crop using the Marium method.
