@@ -1761,8 +1761,8 @@ function openProfile(kind,id,row){
   const reportTo=()=>$("stage16Till")?.value||new Date().toISOString().slice(0,10);
   const soaButton=$("stage16SOAPdf"),plButton=$("stage16PLPdf");
   if(soaButton)soaButton.addEventListener("click",()=>{
-   try{stage16CreatePdf(id,"SOA",reportFrom(),reportTo())}
-   catch(err){console.error("SOA preview failed",err);alert("SOA preview could not be created: "+(err?.message||"Unexpected error")+". Please check the selected dates and saved transactions.")}
+   try{stage16OpenSoaPeriodPicker(id)}
+   catch(err){console.error("SOA period selection failed",err);alert("The Statement of Account period selector could not be opened. Please refresh the app and try again.")}
   });
   if(plButton)plButton.addEventListener("click",()=>{
    try{stage16CreatePdf(id,"P&L",reportFrom(),reportTo())}
