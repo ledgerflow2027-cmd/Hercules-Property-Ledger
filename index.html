@@ -2248,7 +2248,7 @@ function stage16PdfEscape(value){return String(value??"").replace(/[^\x20-\x7E]/
 function stage16BuildPdf(title,subtitle,rows,summary){
  const isSoa=title.toLowerCase().includes("statement of account"),isPL=title.toLowerCase().includes("profit & loss");
  const pages=[];for(let i=0;i<rows.length;i+=15)pages.push(rows.slice(i,i+15));if(!pages.length)pages.push(["No activity recorded for this selected period."]);
- const objects=[null];objects[1]="<< /Type /Catalog /Pages 2 0 R >>";objects[2]="<< /Type /Pages /Kids "+pages.map((_,i)=>(4+i*2)+" 0 R").join(" ")+" /Count "+pages.length+" >>";objects[3]="<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
+ const objects=[null];objects[1]="<< /Type /Catalog /Pages 2 0 R >>";objects[2]="<< /Type /Pages /Kids ["+pages.map((_,i)=>(4+i*2)+" 0 R").join(" ")+"] /Count "+pages.length+" >>";objects[3]="<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
  pages.forEach((page,i)=>{
   const pageObj=4+i*2,streamObj=pageObj+1;let content="";
   if(isSoa){
