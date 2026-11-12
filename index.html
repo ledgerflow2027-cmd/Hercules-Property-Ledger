@@ -1036,8 +1036,8 @@
   <section id="founder" class="screen hidden">
    <div class="sectionhead"><div><h1 class="page-title">👨‍💻 Founder & developer</h1><div class="muted">The vision behind Propledger</div></div></div>
    <div class="detail-card" style="text-align:center">
-    <label for="founderPhotoUpload" class="profile-upload" style="display:flex;width:104px;height:104px;margin:4px auto 16px;cursor:pointer;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;background:#eef0f8;color:#6654d9;font-size:34px">👤<input id="founderPhotoUpload" type="file" accept="image/*" style="display:none"></label>
-    <h2 style="margin:0 0 6px">Propledger 2027</h2><p class="muted">Founder & developer profile</p>
+    <label for="founderPhotoUpload" class="profile-upload" style="display:flex;width:150px;height:178px;margin:4px auto 16px;cursor:pointer;align-items:center;justify-content:center;border-radius:14px;overflow:hidden;background:#eef0f8;color:#2878c7;font-size:28px;border:2px solid #d8e7f7"><img id="founderPhotoDisplay" src="https://raw.githubusercontent.com/ledgerflow2027-cmd/Hercules-Property-Ledger/main/founder-photo.jpg" alt="M. Saqib — Founder & Developer" style="width:100%;height:100%;object-fit:cover"><input id="founderPhotoUpload" type="file" accept="image/*" style="display:none"></label>
+    <h2 style="margin:0 0 6px">M. Saqib</h2><p class="muted">Founder & Developer of Propledger 2027</p>
     <p>Building a clearer, more practical workspace for property owners and managers.</p>
    </div>
    <div class="detail-card"><h3>✨ Our purpose</h3><p>“Clarity for every property, tenant and transaction.”</p><p>“Designed to bring property operations and accounting into one thoughtful workspace.”</p></div>
@@ -2260,11 +2260,11 @@ async function stage16LoadSoaLogo(){
  return {bytes,width:size,height:size};
 }
 async function stage16LoadFounderPhoto(){
- /* Prefer the dedicated Founder & Developer portrait. If the user added their
-    picture through the dashboard header profile control, use that as fallback. */
- let source="";try{source=localStorage.getItem("propledger.founderPhoto")||""}catch(e){}
- if(!source)return null;
- const image=new Image();image.src=source;
+ /* Use the approved, repository-hosted founder portrait by default. A device-local
+    replacement selected in the Founder & Developer screen takes precedence. */
+ let source="https://raw.githubusercontent.com/ledgerflow2027-cmd/Hercules-Property-Ledger/main/founder-photo.jpg";
+ try{source=localStorage.getItem("propledger.founderPhoto")||source}catch(e){}
+ const image=new Image();image.crossOrigin="anonymous";image.src=source;
  await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject});
  const width=240,height=300,canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;
  const ctx=canvas.getContext("2d");ctx.fillStyle="#ffffff";ctx.fillRect(0,0,width,height);
@@ -2285,7 +2285,7 @@ async function stage16BuildPdf(title,subtitle,rows,summary){
   const pageObj=4+i*2,streamObj=pageObj+1;let content="";
   if(isSoa){
    const cols=[40,105,220,310,465,555,645,735],labels=["DATE","DESCRIPTION","REFERENCE","TENANT / VENDOR","DEBIT","CREDIT","BALANCE"];
-   content="BT /F1 15 Tf 330 566 Td (Propledger 2027) Tj ET\nBT /F1 12 Tf 320 548 Td ("+stage16PdfEscape(title)+") Tj ET\nBT /F1 8 Tf "+(logo?"105":"40")+" 535 Td ("+stage16PdfEscape(subtitle)+") Tj ET\nBT /F1 8 Tf "+(logo?"105":"40")+" 520 Td ("+stage16PdfEscape(summary.text||"")+") Tj ET\n";
+   content="BT /F1 18 Tf 1 0 0 1 345 566 Tm (Propledger 2027) Tj ET\nBT /F1 12 Tf 1 0 0 1 344 547 Tm ("+stage16PdfEscape(title)+") Tj ET\nBT /F1 8 Tf 1 0 0 1 105 535 Tm ("+stage16PdfEscape(subtitle)+") Tj ET\nBT /F1 8 Tf 1 0 0 1 105 520 Tm ("+stage16PdfEscape(summary.text||"")+") Tj ET\n";
    if(logo)content+="q 46 0 0 46 40 515 cm /Logo Do Q\n";
    if(founderPhoto)content+="BT /F1 8 Tf 1 0 0 1 690 560 Tm (M. Saqib) Tj ET\nBT /F1 6 Tf 1 0 0 1 672 548 Tm (Founder & Developer) Tj ET\nq 38 0 0 48 780 510 cm /Founder Do Q\n";
    content+="0.90 G 40 506 m 802 506 l S 0 G\n";
