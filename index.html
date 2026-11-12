@@ -2300,9 +2300,9 @@ function stage16ShowPdfPreview(blob,fileName,title,shareText,previewRows,subtitl
   const filter=document.createElement("div");filter.className="stage16-soa-range";filter.style.cssText="width:100%;max-width:1100px;margin:0 auto 12px;background:#fff;padding:12px;border-radius:10px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch;gap:10px;box-shadow:0 2px 10px rgba(15,35,60,.08);border:1px solid #dce4ed;box-sizing:border-box";
   const rangeTitle=document.createElement("strong");rangeTitle.textContent="📅 Report period";rangeTitle.style.cssText="flex:0 0 100%;font-size:12px;color:#243b53";
   const fromWrap=document.createElement("label");fromWrap.textContent="From";fromWrap.style.cssText="display:grid;gap:5px;font-size:11px;font-weight:700;color:#52657a;flex:1 1 180px;min-width:0;max-width:100%;width:100%;box-sizing:border-box";
-  const fromInput=document.createElement("input");fromInput.type="date";fromInput.id="stage16SoaFromFilter";fromInput.value=reportMeta.from||"";fromInput.style.cssText="width:100%;min-width:0;padding:9px 8px;border:1px solid #ccd6e0;border-radius:7px;font:inherit;color:#243b53";fromWrap.appendChild(fromInput);
+  const fromInput=document.createElement("input");fromInput.type="date";fromInput.id="stage16SoaFromFilter";fromInput.value=reportMeta.controlFrom||reportMeta.from||"";fromInput.style.cssText="width:100%;min-width:0;padding:9px 8px;border:1px solid #ccd6e0;border-radius:7px;font:inherit;color:#243b53";fromWrap.appendChild(fromInput);
   const tillWrap=document.createElement("label");tillWrap.textContent="Till";tillWrap.style.cssText="display:grid;gap:5px;font-size:11px;font-weight:700;color:#52657a;flex:1 1 180px;min-width:0;max-width:100%;width:100%;box-sizing:border-box";
-  const tillInput=document.createElement("input");tillInput.type="date";tillInput.id="stage16SoaTillFilter";tillInput.value=reportMeta.till||"";tillInput.style.cssText="width:100%;min-width:0;padding:9px 8px;border:1px solid #ccd6e0;border-radius:7px;font:inherit;color:#243b53";tillWrap.appendChild(tillInput);
+  const tillInput=document.createElement("input");tillInput.type="date";tillInput.id="stage16SoaTillFilter";tillInput.value=reportMeta.controlTill||reportMeta.till||"";tillInput.style.cssText="width:100%;min-width:0;padding:9px 8px;border:1px solid #ccd6e0;border-radius:7px;font:inherit;color:#243b53";tillWrap.appendChild(tillInput);
   const apply=document.createElement("button");apply.type="button";apply.textContent="🔎 Apply dates";apply.style.cssText="padding:10px 13px;border:0;border-radius:7px;background:#173b60;color:#fff;font-weight:700";
   apply.addEventListener("click",()=>{if(!reportMeta.propertyId){alert("Please close this preview and reopen it from the property profile.");return}if(!fromInput.value||!tillInput.value||fromInput.value>tillInput.value){alert("Please choose a valid From and Till date range.");return}stage16CreatePdf(reportMeta.propertyId,"SOA",fromInput.value,tillInput.value)});
   const divider=document.createElement("div");divider.style.cssText="flex:0 0 100%;height:1px;background:#edf0f4;margin:2px 0";
@@ -2319,7 +2319,7 @@ function stage16ShowPdfPreview(blob,fileName,title,shareText,previewRows,subtitl
   const clear=document.createElement("button");clear.type="button";clear.id="stage16SoaMonthClear";clear.textContent="Clear selection";clear.style.cssText="padding:8px 11px;border:1px solid #ccd6e0;border-radius:8px;background:#f5f7fa;color:#243b53";
   const count=document.createElement("span");count.textContent=rows.filter(r=>r.kind==="transaction").length+" transactions";count.style.cssText="font-size:11px;color:#64748b;margin-left:auto";
   label.htmlFor="stage16SoaMonthFilter";filter.append(rangeTitle,fromWrap,tillWrap,apply,divider,label,selectWrap,submitMonthYear,clear,count);host.appendChild(filter);
-  submitMonthYear.addEventListener("click",()=>{if(Boolean(month.value)!==Boolean(year.value)){alert("Choose both a month and a year, or leave both set to All.");return}if(!reportMeta.propertyId){alert("Please close this preview and reopen it from the property profile.");return}stage16CreatePdf(reportMeta.propertyId,"SOA",reportMeta.from,reportMeta.till,{month:month.value,year:year.value})});
+  submitMonthYear.addEventListener("click",()=>{if(Boolean(month.value)!==Boolean(year.value)){alert("Choose both a month and a year, or leave both set to All.");return}if(!reportMeta.propertyId){alert("Please close this preview and reopen it from the property profile.");return}if(!month.value&&!year.value){stage16CreatePdf(reportMeta.propertyId,"SOA",fromInput.value,tillInput.value);return}const selectedFrom=year.value+"-"+month.value+"-01";const selectedTill=new Date(Number(year.value),Number(month.value),0).toISOString().slice(0,10);stage16CreatePdf(reportMeta.propertyId,"SOA",selectedFrom,selectedTill,{from:fromInput.value,till:tillInput.value})});
   clear.addEventListener("click",()=>{month.value="";year.value="";count.textContent=rows.filter(r=>r.kind==="transaction").length+" transactions"});
  }
  for(let page=0;page<pageCount;page++){
@@ -2363,17 +2363,11 @@ function stage16DisplayDate(value){
  const parts=String(value||"").slice(0,10).split("-");
  return parts.length===3&&parts.every(Boolean)?parts[2]+"/"+parts[1]+"/"+parts[0]:String(value||"");
 }
-function stage16CreatePdf(id,type,from,to,transactionFilter){
+function stage16CreatePdf(id,type,from,to,controlRange){
  const p=getProperties().find(x=>x.id===id);if(!p)return;if(from>to){alert("From date must be earlier than or equal to To date.");return}
- const d=stage16PeriodRows(id,from,to),currency=p.country==="PK"?"PKR":"AED";
- if(type==="SOA"&&transactionFilter&&(transactionFilter.month||transactionFilter.year)){
-  const matches=x=>{const date=String(x.date||"").slice(0,10);return date.length===10&&(!transactionFilter.month||date.slice(5,7)===transactionFilter.month)&&(!transactionFilter.year||date.slice(0,4)===transactionFilter.year)};
-  d.rent=d.rent.filter(matches);d.receipts=d.receipts.filter(matches);d.bills=d.bills.filter(matches);d.payments=d.payments.filter(matches);
- }
- let rows=[],summary="";
+ const d=stage16PeriodRows(id,from,to),currency=p.country==="PK"?"PKR":"AED";let rows=[],summary="";
  if(type==="SOA"){
-  const filterStart=transactionFilter?.month&&transactionFilter?.year?transactionFilter.year+"-"+transactionFilter.month+"-01":transactionFilter?.year?transactionFilter.year+"-01-01":from;
-  const opening=stage16OpeningBalance(id,filterStart),entries=[
+  const opening=stage16OpeningBalance(id,from),entries=[
    ...d.rent.map(x=>({date:String(x.date||"").slice(0,10),description:"Rent billed",reference:x.number||"",party:x.tenant||"",debit:Number(x.amount)||0,credit:0})),
    ...d.receipts.map(x=>({date:String(x.date||"").slice(0,10),description:"Rent received",reference:x.number||"",party:x.tenant||"",debit:0,credit:Number(x.amount)||0})),
    ...d.bills.map(x=>({date:String(x.date||"").slice(0,10),description:"Vendor expense",reference:x.number||"",party:x.vendor||"",debit:Number(x.amount)||0,credit:0})),
@@ -2391,8 +2385,8 @@ function stage16CreatePdf(id,type,from,to,transactionFilter){
  const subtitle=(p.name||"Property")+" | "+stage16DisplayDate(from)+" to "+stage16DisplayDate(to)+" | "+(p.tenant?.name||p.tenant?.fullName||"Property account")+" | Currency "+currency;
  const blob=stage16BuildPdf(type==="SOA"?"Statement of Account":"Profit & Loss Statement",subtitle,rows,summary),fileName=(p.name||"property").replace(/[^a-z0-9]+/gi,"-")+"-"+type.toLowerCase()+"-"+from+"-to-"+to+".pdf";
  const tenantName=p.tenant?.name||p.tenant?.fullName||p.tenantName||"Not specified";
- const monthLabel=transactionFilter?.month&&transactionFilter?.year?new Date(transactionFilter.year+"-"+transactionFilter.month+"-01T12:00:00").toLocaleDateString("en-US",{month:"long",year:"numeric"}):transactionFilter?.year?transactionFilter.year:from.slice(0,7)===to.slice(0,7)?new Date(from+"T12:00:00").toLocaleDateString("en-US",{month:"long",year:"numeric"}):"Multiple months";
- stage16ShowPdfPreview(blob,fileName,type==="SOA"?"Statement of Account":"Profit & Loss Preview","Property "+type+" report for "+(p.name||"property")+" ("+from+" to "+to+").",rows,subtitle,summary,{appName:"Propledger 2027",type,tenant:tenantName,property:p.name||"Property",month:monthLabel,from,till:to,currency,propertyId:id});
+ const monthLabel=from.slice(0,7)===to.slice(0,7)?new Date(from+"T12:00:00").toLocaleDateString("en-US",{month:"long",year:"numeric"}):"Multiple months";
+ stage16ShowPdfPreview(blob,fileName,type==="SOA"?"Statement of Account":"Profit & Loss Preview","Property "+type+" report for "+(p.name||"property")+" ("+from+" to "+to+").",rows,subtitle,summary,{appName:"Propledger 2027",type,tenant:tenantName,property:p.name||"Property",month:monthLabel,from,till:to,controlFrom:controlRange?.from||from,controlTill:controlRange?.till||to,currency,propertyId:id});
 }
 function openPropertyDetail(id){
  const p=getProperties().find(x=>x.id===id);if(!p)return;
