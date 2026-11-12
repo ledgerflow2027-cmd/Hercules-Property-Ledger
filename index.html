@@ -2266,7 +2266,8 @@ async function stage16BuildPdf(title,subtitle,rows,summary){
   const pageObj=4+i*2,streamObj=pageObj+1;let content="";
   if(isSoa){
    const cols=[40,105,220,310,465,555,645,735],labels=["DATE","DESCRIPTION","REFERENCE","TENANT / VENDOR","DEBIT","CREDIT","BALANCE"];
-   content="BT /F1 15 Tf 330 566 Td (Propledger 2027) Tj ET\nBT /F1 12 Tf 320 548 Td ("+stage16PdfEscape(title)+") Tj ET\nBT /F1 8 Tf "+(logo?"105":"40")+" 535 Td ("+stage16PdfEscape(subtitle)+") Tj ET\nBT /F1 8 Tf "+(logo?"105":"40")+" 520 Td ("+stage16PdfEscape(summary.text||"")+") Tj ET\n";\n   if(logo)content+="q 46 0 0 46 40 515 cm /Logo Do Q\n";
+   content="BT /F1 15 Tf 330 566 Td (Propledger 2027) Tj ET\nBT /F1 12 Tf 320 548 Td ("+stage16PdfEscape(title)+") Tj ET\nBT /F1 8 Tf "+(logo?"105":"40")+" 535 Td ("+stage16PdfEscape(subtitle)+") Tj ET\nBT /F1 8 Tf "+(logo?"105":"40")+" 520 Td ("+stage16PdfEscape(summary.text||"")+") Tj ET\n";
+   if(logo)content+="q 46 0 0 46 40 515 cm /Logo Do Q\n";
    content+="0.90 G 40 506 m 802 506 l S 0 G\n";
    labels.forEach((v,j)=>{content+="BT /F1 7 Tf 1 0 0 1 "+cols[j]+" 492 Tm ("+v+") Tj ET\n"});
    content+="0.65 G 40 484 m 802 484 l S 0 G\n";
