@@ -2319,7 +2319,7 @@ function stage16ShowPdfPreview(blob,fileName,title,shareText,previewRows,subtitl
   const clear=document.createElement("button");clear.type="button";clear.id="stage16SoaMonthClear";clear.textContent="Clear selection";clear.style.cssText="padding:8px 11px;border:1px solid #ccd6e0;border-radius:8px;background:#f5f7fa;color:#243b53";
   const count=document.createElement("span");count.textContent=rows.filter(r=>r.kind==="transaction").length+" transactions";count.style.cssText="font-size:11px;color:#64748b;margin-left:auto";
   label.htmlFor="stage16SoaMonthFilter";filter.append(rangeTitle,fromWrap,tillWrap,apply,divider,label,selectWrap,submitMonthYear,clear,count);host.appendChild(filter);
-  submitMonthYear.addEventListener("click",()=>{if(!month.value||!year.value){alert("Please choose both a month and a year, then tap Submit.");return}if(!reportMeta.propertyId){alert("Please close this preview and reopen it from the property profile.");return}const selectedFrom=year.value+"-"+month.value+"-01";const selectedTill=new Date(Number(year.value),Number(month.value),0).toISOString().slice(0,10);stage16CreatePdf(reportMeta.propertyId,"SOA",selectedFrom,selectedTill)});
+  submitMonthYear.addEventListener("click",()=>{if(Boolean(month.value)!==Boolean(year.value)){alert("Choose both a month and a year, or leave both set to All.");return}if(!reportMeta.propertyId){alert("Please close this preview and reopen it from the property profile.");return}stage16CreatePdf(reportMeta.propertyId,"SOA",reportMeta.from,reportMeta.till,{month:month.value,year:year.value})});
   clear.addEventListener("click",()=>{month.value="";year.value="";count.textContent=rows.filter(r=>r.kind==="transaction").length+" transactions"});
  }
  for(let page=0;page<pageCount;page++){
@@ -2363,11 +2363,17 @@ function stage16DisplayDate(value){
  const parts=String(value||"").slice(0,10).split("-");
  return parts.length===3&&parts.every(Boolean)?parts[2]+"/"+parts[1]+"/"+parts[0]:String(value||"");
 }
-function stage16CreatePdf(id,type,from,to){
+function stage16CreatePdf(id,type,from,to,transactionFilter){
  const p=getProperties().find(x=>x.id===id);if(!p)return;if(from>to){alert("From date must be earlier than or equal to To date.");return}
- const d=stage16PeriodRows(id,from,to),currency=p.country==="PK"?"PKR":"AED";let rows=[],summary="";
+ const d=stage16PeriodRows(id,from,to),currency=p.country==="PK"?"PKR":"AED";
+ if(type==="SOA"&&transactionFilter&&(transactionFilter.month||transactionFilter.year)){
+  const matches=x=>{const date=String(x.date||"").slice(0,10);return date.length===10&&(!transactionFilter.month||date.slice(5,7)===transactionFilter.month)&&(!transactionFilter.year||date.slice(0,4)===transactionFilter.year)};
+  d.rent=d.rent.filter(matches);d.receipts=d.receipts.filter(matches);d.bills=d.bills.filter(matches);d.payments=d.payments.filter(matches);
+ }
+ let rows=[],summary="";
  if(type==="SOA"){
-  const opening=stage16OpeningBalance(id,from),entries=[
+  const filterStart=transactionFilter?.month&&transactionFilter?.year?transactionFilter.year+"-"+transactionFilter.month+"-01":transactionFilter?.year?transactionFilter.year+"-01-01":from;
+  const opening=stage16OpeningBalance(id,filterStart),entries=[
    ...d.rent.map(x=>({date:String(x.date||"").slice(0,10),description:"Rent billed",reference:x.number||"",party:x.tenant||"",debit:Number(x.amount)||0,credit:0})),
    ...d.receipts.map(x=>({date:String(x.date||"").slice(0,10),description:"Rent received",reference:x.number||"",party:x.tenant||"",debit:0,credit:Number(x.amount)||0})),
    ...d.bills.map(x=>({date:String(x.date||"").slice(0,10),description:"Vendor expense",reference:x.number||"",party:x.vendor||"",debit:Number(x.amount)||0,credit:0})),
@@ -2385,7 +2391,7 @@ function stage16CreatePdf(id,type,from,to){
  const subtitle=(p.name||"Property")+" | "+stage16DisplayDate(from)+" to "+stage16DisplayDate(to)+" | "+(p.tenant?.name||p.tenant?.fullName||"Property account")+" | Currency "+currency;
  const blob=stage16BuildPdf(type==="SOA"?"Statement of Account":"Profit & Loss Statement",subtitle,rows,summary),fileName=(p.name||"property").replace(/[^a-z0-9]+/gi,"-")+"-"+type.toLowerCase()+"-"+from+"-to-"+to+".pdf";
  const tenantName=p.tenant?.name||p.tenant?.fullName||p.tenantName||"Not specified";
- const monthLabel=from.slice(0,7)===to.slice(0,7)?new Date(from+"T12:00:00").toLocaleDateString("en-US",{month:"long",year:"numeric"}):"Multiple months";
+ const monthLabel=transactionFilter?.month&&transactionFilter?.year?new Date(transactionFilter.year+"-"+transactionFilter.month+"-01T12:00:00").toLocaleDateString("en-US",{month:"long",year:"numeric"}):transactionFilter?.year?transactionFilter.year:from.slice(0,7)===to.slice(0,7)?new Date(from+"T12:00:00").toLocaleDateString("en-US",{month:"long",year:"numeric"}):"Multiple months";
  stage16ShowPdfPreview(blob,fileName,type==="SOA"?"Statement of Account":"Profit & Loss Preview","Property "+type+" report for "+(p.name||"property")+" ("+from+" to "+to+").",rows,subtitle,summary,{appName:"Propledger 2027",type,tenant:tenantName,property:p.name||"Property",month:monthLabel,from,till:to,currency,propertyId:id});
 }
 function openPropertyDetail(id){
