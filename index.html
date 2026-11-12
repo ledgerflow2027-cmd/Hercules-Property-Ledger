@@ -1699,7 +1699,7 @@ function detailPropertyTenantPhotoPair(photos,tenant){
  const propertyPhoto=(photos||[]).filter(Boolean)[0]||"";
  const tenantPhoto=tenant?.photo||"";
  const frame='height:clamp(150px,38vw,220px);min-height:clamp(150px,38vw,220px);max-height:clamp(150px,38vw,220px);min-width:0;overflow:hidden;border-radius:14px;background:#eef3fa;display:grid;place-items:center';
- const tenantPosition=String(tenantPhoto).includes("Professional_woman_in_her_30s_wearing_beige_cardigan_and_blo")?"80% center":String(tenantPhoto).includes("Professional_man_wearing_casual_suit_jacket_and_open-collar")?"50% center":String(tenantPhoto).includes("Woman_in_professional_casual_wear_striped_blouse_confident_p")?"41% center":String(tenantPhoto).includes("Young_woman_professional_wearing_light_pink_blouse_friendly")?"50% center":"center center";
+ const tenantPosition="center center"; // One consistent launch crop for every tenant photo; individual tuning can follow after launch.
  const photo=(src,alt,empty,position="center center")=>src?'<img src="'+detailEscape(src)+'" alt="'+alt+'" style="display:block;width:100%;height:100%;min-height:0;max-height:100%;object-fit:cover;object-position:'+position+'">':'<div class="empty-state" style="width:100%;height:100%;min-height:0;display:grid;place-items:center;text-align:center">📷 '+empty+'</div>';
  return '<div class="property-tenant-photo-pair" style="display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:8px;align-items:stretch;margin-top:14px"><div style="'+frame+'">'+photo(propertyPhoto,"Property photo","No property photo")+'</div><div style="'+frame+'">'+photo(tenantPhoto,"Associated tenant photo","No tenant photo",tenantPosition)+'</div></div>';
 }
