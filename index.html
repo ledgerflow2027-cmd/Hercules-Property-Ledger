@@ -2258,7 +2258,9 @@ async function stage16LoadSoaLogo(){
  return {bytes,width:size,height:size};
 }
 async function stage16LoadFounderPhoto(){
- let source="";try{source=localStorage.getItem("propledger.founderPhoto")||""}catch(e){}
+ /* Prefer the dedicated Founder & Developer portrait. If the user added their
+    picture through the dashboard header profile control, use that as fallback. */
+ let source="";try{source=localStorage.getItem("propledger.founderPhoto")||localStorage.getItem("propledger.profilePreview")||""}catch(e){}
  if(!source)return null;
  const image=new Image();image.src=source;
  await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject});
