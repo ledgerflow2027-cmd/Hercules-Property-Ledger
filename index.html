@@ -2315,12 +2315,12 @@ function stage16ShowPdfPreview(blob,fileName,title,shareText,previewRows,subtitl
   const years=Array.from({length:11},(_,index)=>String(currentYear-5+index));
   [["","All years"],...years.map(value=>[value,value])].forEach(([value,text])=>{const option=document.createElement("option");option.value=value;option.textContent=text;year.appendChild(option)});
   selectWrap.append(month,year);
-  const clear=document.createElement("button");clear.type="button";clear.id="stage16SoaMonthClear";clear.textContent="Clear filters";clear.style.cssText="padding:8px 11px;border:1px solid #ccd6e0;border-radius:8px;background:#f5f7fa;color:#243b53";
+  const submitMonthYear=document.createElement("button");submitMonthYear.type="button";submitMonthYear.id="stage16SoaMonthSubmit";submitMonthYear.textContent="✓ Submit";submitMonthYear.style.cssText="padding:10px 15px;border:0;border-radius:8px;background:#173b60;color:#fff;font-weight:700";
+  const clear=document.createElement("button");clear.type="button";clear.id="stage16SoaMonthClear";clear.textContent="Clear selection";clear.style.cssText="padding:8px 11px;border:1px solid #ccd6e0;border-radius:8px;background:#f5f7fa;color:#243b53";
   const count=document.createElement("span");count.textContent=rows.filter(r=>r.kind==="transaction").length+" transactions";count.style.cssText="font-size:11px;color:#64748b;margin-left:auto";
-  label.htmlFor="stage16SoaMonthFilter";filter.append(rangeTitle,fromWrap,tillWrap,apply,divider,label,selectWrap,clear,count);host.appendChild(filter);
-  const applyMonthYearFilter=()=>{let visible=0;host.querySelectorAll("tr[data-soa-date]").forEach(tr=>{const date=tr.dataset.soaDate||"",show=(!month.value||date.slice(5,7)===month.value)&&(!year.value||date.slice(0,4)===year.value);tr.style.display=show?"":"none";if(show&&tr.dataset.soaKind==="transaction")visible++});count.textContent=visible+" matching transactions";};
-  month.addEventListener("change",applyMonthYearFilter);year.addEventListener("change",applyMonthYearFilter);
-  clear.addEventListener("click",()=>{month.value="";year.value="";applyMonthYearFilter()});
+  label.htmlFor="stage16SoaMonthFilter";filter.append(rangeTitle,fromWrap,tillWrap,apply,divider,label,selectWrap,submitMonthYear,clear,count);host.appendChild(filter);
+  submitMonthYear.addEventListener("click",()=>{if(!month.value||!year.value){alert("Please choose both a month and a year, then tap Submit.");return}if(!reportMeta.propertyId){alert("Please close this preview and reopen it from the property profile.");return}const selectedFrom=year.value+"-"+month.value+"-01";if(!tillInput.value||selectedFrom>tillInput.value){alert("The selected month starts after the current Till date. Please adjust the Till date first.");return}stage16CreatePdf(reportMeta.propertyId,"SOA",selectedFrom,tillInput.value)});
+  clear.addEventListener("click",()=>{month.value="";year.value="";count.textContent=rows.filter(r=>r.kind==="transaction").length+" transactions"});
  }
  for(let page=0;page<pageCount;page++){
   const sheet=document.createElement("section");sheet.style.cssText="max-width:1100px;margin:0 auto 18px;background:#fff;padding:26px;box-shadow:0 3px 16px rgba(15,35,60,.12);box-sizing:border-box;min-height:360px;border-top:5px solid #173b60";
@@ -2370,6 +2370,7 @@ function stage16CreatePdf(id,type,from,to){
    ...d.payments.map(x=>({date:String(x.date||"").slice(0,10),description:"Vendor payment",reference:x.number||"",party:x.vendor||"",debit:0,credit:Number(x.amount)||0}))
   ].sort((a,b)=>a.date.localeCompare(b.date)||a.description.localeCompare(b.description));
   let balance=opening;rows.push({kind:"opening",description:"OPENING BALANCE",debit:0,credit:0,balance});
+  if(!entries.length)rows.push({kind:"empty",description:"No available data for the selected month and year.",debit:0,credit:0,balance});
   entries.forEach(x=>{balance+=x.debit-x.credit;rows.push({...x,kind:"transaction",balance})});
   rows.push({kind:"closing",description:"CLOSING BALANCE",debit:0,credit:0,balance});
   summary={currency,opening,billed:d.rent.reduce((a,x)=>a+(Number(x.amount)||0),0),received:d.receipts.reduce((a,x)=>a+(Number(x.amount)||0),0),expenses:d.bills.reduce((a,x)=>a+(Number(x.amount)||0),0),vendorPaid:d.payments.reduce((a,x)=>a+(Number(x.amount)||0),0),closing:balance,text:"Rent billed "+currency+" "+d.rent.reduce((a,x)=>a+(Number(x.amount)||0),0).toFixed(2)+" | Rent received "+currency+" "+d.receipts.reduce((a,x)=>a+(Number(x.amount)||0),0).toFixed(2)+" | Vendor expenses "+currency+" "+d.bills.reduce((a,x)=>a+(Number(x.amount)||0),0).toFixed(2)+" | Vendor payments "+currency+" "+d.payments.reduce((a,x)=>a+(Number(x.amount)||0),0).toFixed(2)};
