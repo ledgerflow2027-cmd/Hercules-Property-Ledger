@@ -2311,7 +2311,8 @@ function stage16ShowPdfPreview(blob,fileName,title,shareText,previewRows,subtitl
   const month=document.createElement("select");month.id="stage16SoaMonthFilter";month.setAttribute("aria-label","Choose month");month.style.cssText="width:100%;min-width:0;padding:10px 9px;border:1px solid #ccd6e0;border-radius:8px;background:#fff;font:inherit;color:#243b53";
   [["","All months"],["01","January"],["02","February"],["03","March"],["04","April"],["05","May"],["06","June"],["07","July"],["08","August"],["09","September"],["10","October"],["11","November"],["12","December"]].forEach(([value,text])=>{const option=document.createElement("option");option.value=value;option.textContent=text;month.appendChild(option)});
   const year=document.createElement("select");year.id="stage16SoaYearFilter";year.setAttribute("aria-label","Choose year");year.style.cssText="width:100%;min-width:0;padding:10px 9px;border:1px solid #ccd6e0;border-radius:8px;background:#fff;font:inherit;color:#243b53";
-  const years=[...new Set(rows.filter(r=>r.kind==="transaction"&&/^\\d{4}-\\d{2}-\\d{2}/.test(r.date||"")).map(r=>r.date.slice(0,4)))].sort((a,b)=>b.localeCompare(a));
+  const currentYear=new Date().getFullYear();
+  const years=Array.from({length:11},(_,index)=>String(currentYear-5+index)).reverse();
   [["","All years"],...years.map(value=>[value,value])].forEach(([value,text])=>{const option=document.createElement("option");option.value=value;option.textContent=text;year.appendChild(option)});
   selectWrap.append(month,year);
   const clear=document.createElement("button");clear.type="button";clear.id="stage16SoaMonthClear";clear.textContent="Clear filters";clear.style.cssText="padding:8px 11px;border:1px solid #ccd6e0;border-radius:8px;background:#f5f7fa;color:#243b53";
