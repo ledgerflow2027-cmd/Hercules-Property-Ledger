@@ -2285,18 +2285,23 @@ async function stage16BuildPdf(title,subtitle,rows,summary){
   const pageObj=4+i*2,streamObj=pageObj+1;let content="";
   if(isSoa){
    const cols=[38,82,177,257,354,420,486],labels=["DATE","DESCRIPTION","REFERENCE","TENANT / VENDOR","DEBIT","CREDIT","BALANCE"];
-   content="q 0.97 0.98 0.99 rg 0 0 595 842 re f Q\nq 0.09 0.18 0.32 rg 0 824 595 18 re f Q\n";\n   if(logo)content+="q 48 0 0 48 38 754 cm /Logo Do Q\n";\n   content+="BT /F1 19 Tf 0.09 0.18 0.32 rg 1 0 0 1 98 789 Tm (Propledger 2027) Tj ET\nBT /F1 7 Tf 0.04 0.49 0.51 rg 1 0 0 1 99 775 Tm (PROPERTY MANAGEMENT & ACCOUNTING) Tj ET\nBT /F1 15 Tf 0.09 0.18 0.32 rg 1 0 0 1 38 733 Tm (STATEMENT OF ACCOUNT) Tj ET\n0.78 G 38 722 m 557 722 l S 0 G\nBT /F1 8 Tf 0.18 0.25 0.34 rg 1 0 0 1 38 704 Tm ("+stage16PdfEscape(subtitle)+") Tj ET\n";
-   if(logo)content+="q 46 0 0 46 40 515 cm /Logo Do Q\n";
-   if(founderPhoto)content+="BT /F1 8 Tf 1 0 0 1 690 560 Tm (M. Saqib) Tj ET\nBT /F1 6 Tf 1 0 0 1 672 548 Tm (Founder & Developer) Tj ET\nq 38 0 0 48 780 510 cm /Founder Do Q\n";
-   content+="0.78 G 38 52 m 557 52 l S 0 G\nBT /F1 6 Tf 0.32 0.38 0.46 rg 1 0 0 1 38 36 Tm (M.Saqib - Founder & developer of propledger 2027.) Tj ET\nBT /F1 6 Tf 0.32 0.38 0.46 rg 1 0 0 1 492 36 Tm (Page "+(i+1)+" of "+pages.length+") Tj ET";
-   labels.forEach((v,j)=>{content+="BT /F1 6 Tf 1 1 1 rg 1 0 0 1 "+cols[j]+" 666 Tm ("+v+") Tj ET\n"});
+   content="q 0.97 0.98 0.99 rg 0 0 595 842 re f Q\nq 0.09 0.18 0.32 rg 0 824 595 18 re f Q\n";
+   if(logo)content+="q 48 0 0 48 38 754 cm /Logo Do Q\n";
+   content+="BT /F1 19 Tf 0.09 0.18 0.32 rg 1 0 0 1 98 789 Tm (Propledger 2027) Tj ET\nBT /F1 7 Tf 0.04 0.49 0.51 rg 1 0 0 1 99 775 Tm (PROPERTY MANAGEMENT & ACCOUNTING) Tj ET\nBT /F1 15 Tf 0.09 0.18 0.32 rg 1 0 0 1 38 733 Tm (STATEMENT OF ACCOUNT) Tj ET\n0.78 G 38 722 m 557 722 l S 0 G\nBT /F1 8 Tf 0.18 0.25 0.34 rg 1 0 0 1 38 704 Tm ("+stage16PdfEscape(subtitle)+") Tj ET\n";
+   if(i===0){
+    const cards=[["OPENING BALANCE",summary.opening],["RENT BILLED",summary.billed],["RENT RECEIVED",summary.received],["CLOSING BALANCE",summary.closing]];
+    cards.forEach((c,j)=>{const x=38+j*131;content+="q 0.93 0.96 0.98 rg "+x+" 592 123 48 re f Q\n0.84 G "+x+" 592 123 48 re S 0 G\nBT /F1 6 Tf 0.38 0.43 0.51 rg 1 0 0 1 "+(x+6)+" 625 Tm ("+c[0]+") Tj ET\nBT /F1 8 Tf 0.09 0.18 0.32 rg 1 0 0 1 "+(x+6)+" 607 Tm ("+stage16PdfEscape(summary.currency+" "+Number(c[1]||0).toFixed(2))+") Tj ET\n"});
+   }
    content+="q 0.09 0.18 0.32 rg 38 658 519 20 re f Q\n";
+   labels.forEach((v,j)=>{content+="BT /F1 6 Tf 1 1 1 rg 1 0 0 1 "+cols[j]+" 666 Tm ("+v+") Tj ET\n"});
    page.forEach((r,j)=>{
-    const y=650-j*24,vals=[r.kind==="opening"||r.kind==="closing"?"":stage16DisplayDate(r.date)||"",r.description||"",r.reference||"",r.party||"",r.debit?Number(r.debit).toFixed(2):"",r.credit?Number(r.credit).toFixed(2):"",Number(r.balance||0).toFixed(2)];
-    vals.forEach((v,k)=>{const max=[10,17,14,23,12,12,13][k];const clean=String(v).length>max?String(v).slice(0,max-1)+"…":String(v);content+="BT /F1 "+(r.kind==="opening"||r.kind==="closing"?8:7)+" Tf 1 0 0 1 "+cols[k]+" "+y+" Tm ("+stage16PdfEscape(clean.replace("…","..."))+") Tj ET\n"});
-    if(r.kind==="opening"||r.kind==="closing")content+="0.88 G 40 "+(y-7)+" m 802 "+(y-7)+" l S 0 G\n";
+    const y=(i===0?570:682)-j*24,vals=[r.kind==="opening"||r.kind==="closing"?"":stage16DisplayDate(r.date)||"",r.description||"",r.reference||"",r.party||"",r.debit?Number(r.debit).toFixed(2):"",r.credit?Number(r.credit).toFixed(2):"",Number(r.balance||0).toFixed(2)];
+    if(j%2===0)content+="q 0.97 0.98 0.99 rg 38 "+(y-7)+" 519 22 re f Q\n";
+    if(r.kind==="opening"||r.kind==="closing")content+="q 0.91 0.95 0.97 rg 38 "+(y-7)+" 519 22 re f Q\n";
+    vals.forEach((v,k)=>{const max=[10,17,14,20,12,12,13][k],clean=String(v).length>max?String(v).slice(0,max-1)+"...":String(v);content+="BT /F1 "+(r.kind==="opening"||r.kind==="closing"?7:6)+" Tf "+(k===6?"0.09 0.18 0.32":"0.16 0.21 0.29")+" rg 1 0 0 1 "+cols[k]+" "+y+" Tm ("+stage16PdfEscape(clean)+") Tj ET\n"});
+    content+="0.88 G 38 "+(y-9)+" m 557 "+(y-9)+" l S 0 G\n";
    });
-   ;
+   content+="0.78 G 38 52 m 557 52 l S 0 G\nBT /F1 6 Tf 0.32 0.38 0.46 rg 1 0 0 1 38 36 Tm (M.Saqib - Founder & developer of propledger 2027.) Tj ET\nBT /F1 6 Tf 0.32 0.38 0.46 rg 1 0 0 1 492 36 Tm (Page "+(i+1)+" of "+pages.length+") Tj ET";
   }else if(isPL){
    const x=[48,300,455,625],heads=["MONTH","RENT INCOME","VENDOR EXPENSES","NET PROFIT / LOSS"];
    content="BT /F1 16 Tf 42 555 Td ("+stage16PdfEscape(title)+") Tj ET\\nBT /F1 8 Tf 42 538 Td ("+stage16PdfEscape(subtitle)+") Tj ET\\n";
