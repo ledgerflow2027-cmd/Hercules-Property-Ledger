@@ -717,3 +717,23 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Data-backup limitation — important:** This confirms a GitHub backup of the repository contents, **not** a complete backup of all live Property Ledger records. Private user-entered properties, tenants, transactions, uploaded documents/photos, authentication records, and any data stored only in a browser/device or external database are not proven backed up by this repository. Do not claim those records are safe until separately exported and verified in a secure backup. Do not commit credentials, secrets, or private tenant/owner documents to this public repository.
 - **Deployment/visual validation:** The GitHub source commit is verified. GitHub Pages deployment and the resulting PDF appearance on Safari/iPhone have not been independently confirmed as part of this checkpoint.
 - **Next-session starting point:** Continue from commit `c194a6aac57b7b956b0d2b256299ba041f8a8a67`. Preserve the current design and make no unrelated changes. First visually verify the DATE inset in the actual generated SOA PDF on Safari; then address any further spacing only if explicitly requested.
+
+
+---
+
+## Trilingual mobile localisation checkpoint — 13 November 2026
+
+- **Latest application commit:** `a600982044bda5573c1ca87edf02ab4501a5d0c4`
+- **Earlier localisation implementation commit:** `7ac1b99078eb66cc2bd9d71bb6a2d3b63c253595`
+- **Repository:** https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger
+- **User requirement:** Mobile-first interface in English, Arabic and Urdu; professional, natural terminology; right-to-left layout for Arabic/Urdu; simple, readable, lightweight-feeling fonts; translate as much app text as possible.
+- **Implemented in `index.html`:**
+  - Added a central English-to-Arabic/Urdu phrase dictionary (318 phrase keys in the first pass) covering many navigation items, dashboard labels, settings, accounting terminology, property/tenant/vendor forms, receipt/payment forms and document actions.
+  - Added a live text translation layer that re-applies translations when the user changes language and handles newly inserted/dynamic text nodes.
+  - Included select-option text in translation scanning and improved handling when dynamic text nodes are reused.
+  - Added Arabic and Urdu web-font loading: Noto Sans Arabic and Noto Nastaliq Urdu, with system fallbacks; Arabic uses a clean sans-serif style and Urdu uses a familiar Nastaliq style.
+  - Added RTL-aware layout adjustments for navigation, cards, forms, header and mixed numeric/date inputs.
+- **Important completion boundary:** This is a substantial first localisation pass, not proof that every visible sentence, every alert, every dynamically generated report/PDF, every validation message, or every future screen is translated. Some longer explanatory notices and runtime-generated strings may remain English. Continue expanding the dictionary and test every screen in all three languages before describing localisation as complete.
+- **Typography/network note:** Google Fonts are loaded remotely; if unavailable, the app falls back to local system fonts. Confirm actual font loading and legibility on iPhone Safari, especially Urdu line-height and compact dashboard controls.
+- **Validation status:** GitHub source commits are saved. No native-speaker review, exhaustive screen-by-screen language QA, or Safari live deployment verification is recorded for this checkpoint.
+- **Next steps:** Test English → Arabic → Urdu → English on iPhone Safari; inspect onboarding, dashboard, bottom navigation, property/tenant/vendor forms, vouchers, accounting pages, settings, dialogs, validation/alert text, SOA preview and generated PDFs. Expand translations for remaining static text and dynamic messages, correct any RTL overflow, and keep all user-entered names, addresses, descriptions and transaction data unchanged.
