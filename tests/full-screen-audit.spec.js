@@ -150,9 +150,9 @@ test("dashboard headings, action labels and generated cards translate in Arabic 
     { code: "ar", expected: ["⚠️ مستأجرون متأخرون في السداد", "🧰 الموردون", "✨ ما الذي ترغب في القيام به؟", "متخصص تنظيف"] },
     { code: "ur", expected: ["⚠️ کرایہ ادا کرنے میں تاخیر والے کرایہ دار", "🧰 وینڈرز", "✨ آپ کیا کرنا چاہیں گے؟", "صفائی کے ماہر"] }
   ];
-  for (const state of checks) {
+  for (let index = 0; index < checks.length; index++) {
+    const state = checks[index];
     await page.locator("#langQuick").click();
-    if (state.code === "ur") await page.locator("#langQuick").click();
     await expect(page.locator("html")).toHaveAttribute("lang", state.code);
     for (const phrase of state.expected) {
       await expect(page.locator("#dashboard")).toContainText(phrase);
