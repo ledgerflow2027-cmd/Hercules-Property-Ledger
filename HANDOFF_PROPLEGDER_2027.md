@@ -737,3 +737,12 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Typography/network note:** Google Fonts are loaded remotely; if unavailable, the app falls back to local system fonts. Confirm actual font loading and legibility on iPhone Safari, especially Urdu line-height and compact dashboard controls.
 - **Validation status:** GitHub source commits are saved. No native-speaker review, exhaustive screen-by-screen language QA, or Safari live deployment verification is recorded for this checkpoint.
 - **Next steps:** Test English → Arabic → Urdu → English on iPhone Safari; inspect onboarding, dashboard, bottom navigation, property/tenant/vendor forms, vouchers, accounting pages, settings, dialogs, validation/alert text, SOA preview and generated PDFs. Expand translations for remaining static text and dynamic messages, correct any RTL overflow, and keep all user-entered names, addresses, descriptions and transaction data unchanged.
+
+ 
+## 13 November 2026 — trilingual language-switch correction
+- Re-inspected the published `main` source after the language selector was reported as unreliable.
+- Found that the live `setLanguage()` implementation did not explicitly invoke the translation dictionary after changing the selected language.
+- Restored the explicit `window.propledgerApplyTranslations()` call after updating the language, text direction, selector values, and saved preference.
+- Added a browser regression test for English → Arabic → Urdu → English, checking translated Home and Properties navigation labels and RTL/LTR direction.
+- This change does not alter the Statement of Account layout, spacing, or accounting logic.
+- Live Safari verification remains pending; the browser test must pass after GitHub Pages deployment before claiming the language switch is verified.
