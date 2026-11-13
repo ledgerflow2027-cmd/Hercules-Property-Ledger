@@ -735,6 +735,11 @@ html[dir="rtl"] .field input,html[dir="rtl"] .field select,html[dir="rtl"] .prop
 html[dir="rtl"] input[type="date"],html[dir="rtl"] input[type="number"],html[dir="rtl"] input[inputmode="numeric"]{direction:ltr;text-align:right}
 html[dir="rtl"] .item .arrow{margin-left:0;margin-right:auto}
 html[dir="rtl"] .sectionhead,html[dir="rtl"] .modal-head{direction:rtl}
+html[dir="rtl"] .bottom{direction:rtl}
+html[dir="rtl"] .top-actions{direction:ltr}
+html[dir="rtl"] .property-form,html[dir="rtl"] .detail-card,html[dir="rtl"] .panel,html[dir="rtl"] .stat,html[dir="rtl"] .tile{direction:rtl}
+html[dir="rtl"] .navbtn{direction:rtl}
+html[lang="ur"] .navbtn,html[lang="ur"] .dashboard-actions .tile{font-size:11px;line-height:1.8}
 </style>
 </head>
 <body>
@@ -3070,23 +3075,20 @@ const phrases={
 "Urdu":["الأردية","اردو"]
 };
 const langIndex=()=>document.documentElement.lang==="ar"?0:document.documentElement.lang==="ur"?1:-1;
-const originals=new WeakMap();
+const originals=new WeakMap(),lastRendered=new WeakMap();
 let applying=false;
-function translated(value,idx){
- const key=value.trim();
- const pair=phrases[key];
- return pair&&pair[idx] ? value.replace(key,pair[idx]) : value;
-}
 function translateTextNode(node,idx){
  if(!node||node.nodeType!==Node.TEXT_NODE||applying)return;
- let raw=node.nodeValue;
+ const current=node.nodeValue;
  let original=originals.get(node);
- if(original===undefined){original=raw;originals.set(node,original);}
- const trimmed=original.trim();
- const pair=phrases[trimmed];
- let target=original;
- if(idx>=0&&pair&&pair[idx])target=original.replace(trimmed,pair[idx]);
- if(node.nodeValue!==target){applying=true;node.nodeValue=target;applying=false;}
+ if(original===undefined||current!==lastRendered.get(node)){
+  original=current;
+  originals.set(node,original);
+ }
+ const trimmed=original.trim(),pair=phrases[trimmed];
+ const target=idx>=0&&pair&&pair[idx]?original.replace(trimmed,pair[idx]):original;
+ if(current!==target){applying=true;node.nodeValue=target;applying=false;}
+ lastRendered.set(node,target);
 }
 function scan(root,idx){
  if(!root)return;
