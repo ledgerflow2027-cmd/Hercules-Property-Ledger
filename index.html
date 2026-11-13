@@ -2502,7 +2502,7 @@ function openPropertyDetail(id){
  const photoFrame='min-width:0;height:'+photoHeight+';min-height:'+photoHeight+';max-height:'+photoHeight+';overflow:hidden;border-radius:14px;position:relative';
  const profilePhotos='<div class="property-tenant-photo-pair" style="display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:8px;margin:12px 0 0;align-items:stretch"><div style="'+photoFrame+'">'+photoPanel(propertyPhoto,"Property photo","No property photo")+'</div><div style="'+photoFrame+';background:#eef3fa">'+(t.photo?photoPanel(t.photo,"Associated tenant profile photo","No tenant photo",String(t.photo).includes("Professional_man_wearing_casual_suit_jacket_and_open-collar")?"50% center":String(t.photo).includes("Woman_in_professional_casual_wear_striped_blouse_confident_p")?"41% center":String(t.photo).includes("Young_woman_professional_wearing_light_pink_blouse_friendly")?"50% center":"center center","cover"):'<div class="gallery-empty" style="width:100%;height:100%;min-height:0;display:grid;place-items:center">👤<span class="muted">No tenant photo</span></div>')+'</div></div>';
  const extraGallery=photos.length>1?'<div class="property-gallery">'+photos.slice(1).map((src,i)=>'<img src="'+propertySafe(src)+'" alt="Additional property photo '+(i+2)+'">').join("")+'</div>':'';
- $("propertyDetailContent").innerHTML='<div class="detail-top"><button type="button" class="detail-back" id="closePropertyDetail">← Properties</button><span class="muted">PROPERTY PROFILE</span></div><div class="detail-hero"><span class="demo-tag">'+(p.demoSample?"DEMONSTRATION DATA":"LOCAL DEVICE RECORD")+'</span><h2>'+propertySafe(p.name)+'</h2><p>'+propertySafe(p.type||"Property")+' · '+propertySafe(p.city||p.address||"Location not set")+'</p>'+profilePhotos+'</div>'+extraGallery+'<div class="property-detail-actions"><button type="button" class="primary" id="editPropertyDetail">✏️ Edit property</button><button type="button" class="soft" id="closePropertyDetail2">Close</button></div><div class="detail-card"><h3>🏠 Property information</h3><div class="property-detail-kpis"><div><small>Address</small><strong>'+propertySafe(p.address||"—")+'</strong></div><div><small>Property type</small><strong>'+propertySafe(p.type||"—")+'</strong></div><div><small>Units</small><strong>'+propertySafe(p.units||1)+'</strong></div><div><small>Reference</small><strong>'+propertySafe(p.reference||"—")+'</strong></div><div><small>Country</small><strong>'+propertySafe(p.country||"—")+'</strong></div></div></div><div class="detail-card"><h3>👤 Resident tenant</h3><div><strong>'+propertySafe(t.name||"No tenant linked")+'</strong><div class="muted">'+propertySafe(t.phone||"")+'</div></div><div class="property-detail-kpis" style="margin-top:10px"><div><small>Lease</small><strong>'+propertySafe(t.leaseStart||"—")+' to '+propertySafe(t.leaseEnd||"—")+'</strong></div><div><small>Monthly rent</small><strong>'+stage16Money(t.rentAmount||0,p.country==="PK"?"PKR":"AED")+'</strong></div></div></div><div class="detail-card"><h3>🧰 Linked vendors & agreements</h3><div id="stage16PropertyVendors">'+(getVendors().filter(v=>v.propertyId===id).map(v=>'<div class="stage16-row"><span>'+propertySafe(v.name)+'</span><span>'+propertySafe(v.category||"")+' · '+propertySafe(v.agreementRef||"")+'</span><span>'+propertySafe(v.contractStart||"—")+' to '+propertySafe(v.contractEnd||"—")+'</span></div>').join("")||'<p class="muted">No vendors linked to this property.</p>')+'</div></div><div class="detail-card property-reports-card"><h3>📄 Property reports</h3><span class="demo-tag">SAMPLE DATA — NOT POSTED ACCOUNTING</span><p class="contract-note">Reports open only when selected. Choose a date range, then tap the report you want to view.</p><div class="two stage16-date-range"><div class="field"><label for="stage16From">From date</label><input id="stage16From" type="date" min="2025-11-01" value="2025-11-01"></div><div class="field"><label for="stage16Till">Till date</label><input id="stage16Till" type="date" value="'+new Date().toISOString().slice(0,10)+'"></div></div><div class="property-detail-actions" style="margin:12px 0"><button type="button" class="primary" id="stage16SOAPdf">👁️ Statement of Account</button><button type="button" class="soft" id="stage16PLPdf">📊 Profit &amp; Loss</button></div></div><div class="notice">This profile and the demonstration dataset are stored only on this device. They are not cloud-synced. Sample amounts are illustrative and are excluded from posted accounting.</div>';
+ $("propertyDetailContent").innerHTML='<div class="detail-top"><button type="button" class="detail-back" id="closePropertyDetail">← Properties</button><span class="muted">PROPERTY PROFILE</span></div><div class="detail-hero"><span class="demo-tag">'+(p.demoSample?"DEMONSTRATION DATA":"LOCAL DEVICE RECORD")+'</span><h2>'+propertySafe(p.name)+'</h2><p>'+propertySafe(p.type||"Property")+' · '+propertySafe(p.city||p.address||"Location not set")+'</p>'+profilePhotos+'</div>'+extraGallery+'<div class="property-detail-actions"><button type="button" class="primary" id="editPropertyDetail">✏️ Edit property</button><button type="button" class="soft" id="closePropertyDetail2">Close</button></div><div class="detail-card"><h3>🏠 Property information</h3><div class="property-detail-kpis"><div><small>Address</small><strong>'+propertySafe(p.address||"—")+'</strong></div><div><small>Property type</small><strong>'+propertySafe(p.type||"—")+'</strong></div><div><small>Units</small><strong>'+propertySafe(p.units||1)+'</strong></div><div><small>Reference</small><strong>'+propertySafe(p.reference||"—")+'</strong></div><div><small>Country</small><strong>'+propertySafe(p.country||"—")+'</strong></div></div></div><div class="detail-card"><h3>👤 Resident tenant</h3><div><strong>'+propertySafe(t.name||"No tenant linked")+'</strong><div class="muted">'+propertySafe(t.phone||"")+'</div></div><div class="property-detail-kpis" style="margin-top:10px"><div><small>Lease</small><strong>'+propertySafe(t.leaseStart||"—")+' to '+propertySafe(t.leaseEnd||"—")+'</strong></div><div><small>Monthly rent</small><strong>'+stage16Money(t.rentAmount||0,p.country==="PK"?"PKR":"AED")+'</strong></div></div></div><div class="detail-card"><h3>🧰 Linked vendors & agreements</h3><div id="stage16PropertyVendors">'+(getVendors().filter(v=>v.propertyId===id).map(v=>'<div class="stage16-row"><span>'+propertySafe(v.name)+'</span><span>'+propertySafe(v.category||"")+' · '+propertySafe(v.agreementRef||"")+'</span><span>'+propertySafe(v.contractStart||"—")+' to '+propertySafe(v.contractEnd||"—")+'</span></div>').join("")||'<p class="muted">No vendors linked to this property.</p>')+'</div></div><div class="detail-card property-reports-card"><h3>📄 Property reports</h3><span class="demo-tag">SAMPLE DATA — NOT POSTED ACCOUNTING</span><p class="contract-note">Reports open only when selected. Choose a date range, then tap the report you want to view.</p><div class="pl-property-report-period" role="group" aria-label="Report date range"><label class="pl-report-date-field" for="stage16From"><span>From date</span><input id="stage16From" type="date" min="2025-11-01" value="2025-11-01"></label><label class="pl-report-date-field" for="stage16Till"><span>Till date</span><input id="stage16Till" type="date" value="'+new Date().toISOString().slice(0,10)+'"></label></div><div class="property-detail-actions" style="margin:12px 0"><button type="button" class="primary" id="stage16SOAPdf">👁️ Statement of Account</button><button type="button" class="soft" id="stage16PLPdf">📊 Profit &amp; Loss</button></div></div><div class="notice">This profile and the demonstration dataset are stored only on this device. They are not cloud-synced. Sample amounts are illustrative and are excluded from posted accounting.</div>';
  $("propertyDetailPanel").classList.add("open");
  $("closePropertyDetail")?.addEventListener("click",closePropertyDetail);$("closePropertyDetail2")?.addEventListener("click",closePropertyDetail);
  $("editPropertyDetail")?.addEventListener("click",()=>{closePropertyDetail();openProperty(id)});
@@ -3195,5 +3195,53 @@ observer.observe(document.documentElement,{subtree:true,childList:true,character
 apply();
 })();
 </script>
+
+<style id="property-details-report-date-fields-rebuilt">
+/* Fresh, isolated From/Till controls for the Property Details report card. */
+#propertyDetailPanel .property-reports-card .pl-property-report-period{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  gap:10px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+#propertyDetailPanel .property-reports-card .pl-report-date-field{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  align-content:start!important;
+  gap:6px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  font:inherit!important;
+  box-sizing:border-box!important;
+}
+#propertyDetailPanel .property-reports-card .pl-report-date-field>span{
+  display:block!important;
+  min-width:0!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+}
+#propertyDetailPanel .property-reports-card .pl-report-date-field>input[type=date]{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:48px!important;
+  min-height:48px!important;
+  max-height:48px!important;
+  padding:9px 8px!important;
+  margin:0!important;
+  border-radius:12px!important;
+  font:inherit!important;
+  font-size:14px!important;
+  line-height:1.2!important;
+  box-sizing:border-box!important;
+}
+</style>
 </body>
 </html>
