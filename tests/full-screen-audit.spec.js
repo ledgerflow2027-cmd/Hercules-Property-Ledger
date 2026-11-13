@@ -143,3 +143,21 @@ test("accounting report controls execute safely with an empty isolated preview b
 
   expect(pageErrors, "Empty-book report generation should be handled without runtime errors").toEqual([]);
 });
+
+test("dashboard headings, action labels and generated cards translate in Arabic and Urdu", async ({ page }) => {
+  await unlock(page);
+  const checks = [
+    { code: "ar", expected: ["⚠️ مستأجرون متأخرون في السداد", "🧰 الموردون", "✨ ما الذي ترغب في القيام به؟", "متخصص تنظيف"] },
+    { code: "ur", expected: ["⚠️ کرایہ ادا کرنے میں تاخیر والے کرایہ دار", "🧰 وینڈرز", "✨ آپ کیا کرنا چاہیں گے؟", "صفائی کے ماہر"] }
+  ];
+  for (let index = 0; index < checks.length; index++) {
+    const state = checks[index];
+    await page.locator("#langQuick").click();
+    await expect(page.locator("html")).toHaveAttribute("lang", state.code);
+    for (const phrase of state.expected) {
+      await expect(page.locator("#dashboard")).toContainText(phrase);
+    }
+    await expect(page.locator("#dashboard .carousel-heading h2").nth(1)).toContainText(state.expected[0]);
+    await expect(page.locator("#dashboard .carousel-heading h2").nth(2)).toContainText(state.expected[1]);
+  }
+});
