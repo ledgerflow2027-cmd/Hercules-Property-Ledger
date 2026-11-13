@@ -631,22 +631,36 @@
 </style>
 
 <style id="property-report-date-box-half-height">
-/* Property Reports only: make the From/Till input boxes half the previous height. */
-#propertyDetailPanel .property-reports-card .stage16-date-range input[type="date"]{
-  height:24px!important;
-  min-height:24px!important;
-  max-height:24px!important;
-  padding:2px 5px!important;
-  font-size:11px!important;
-  line-height:1!important;
+/* Property Reports only: match From/Till controls to the full-size report-period fields. */
+#propertyDetailPanel .property-reports-card>.stage16-date-range{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  gap:10px!important;
+  width:100%!important;
+  min-width:0!important;
   box-sizing:border-box!important;
 }
 #propertyDetailPanel .property-reports-card .stage16-date-range>.field{
-  gap:3px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
 }
-#propertyDetailPanel .property-reports-card .stage16-date-range>.field>label{
-  font-size:11px!important;
-  line-height:1.1!important;
+#propertyDetailPanel .property-reports-card .stage16-date-range input[type="date"]{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:48px!important;
+  min-height:48px!important;
+  max-height:48px!important;
+  padding:10px 12px!important;
+  font-size:16px!important;
+  line-height:1.2!important;
+  box-sizing:border-box!important;
 }
 </style>
 
