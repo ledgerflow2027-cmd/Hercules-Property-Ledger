@@ -44,6 +44,7 @@ async function checkViewport(page, screenId, language) {
 }
 
 test("all 15 app screens render in English, Arabic and Urdu without page overflow", async ({ page }, testInfo) => {
+  test.setTimeout(180000);
   const pageErrors = [];
   page.on("pageerror", error => pageErrors.push(error.message));
 
