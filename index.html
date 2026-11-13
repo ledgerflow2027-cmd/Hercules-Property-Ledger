@@ -2277,7 +2277,7 @@ async function stage16LoadFounderPhoto(){
 async function stage16BuildPdf(title,subtitle,rows,summary){
  const isSoa=title.toLowerCase().includes("statement of account"),isPL=title.toLowerCase().includes("profit & loss");
  const logo=isSoa?await stage16LoadSoaLogo().catch(error=>{console.warn("SOA logo could not be loaded; generating the statement without the image.",error);return null}):null;
- const founderPhoto=isSoa?await stage16LoadFounderPhoto().catch(error=>{console.warn("Founder photo could not be loaded for the SOA PDF.",error);return null}):null;
+ const founderPhoto=null; // SOA design: no founder photograph.
 
  const pages=[];for(let i=0;i<rows.length;i+=15)pages.push(rows.slice(i,i+15));if(!pages.length)pages.push(["No activity recorded for this selected period."]);
  const objects=[null];objects[1]="<< /Type /Catalog /Pages 2 0 R >>";objects[2]="<< /Type /Pages /Kids ["+pages.map((_,i)=>(4+i*2)+" 0 R").join(" ")+"] /Count "+pages.length+" >>";objects[3]="<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
@@ -2361,7 +2361,7 @@ function stage16ShowPdfPreview(blob,fileName,title,shareText,previewRows,subtitl
  for(let page=0;page<pageCount;page++){
   const sheet=document.createElement("section");sheet.style.cssText="max-width:1100px;margin:0 auto 18px;background:#fff;padding:26px;box-shadow:0 3px 16px rgba(15,35,60,.12);box-sizing:border-box;min-height:360px;border-top:5px solid #173b60";
   const brand=document.createElement("div");brand.style.cssText="display:flex;align-items:center;gap:12px;padding:0 0 15px;margin:0 0 17px;border-bottom:2px solid #e5ebf2";
-  const logo=document.createElement("span");logo.textContent="P";logo.style.cssText="width:46px;height:46px;flex:0 0 46px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#172554,#6654d9 65%,#087e83);color:#fff;font-size:25px;font-weight:900;box-shadow:0 4px 12px rgba(23,37,84,.2)";
+  const logo=document.createElement("img");logo.src="https://raw.githubusercontent.com/ledgerflow2027-cmd/Hercules-Property-Ledger/main/Propledger-2027_logo.png";logo.alt="Propledger 2027 emblem";logo.style.cssText="width:58px;height:58px;flex:0 0 58px;object-fit:contain;border-radius:0;background:transparent";
   const brandCopy=document.createElement("div");brandCopy.style.cssText="display:grid;gap:3px";
   const brandName=document.createElement("strong");brandName.textContent="Propledger 2027";brandName.style.cssText="font-size:18px;line-height:1.1;letter-spacing:-.35px;color:#172554";
   const brandTag=document.createElement("span");brandTag.textContent="PROPERTY MANAGEMENT & ACCOUNTING";brandTag.style.cssText="font-size:9px;font-weight:800;letter-spacing:1.1px;color:#617286";
