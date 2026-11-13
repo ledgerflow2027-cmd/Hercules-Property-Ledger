@@ -148,8 +148,8 @@ test("accounting report controls execute safely with an empty isolated preview b
 test("dashboard headings, action labels and generated cards translate in Arabic and Urdu", async ({ page }) => {
   await unlock(page);
   const checks = [
-    { code: "ar", expected: ["⚠️ مستأجرون متأخرون في السداد", "🧰 الموردون", "✨ ما الذي ترغب في القيام به؟", "متخصص تنظيف"] },
-    { code: "ur", expected: ["⚠️ کرایہ ادا کرنے میں تاخیر والے کرایہ دار", "🧰 وینڈرز", "✨ آپ کیا کرنا چاہیں گے؟", "صفائی کے ماہر"] }
+    { code: "ar", expected: ["⚠️ مستأجرون متأخرون في السداد", "🧰 الموردون", "✨ ما الذي ترغب في القيام به؟", "متخصص تنظيف", "شقة مارينا فيو 101 · الإمارات"] },
+    { code: "ur", expected: ["⚠️ کرایہ ادا کرنے میں تاخیر والے کرایہ دار", "🧰 وینڈرز", "✨ آپ کیا کرنا چاہیں گے؟", "صفائی کے ماہر", "مرینا ویو اپارٹمنٹ 101 · متحدہ عرب امارات"] }
   ];
   for (let index = 0; index < checks.length; index++) {
     const state = checks[index];
