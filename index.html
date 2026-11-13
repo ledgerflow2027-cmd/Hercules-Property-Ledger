@@ -716,7 +716,27 @@
   box-sizing:border-box!important;
 }
 </style>
-<style id="tenant-directory-profile-actions">.tenant-directory-row{display:grid;grid-template-columns:46px 46px minmax(0,1fr) 40px;align-items:center;gap:9px;padding:10px 11px}.tenant-circle-photo{width:44px;height:44px;border-radius:50%;overflow:hidden;display:grid;place-items:center;flex-shrink:0;background:#eef1fb;font-size:20px}.tenant-circle-photo img{width:100%;height:100%;object-fit:cover;object-position:center center;border-radius:50%}.tenant-directory-info{min-width:0}.tenant-directory-info strong,.tenant-directory-info small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tenant-preview-eye{width:38px;height:38px;border:1px solid var(--line);border-radius:50%;background:#f5f6ff;font-size:18px;cursor:pointer}.tenant-profile-actions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}.tenant-profile-actions button{flex:1;min-width:130px}.tenant-profile-avatar{width:82px;height:82px;object-fit:cover;object-position:center center;border-radius:50%;border:3px solid white;box-shadow:0 3px 14px #17233b20;margin:8px 0}@media(max-width:370px){.tenant-directory-row{grid-template-columns:40px 40px minmax(0,1fr) 36px;gap:5px;padding:8px}.tenant-circle-photo{width:38px;height:38px}.tenant-preview-eye{width:34px;height:34px}}</style><style id="tenant-blue-outline-icons">.blue-line-icon{width:21px;height:21px;display:inline-block;vertical-align:middle;fill:none;stroke:#3977d5;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.navbtn .blue-line-icon{width:35px;height:35px}.tenant-preview-eye{display:grid;place-items:center}.tenant-profile-actions button{display:inline-flex;align-items:center;justify-content:center;gap:8px}.tenant-profile-actions .blue-line-icon{width:19px;height:19px}</style></head>
+<style id="tenant-directory-profile-actions">.tenant-directory-row{display:grid;grid-template-columns:46px 46px minmax(0,1fr) 40px;align-items:center;gap:9px;padding:10px 11px}.tenant-circle-photo{width:44px;height:44px;border-radius:50%;overflow:hidden;display:grid;place-items:center;flex-shrink:0;background:#eef1fb;font-size:20px}.tenant-circle-photo img{width:100%;height:100%;object-fit:cover;object-position:center center;border-radius:50%}.tenant-directory-info{min-width:0}.tenant-directory-info strong,.tenant-directory-info small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tenant-preview-eye{width:38px;height:38px;border:1px solid var(--line);border-radius:50%;background:#f5f6ff;font-size:18px;cursor:pointer}.tenant-profile-actions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}.tenant-profile-actions button{flex:1;min-width:130px}.tenant-profile-avatar{width:82px;height:82px;object-fit:cover;object-position:center center;border-radius:50%;border:3px solid white;box-shadow:0 3px 14px #17233b20;margin:8px 0}@media(max-width:370px){.tenant-directory-row{grid-template-columns:40px 40px minmax(0,1fr) 36px;gap:5px;padding:8px}.tenant-circle-photo{width:38px;height:38px}.tenant-preview-eye{width:34px;height:34px}}</style><style id="tenant-blue-outline-icons">.blue-line-icon{width:21px;height:21px;display:inline-block;vertical-align:middle;fill:none;stroke:#3977d5;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.navbtn .blue-line-icon{width:35px;height:35px}.tenant-preview-eye{display:grid;place-items:center}.tenant-profile-actions button{display:inline-flex;align-items:center;justify-content:center;gap:8px}.tenant-profile-actions .blue-line-icon{width:19px;height:19px}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style id="propledger-trilingual-fonts">
+html[lang="ar"] body,html[lang="ar"] button,html[lang="ar"] input,html[lang="ar"] select,html[lang="ar"] textarea{
+ font-family:"Noto Sans Arabic",Tahoma,Arial,sans-serif!important;
+}
+html[lang="ur"] body,html[lang="ur"] button,html[lang="ur"] input,html[lang="ur"] select,html[lang="ur"] textarea{
+ font-family:"Noto Nastaliq Urdu","Noto Sans Arabic",serif!important;
+}
+html[lang="ar"] body{font-size:15px;line-height:1.65}
+html[lang="ur"] body{font-size:16px;line-height:2}
+html[lang="ur"] .page-title,html[lang="ur"] .welcome-card h1{line-height:1.9}
+html[lang="ur"] .field label,html[lang="ur"] .muted,html[lang="ur"] .notice{line-height:1.9}
+html[dir="rtl"] .field input,html[dir="rtl"] .field select,html[dir="rtl"] .property-form input,html[dir="rtl"] .property-form select,html[dir="rtl"] .property-form textarea{text-align:right}
+html[dir="rtl"] input[type="date"],html[dir="rtl"] input[type="number"],html[dir="rtl"] input[inputmode="numeric"]{direction:ltr;text-align:right}
+html[dir="rtl"] .item .arrow{margin-left:0;margin-right:auto}
+html[dir="rtl"] .sectionhead,html[dir="rtl"] .modal-head{direction:rtl}
+</style>
+</head>
 <body>
 <section id="onboarding" class="hero">
  <div class="welcome-card">
@@ -2725,5 +2745,389 @@ img[src*="Man_in_his_30s_wearing_sweater_over_collared_shirt_approacha"]{
 }
 @media(max-width:359px){#stage16PdfPreviewModal #stage16PreviewContent #stage16SoaMonthFilter,#stage16PdfPreviewModal #stage16PreviewContent #stage16SoaYearFilter{font-size:12px!important;padding:7px!important}}
 </style>
+
+<script id="propledger-trilingual-localization">
+(()=>{
+"use strict";
+const phrases={
+"Welcome back":["مرحبًا بعودتك","خوش آمدید"],
+"Enter your PIN to open your Propledger 2027 property workspace.":["أدخل رقم التعريف الشخصي لفتح مساحة عمل بروبلدجر 2027.","اپنی پراپرٹی ورک اسپیس کھولنے کے لیے پن درج کریں۔"],
+"🔐 Preview login PIN":["🔐 رقم PIN للمعاينة","🔐 پیش نظارہ لاگ اِن پن"],
+"Preview access only — secure PIN storage and biometrics require the native app.":["وصول للمعاينة فقط — يتطلب حفظ PIN الآمن والقياسات الحيوية التطبيق الأصلي.","صرف پیش نظارہ رسائی — محفوظ پن اور بایومیٹرک لاگ اِن کے لیے اصل ایپ درکار ہے۔"],
+"🌐 Language":["🌐 اللغة","🌐 زبان"],
+"💱 Display currency":["💱 عملة العرض","💱 ڈسپلے کرنسی"],
+"🔓 Unlock workspace":["🔓 فتح مساحة العمل","🔓 ورک اسپیس کھولیں"],
+"4-digit preview PIN · Not a secure account login":["رقم PIN للمعاينة من 4 أرقام · ليس تسجيل دخول آمنًا","چار ہندسوں کا پیش نظارہ پن · محفوظ اکاؤنٹ لاگ اِن نہیں"],
+"Simple property management with clearer financial visibility for owners.":["إدارة عقارية سهلة ورؤية مالية أوضح للمُلّاك.","پراپرٹی کا آسان انتظام اور مالکان کے لیے مالی معاملات کی واضح تصویر۔"],
+"Wishing you a successful and prosperous day! 👋":["نتمنى لك يومًا ناجحًا ومزدهرًا! 👋","آپ کا دن کامیاب اور خوشحال گزرے! 👋"],
+"Saved properties":["العقارات المحفوظة","محفوظ شدہ پراپرٹیز"],
+"Named tenants":["المستأجرون المسجلون","درج شدہ کرایہ دار"],
+"Receipts this month":["إيصالات هذا الشهر","اس ماہ کی رسیدیں"],
+"Payments this month":["مدفوعات هذا الشهر","اس ماہ کی ادائیگیاں"],
+"Saved vendors":["مقدمو الخدمات المحفوظون","محفوظ شدہ سروس فراہم کنندگان"],
+"Posted journals":["قيود اليومية المُرحّلة","پوسٹ شدہ جرنل اندراجات"],
+"📈 Monthly activity snapshot":["📈 ملخص النشاط الشهري","📈 ماہانہ سرگرمی کا خلاصہ"],
+"Saved voucher activity will appear here.":["سيظهر هنا نشاط السندات المحفوظة.","محفوظ شدہ واؤچرز کی سرگرمی یہاں دکھائی دے گی۔"],
+"⏰ Rent follow-up":["⏰ متابعة الإيجار","⏰ کرائے کی پیروی"],
+"🧾 Vendor balances":["🧾 أرصدة الموردين","🧾 وینڈرز کے بیلنس"],
+"🏘️ Properties":["🏘️ العقارات","🏘️ پراپرٹیز"],
+"⚠️ Tenants with late rent":["⚠️ مستأجرون متأخرون في السداد","⚠️ کرایہ ادا کرنے میں تاخیر والے کرایہ دار"],
+"🧰 Vendors":["🧰 الموردون","🧰 وینڈرز"],
+"✨ What would you like to do?":["✨ ما الذي ترغب في القيام به؟","✨ آپ کیا کرنا چاہیں گے؟"],
+"Income":["الدخل","آمدنی"],
+"Expenses":["المصروفات","اخراجات"],
+"Create receipt voucher":["إنشاء سند قبض","رسید واؤچر بنائیں"],
+"Create payment voucher":["إنشاء سند دفع","ادائیگی واؤچر بنائیں"],
+"Add new property":["إضافة عقار جديد","نئی پراپرٹی شامل کریں"],
+"Add new vendor":["إضافة مورد جديد","نیا وینڈر شامل کریں"],
+"🔔 Recent saved activity":["🔔 أحدث النشاطات المحفوظة","🔔 حالیہ محفوظ شدہ سرگرمیاں"],
+"No local voucher activity yet.":["لا توجد سندات محفوظة محليًا حتى الآن.","ابھی تک کوئی مقامی واؤچر سرگرمی موجود نہیں۔"],
+"Your property portfolio":["محفظتك العقارية","آپ کا پراپرٹی پورٹ فولیو"],
+"＋ Add":["＋ إضافة","＋ شامل کریں"],
+"🧑‍🤝‍🧑 Tenants":["🧑‍🤝‍🧑 المستأجرون","🧑‍🤝‍🧑 کرایہ دار"],
+"Tenant directory and linked tenancy terms":["دليل المستأجرين وشروط الإيجار المرتبطة","کرایہ داروں کی فہرست اور متعلقہ کرایہ داری کی شرائط"],
+"＋ Add tenant":["＋ إضافة مستأجر","＋ کرایہ دار شامل کریں"],
+"No tenants saved for this country yet. Add a tenant and link them to a property.":["لا يوجد مستأجرون محفوظون لهذا البلد بعد. أضف مستأجرًا واربطه بعقار.","اس ملک کے لیے ابھی کوئی کرایہ دار محفوظ نہیں۔ کرایہ دار شامل کریں اور پراپرٹی سے منسلک کریں۔"],
+"Your trusted service providers":["مقدمو الخدمات الموثوقون","آپ کے قابلِ اعتماد سروس فراہم کنندگان"],
+"📚 Activity":["📚 النشاط","📚 سرگرمی"],
+"New receipt":["إيصال جديد","نئی رسید"],
+"Income voucher":["سند قبض","آمدنی واؤچر"],
+"New payment":["دفعة جديدة","نئی ادائیگی"],
+"Expense voucher":["سند مصروفات","اخراجات واؤچر"],
+"🧾 Saved receipt history":["🧾 سجل الإيصالات المحفوظة","🧾 محفوظ شدہ رسیدوں کی تاریخ"],
+"No receipts saved yet.":["لم يتم حفظ أي إيصالات بعد.","ابھی تک کوئی رسید محفوظ نہیں ہوئی۔"],
+"💳 Saved payment history":["💳 سجل المدفوعات المحفوظة","💳 محفوظ شدہ ادائیگیوں کی تاریخ"],
+"No payments saved yet.":["لم يتم حفظ أي مدفوعات بعد.","ابھی تک کوئی ادائیگی محفوظ نہیں ہوئی۔"],
+"📚 Accounting setup":["📚 إعدادات المحاسبة","📚 اکاؤنٹنگ سیٹ اپ"],
+"Separate books for UAE and Pakistan":["دفاتر محاسبية منفصلة للإمارات وباكستان","متحدہ عرب امارات اور پاکستان کے لیے الگ حسابی دفاتر"],
+"🌍 Select accounting book":["🌍 اختر الدفتر المحاسبي","🌍 اکاؤنٹنگ بک منتخب کریں"],
+"Country / entity book":["دفتر الدولة / الكيان","ملک / ادارے کی بک"],
+"🇦🇪 UAE — AED":["🇦🇪 الإمارات — درهم","🇦🇪 متحدہ عرب امارات — AED"],
+"🇵🇰 Pakistan — PKR":["🇵🇰 باكستان — روبية","🇵🇰 پاکستان — PKR"],
+"Entity code *":["رمز الكيان *","ادارے کا کوڈ *"],
+"Legal entity name *":["الاسم القانوني للكيان *","ادارے کا قانونی نام *"],
+"Functional currency":["العملة الوظيفية","فنکشنل کرنسی"],
+"Financial year starts":["بداية السنة المالية","مالی سال کا آغاز"],
+"1 January":["1 يناير","یکم جنوری"],
+"1 April":["1 أبريل","یکم اپریل"],
+"1 July":["1 يوليو","یکم جولائی"],
+"1 October":["1 أكتوبر","یکم اکتوبر"],
+"💾 Save book setup":["💾 حفظ إعداد الدفتر","💾 بک سیٹ اپ محفوظ کریں"],
+"🗓️ Accounting periods & numbering":["🗓️ الفترات المحاسبية والترقيم","🗓️ اکاؤنٹنگ ادوار اور نمبرنگ"],
+"Period starts *":["بداية الفترة *","مدت کا آغاز *"],
+"Period ends *":["نهاية الفترة *","مدت کا اختتام *"],
+"Period status":["حالة الفترة","مدت کی حیثیت"],
+"Open":["مفتوحة","کھلی"],
+"Closed":["مغلقة","بند"],
+"Locked":["مقفلة","لاک"],
+"Journal prefix":["بادئة دفتر اليومية","جرنل سابقہ"],
+"Next journal number":["رقم اليومية التالي","اگلا جرنل نمبر"],
+"＋ Add accounting period":["＋ إضافة فترة محاسبية","＋ اکاؤنٹنگ مدت شامل کریں"],
+"🗂️ Chart of Accounts":["🗂️ دليل الحسابات","🗂️ اکاؤنٹس کا چارٹ"],
+"➕ Add account":["➕ إضافة حساب","➕ اکاؤنٹ شامل کریں"],
+"Account code *":["رمز الحساب *","اکاؤنٹ کوڈ *"],
+"Account type *":["نوع الحساب *","اکاؤنٹ کی قسم *"],
+"Choose type":["اختر النوع","قسم منتخب کریں"],
+"Asset":["أصل","اثاثہ"],
+"Liability":["التزام","واجب الادا"],
+"Equity":["حقوق الملكية","ایکویٹی"],
+"Direct Expense":["مصروف مباشر","براہِ راست خرچ"],
+"Operating Expense":["مصروف تشغيلي","آپریٹنگ خرچ"],
+"Finance / Other":["تمويل / أخرى","فنانس / دیگر"],
+"Account name *":["اسم الحساب *","اکاؤنٹ کا نام *"],
+"Parent group":["المجموعة الرئيسية","بنیادی گروپ"],
+"No parent":["بدون مجموعة رئيسية","کوئی بنیادی گروپ نہیں"],
+"Normal balance":["الرصيد الطبيعي","نارمل بیلنس"],
+"Debit":["مدين","ڈیبٹ"],
+"Credit":["دائن","کریڈٹ"],
+"Active":["نشط","فعال"],
+"Allow posting":["السماح بالترحيل","پوسٹنگ کی اجازت دیں"],
+"＋ Add to selected book":["＋ إضافة إلى الدفتر المحدد","＋ منتخب بک میں شامل کریں"],
+"📒 Journal entry workspace":["📒 مساحة قيود اليومية","📒 جرنل اندراج ورک اسپیس"],
+"Journal date *":["تاريخ القيد *","جرنل کی تاریخ *"],
+"Book currency":["عملة الدفتر","بک کی کرنسی"],
+"Description *":["الوصف *","تفصیل *"],
+"＋ Add line":["＋ إضافة سطر","＋ لائن شامل کریں"],
+"✓ Validate journal":["✓ التحقق من القيد","✓ جرنل کی توثیق کریں"],
+"Total debits":["إجمالي المدين","کل ڈیبٹ"],
+"Total credits":["إجمالي الدائن","کل کریڈٹ"],
+"💾 Save validated draft":["💾 حفظ المسودة المعتمدة","💾 تصدیق شدہ ڈرافٹ محفوظ کریں"],
+"🗃️ Saved journal drafts":["🗃️ مسودات القيود المحفوظة","🗃️ محفوظ شدہ جرنل ڈرافٹس"],
+"No journal drafts saved.":["لا توجد مسودات قيود محفوظة.","کوئی جرنل ڈرافٹ محفوظ نہیں۔"],
+"🧾 Local draft activity history":["🧾 سجل نشاط المسودات المحلي","🧾 مقامی ڈرافٹ سرگرمی کی تاریخ"],
+"No draft activity recorded.":["لم يتم تسجيل أي نشاط للمسودات.","ڈرافٹ کی کوئی سرگرمی ریکارڈ نہیں ہوئی۔"],
+"📚 General Ledger":["📚 دفتر الأستاذ العام","📚 جنرل لیجر"],
+"Posted transactions only • selected country book":["المعاملات المُرحّلة فقط • دفتر الدولة المحدد","صرف پوسٹ شدہ لین دین • منتخب ملک کی بک"],
+"Country book":["دفتر الدولة","ملک کی بک"],
+"Account":["الحساب","اکاؤنٹ"],
+"All accounts":["جميع الحسابات","تمام اکاؤنٹس"],
+"From date":["من تاريخ","تاریخ سے"],
+"To date":["إلى تاريخ","تاریخ تک"],
+"🔎 Run General Ledger":["🔎 عرض دفتر الأستاذ العام","🔎 جنرل لیجر چلائیں"],
+"📖 General Ledger activity":["📖 نشاط دفتر الأستاذ العام","📖 جنرل لیجر کی سرگرمی"],
+"No posted journals available.":["لا توجد قيود يومية مُرحّلة.","کوئی پوسٹ شدہ جرنل دستیاب نہیں۔"],
+"No posted ledger activity for this book.":["لا يوجد نشاط مُرحّل في دفتر الأستاذ لهذا الدفتر.","اس بک میں کوئی پوسٹ شدہ لیجر سرگرمی نہیں۔"],
+"⚖️ Trial Balance":["⚖️ ميزان المراجعة","⚖️ ٹرائل بیلنس"],
+"As at date":["كما في تاريخ","اس تاریخ تک"],
+"↻ Calculate Trial Balance":["↻ احتساب ميزان المراجعة","↻ ٹرائل بیلنس کا حساب کریں"],
+"📈 Financial Statements & Period Close":["📈 القوائم المالية وإقفال الفترة","📈 مالی گوشوارے اور مدت کا اختتام"],
+"To / as at date":["إلى / كما في تاريخ","تک / اس تاریخ تک"],
+"🔎 Generate statements":["🔎 إنشاء القوائم","🔎 گوشوارے تیار کریں"],
+"📊 Profit & Loss":["📊 الأرباح والخسائر","📊 نفع و نقصان"],
+"🏦 Balance Sheet":["🏦 الميزانية العمومية","🏦 بیلنس شیٹ"],
+"💧 Cash Flow":["💧 التدفقات النقدية","💧 نقدی کا بہاؤ"],
+"🗓️ Period-close readiness":["🗓️ جاهزية إقفال الفترة","🗓️ مدت بند کرنے کی تیاری"],
+"🧩 Subledgers & Allocations":["🧩 الدفاتر الفرعية والتخصيصات","🧩 ذیلی لیجرز اور الاَلوکیشنز"],
+"Country-separated property, tenant and vendor activity":["نشاط العقارات والمستأجرين والموردين حسب الدولة","ملک کے لحاظ سے پراپرٹی، کرایہ دار اور وینڈر سرگرمی"],
+"Register":["السجل","رجسٹر"],
+"All source vouchers":["جميع السندات المصدرية","تمام بنیادی واؤچرز"],
+"Tenant receipts":["إيصالات المستأجرين","کرایہ داروں کی رسیدیں"],
+"Vendor payments":["مدفوعات الموردين","وینڈرز کی ادائیگیاں"],
+"Property / party":["العقار / الطرف","پراپرٹی / فریق"],
+"All properties and parties":["جميع العقارات والأطراف","تمام پراپرٹیز اور فریقین"],
+"🔎 Refresh subledger":["🔎 تحديث الدفتر الفرعي","🔎 ذیلی لیجر تازہ کریں"],
+"📊 Register summary":["📊 ملخص السجل","📊 رجسٹر کا خلاصہ"],
+"No local vouchers found.":["لم يتم العثور على سندات محلية.","کوئی مقامی واؤچر نہیں ملا۔"],
+"🔗 Allocation readiness":["🔗 جاهزية التخصيص","🔗 الاَلوکیشن کی تیاری"],
+"📄 Document Studio":["📄 استوديو المستندات","📄 دستاویزات اسٹوڈیو"],
+"Create, preview, print or share property documents":["إنشاء مستندات العقار ومعاينتها وطباعتها أو مشاركتها","پراپرٹی دستاویزات بنائیں، پیش نظارہ، پرنٹ یا شیئر کریں"],
+"Document type":["نوع المستند","دستاویز کی قسم"],
+"📑 Tenancy agreement draft":["📑 مسودة عقد إيجار","📑 کرایہ داری معاہدے کا مسودہ"],
+"🏠 Property activity statement":["🏠 كشف نشاط العقار","🏠 پراپرٹی سرگرمی کا گوشوارہ"],
+"👤 Tenant activity statement":["👤 كشف نشاط المستأجر","👤 کرایہ دار کی سرگرمی کا گوشوارہ"],
+"🧰 Vendor activity statement":["🧰 كشف نشاط المورد","🧰 وینڈر سرگرمی کا گوشوارہ"],
+"Choose a property":["اختر عقارًا","پراپرٹی منتخب کریں"],
+"✨ Generate document preview":["✨ إنشاء معاينة المستند","✨ دستاویز کا پیش نظارہ بنائیں"],
+"Your document preview":["معاينة المستند","آپ کی دستاویز کا پیش نظارہ"],
+"Preview only · Verify all details before use":["للمعاينة فقط · تحقق من جميع التفاصيل قبل الاستخدام","صرف پیش نظارہ · استعمال سے پہلے تمام تفصیلات چیک کریں"],
+"🖨️ Print / Save PDF":["🖨️ طباعة / حفظ PDF","🖨️ پرنٹ / PDF محفوظ کریں"],
+"📤 Share":["📤 مشاركة","📤 شیئر کریں"],
+"🟢 Share via WhatsApp":["🟢 مشاركة عبر واتساب","🟢 واٹس ایپ پر شیئر کریں"],
+"☰ More":["☰ المزيد","☰ مزید"],
+"Tenants":["المستأجرون","کرایہ دار"],
+"Official notices":["الإشعارات الرسمية","سرکاری نوٹس"],
+"Important workspace announcements":["إعلانات مهمة لمساحة العمل","ورک اسپیس کے اہم اعلانات"],
+"General Ledger & Trial Balance":["دفتر الأستاذ العام وميزان المراجعة","جنرل لیجر اور ٹرائل بیلنس"],
+"Financial Statements & Period Close":["القوائم المالية وإقفال الفترة","مالی گوشوارے اور مدت کا اختتام"],
+"Subledgers & Allocations":["الدفاتر الفرعية والتخصيصات","ذیلی لیجرز اور الاَلوکیشنز"],
+"Accounting setup":["إعدادات المحاسبة","اکاؤنٹنگ سیٹ اپ"],
+"Settings":["الإعدادات","ترتیبات"],
+"Profile, country, currency and language":["الملف الشخصي والدولة والعملة واللغة","پروفائل، ملک، کرنسی اور زبان"],
+"Help & support":["المساعدة والدعم","مدد اور معاونت"],
+"Learn how Propledger works":["تعرّف على كيفية عمل بروبلدجر","جانیں کہ پروپلجر کیسے کام کرتا ہے"],
+"Founder & developer":["المؤسس والمطوّر","بانی اور ڈویلپر"],
+"About the person behind Propledger":["عن مطوّر بروبلدجر","پروپلجر کے بانی کے بارے میں"],
+"📢 Official notices":["📢 الإشعارات الرسمية","📢 سرکاری نوٹس"],
+"Product updates and important information":["تحديثات المنتج والمعلومات المهمة","پروڈکٹ اپ ڈیٹس اور اہم معلومات"],
+"🚀 Propledger preview":["🚀 معاينة بروبلدجر","🚀 پروپلجر پیش نظارہ"],
+"🔐 Secure cloud services":["🔐 خدمات سحابية آمنة","🔐 محفوظ کلاؤڈ سروسز"],
+"Security notice":["تنبيه أمني","سیکیورٹی نوٹس"],
+"⚙️ Settings":["⚙️ الإعدادات","⚙️ ترتیبات"],
+"Workspace preferences on this device":["تفضيلات مساحة العمل على هذا الجهاز","اس ڈیوائس پر ورک اسپیس کی ترجیحات"],
+"🌐 Language & region":["🌐 اللغة والمنطقة","🌐 زبان اور علاقہ"],
+"Display language":["لغة العرض","ڈسپلے زبان"],
+"Display currency:":["عملة العرض:","ڈسپلے کرنسی:"],
+"🧪 Sample bookkeeping data":["🧪 بيانات محاسبية تجريبية","🧪 نمونہ بک کیپنگ ڈیٹا"],
+"🌱 Seed sample data":["🌱 إضافة البيانات التجريبية","🌱 نمونہ ڈیٹا شامل کریں"],
+"🗑️ Remove sample data":["🗑️ إزالة البيانات التجريبية","🗑️ نمونہ ڈیٹا ہٹائیں"],
+"👤 Header profile picture":["👤 صورة الملف الشخصي في الترويسة","👤 ہیڈر پروفائل تصویر"],
+"Upload your picture for the header":["ارفع صورتك لعرضها في الترويسة","ہیڈر کے لیے اپنی تصویر اپ لوڈ کریں"],
+"No profile picture selected.":["لم يتم اختيار صورة شخصية.","کوئی پروفائل تصویر منتخب نہیں۔"],
+"🗑️ Remove picture and show blue outline icon":["🗑️ إزالة الصورة وإظهار الأيقونة الزرقاء","🗑️ تصویر ہٹائیں اور نیلا آئیکن دکھائیں"],
+"🖼️ Company logo":["🖼️ شعار الشركة","🖼️ کمپنی کا لوگو"],
+"Choose logo image":["اختر صورة الشعار","لوگو کی تصویر منتخب کریں"],
+"No company logo selected.":["لم يتم اختيار شعار للشركة.","کمپنی کا کوئی لوگو منتخب نہیں۔"],
+"🗑️ Remove company logo":["🗑️ إزالة شعار الشركة","🗑️ کمپنی کا لوگو ہٹائیں"],
+"🔒 Security & session":["🔒 الأمان والجلسة","🔒 سیکیورٹی اور سیشن"],
+"↩️ Return to welcome screen":["↩️ العودة إلى شاشة الترحيب","↩️ ویلکم اسکرین پر واپس جائیں"],
+"❔ Help & support":["❔ المساعدة والدعم","❔ مدد اور معاونت"],
+"Quick guidance for the current preview":["إرشادات سريعة للمعاينة الحالية","موجودہ پیش نظارہ کے لیے فوری رہنمائی"],
+"🏠 Properties, tenants & vendors":["🏠 العقارات والمستأجرون والموردون","🏠 پراپرٹیز، کرایہ دار اور وینڈرز"],
+"🧾 Receipts & payments":["🧾 الإيصالات والمدفوعات","🧾 رسیدیں اور ادائیگیاں"],
+"📚 Accounting reports":["📚 التقارير المحاسبية","📚 اکاؤنٹنگ رپورٹس"],
+"☁️ Data & privacy":["☁️ البيانات والخصوصية","☁️ ڈیٹا اور پرائیویسی"],
+"📩 Contact":["📩 التواصل","📩 رابطہ"],
+"👨‍💻 Founder & developer":["👨‍💻 المؤسس والمطوّر","👨‍💻 بانی اور ڈویلپر"],
+"✨ Our purpose":["✨ هدفنا","✨ ہمارا مقصد"],
+"PORTFOLIO SETUP":["إعداد المحفظة العقارية","پورٹ فولیو سیٹ اپ"],
+"🏠 Register property":["🏠 تسجيل عقار","🏠 پراپرٹی رجسٹر کریں"],
+"🏢 PROPERTY DETAILS":["🏢 تفاصيل العقار","🏢 پراپرٹی کی تفصیلات"],
+"Property name *":["اسم العقار *","پراپرٹی کا نام *"],
+"Property type *":["نوع العقار *","پراپرٹی کی قسم *"],
+"Apartment":["شقة","اپارٹمنٹ"],
+"Villa":["فيلا","ولا"],
+"Commercial building":["مبنى تجاري","کمرشل عمارت"],
+"Retail":["تجاري / محلات","ریٹیل"],
+"Office":["مكتب","دفتر"],
+"Land":["أرض","زمین"],
+"Other":["أخرى","دیگر"],
+"Country *":["الدولة *","ملک *"],
+"🇦🇪 United Arab Emirates":["🇦🇪 الإمارات العربية المتحدة","🇦🇪 متحدہ عرب امارات"],
+"🇸🇦 Saudi Arabia":["🇸🇦 المملكة العربية السعودية","🇸🇦 سعودی عرب"],
+"🇶🇦 Qatar":["🇶🇦 قطر","🇶🇦 قطر"],
+"🇰🇼 Kuwait":["🇰🇼 الكويت","🇰🇼 کویت"],
+"🇧🇭 Bahrain":["🇧🇭 البحرين","🇧🇭 بحرین"],
+"🇴🇲 Oman":["🇴🇲 عُمان","🇴🇲 عمان"],
+"🇵🇰 Pakistan":["🇵🇰 باكستان","🇵🇰 پاکستان"],
+"🇮🇳 India":["🇮🇳 الهند","🇮🇳 بھارت"],
+"🇬🇧 United Kingdom":["🇬🇧 المملكة المتحدة","🇬🇧 برطانیہ"],
+"🇺🇸 United States":["🇺🇸 الولايات المتحدة","🇺🇸 ریاستہائے متحدہ"],
+"Address / location *":["العنوان / الموقع *","پتہ / مقام *"],
+"Number of units":["عدد الوحدات","یونٹس کی تعداد"],
+"Property reference":["مرجع العقار","پراپرٹی حوالہ"],
+"📷 Property photos":["📷 صور العقار","📷 پراپرٹی کی تصاویر"],
+"👤 TENANT DETAILS (OPTIONAL)":["👤 بيانات المستأجر (اختياري)","👤 کرایہ دار کی تفصیلات (اختیاری)"],
+"Tenant full name":["الاسم الكامل للمستأجر","کرایہ دار کا پورا نام"],
+"Phone / WhatsApp":["الهاتف / واتساب","فون / واٹس ایپ"],
+"Tenant country":["دولة المستأجر","کرایہ دار کا ملک"],
+"Emirates ID number":["رقم الهوية الإماراتية","اماراتی شناختی کارڈ نمبر"],
+"🧑 Tenant photo":["🧑 صورة المستأجر","🧑 کرایہ دار کی تصویر"],
+"📄 Emirates ID document":["📄 مستند الهوية الإماراتية","📄 اماراتی شناختی دستاویز"],
+"💾 Save property preview":["💾 حفظ معاينة العقار","💾 پراپرٹی کا پیش نظارہ محفوظ کریں"],
+"TENANCY MANAGEMENT":["إدارة الإيجارات","کرایہ داری کا انتظام"],
+"🧑‍🤝‍🧑 Register tenant":["🧑‍🤝‍🧑 تسجيل مستأجر","🧑‍🤝‍🧑 کرایہ دار رجسٹر کریں"],
+"Linked property *":["العقار المرتبط *","منسلک پراپرٹی *"],
+"Choose property":["اختر العقار","پراپرٹی منتخب کریں"],
+"👤 TENANT PROFILE":["👤 ملف المستأجر","👤 کرایہ دار کا پروفائل"],
+"Full name *":["الاسم الكامل *","پورا نام *"],
+"Email":["البريد الإلكتروني","ای میل"],
+"🇦🇪 UAE":["🇦🇪 الإمارات","🇦🇪 متحدہ عرب امارات"],
+"Emirates ID number (optional)":["رقم الهوية الإماراتية (اختياري)","اماراتی شناختی نمبر (اختیاری)"],
+"📷 Tenant photo":["📷 صورة المستأجر","📷 کرایہ دار کی تصویر"],
+"📑 TENANCY TERMS":["📑 شروط الإيجار","📑 کرایہ داری کی شرائط"],
+"Lease start *":["بداية عقد الإيجار *","لیز کا آغاز *"],
+"Lease end":["نهاية عقد الإيجار","لیز کا اختتام"],
+"Rent amount *":["مبلغ الإيجار *","کرایہ کی رقم *"],
+"Rent frequency":["دورية الإيجار","کرایہ کی ادائیگی کی مدت"],
+"Monthly":["شهري","ماہانہ"],
+"Quarterly":["ربع سنوي","سہ ماہی"],
+"Half-yearly":["نصف سنوي","ششماہی"],
+"Yearly":["سنوي","سالانہ"],
+"Rent due day (1–28)":["يوم استحقاق الإيجار (1–28)","کرایہ واجب الادا ہونے کا دن (1–28)"],
+"Security deposit":["مبلغ التأمين","سیکیورٹی ڈپازٹ"],
+"Tenancy status":["حالة الإيجار","کرایہ داری کی حیثیت"],
+"Upcoming":["قادم","آنے والا"],
+"Ended":["منتهي","ختم شدہ"],
+"💾 Save tenant and tenancy":["💾 حفظ المستأجر وعقد الإيجار","💾 کرایہ دار اور لیز محفوظ کریں"],
+"SERVICE PROVIDER SETUP":["إعداد مقدمي الخدمات","سروس فراہم کنندہ سیٹ اپ"],
+"🧰 Register vendor":["🧰 تسجيل مورد","🧰 وینڈر رجسٹر کریں"],
+"🧰 VENDOR DETAILS":["🧰 بيانات المورد","🧰 وینڈر کی تفصیلات"],
+"Vendor / business name *":["اسم المورد / الشركة *","وینڈر / کاروبار کا نام *"],
+"Service category *":["فئة الخدمة *","سروس کی قسم *"],
+"Choose service":["اختر الخدمة","سروس منتخب کریں"],
+"Maintenance & repairs":["الصيانة والإصلاحات","مرمت اور دیکھ بھال"],
+"Cleaning":["التنظيف","صفائی"],
+"Plumbing":["السباكة","پلمبنگ"],
+"Electrical":["الكهرباء","الیکٹریکل"],
+"Painting":["الدهان","پینٹنگ"],
+"Landscaping":["تنسيق الحدائق","لینڈ اسکیپنگ"],
+"Security":["الأمن","سیکیورٹی"],
+"Property management":["إدارة العقارات","پراپرٹی مینجمنٹ"],
+"📷 Vendor / company photo":["📷 صورة المورد / الشركة","📷 وینڈر / کمپنی کی تصویر"],
+"💾 Save vendor preview":["💾 حفظ معاينة المورد","💾 وینڈر کا پیش نظارہ محفوظ کریں"],
+"INCOME WORKSPACE":["مساحة عمل الدخل","آمدنی ورک اسپیس"],
+"🧾 New receipt voucher":["🧾 سند قبض جديد","🧾 نیا رسید واؤچر"],
+"Voucher number":["رقم السند","واؤچر نمبر"],
+"Receipt date *":["تاريخ الإيصال *","رسید کی تاریخ *"],
+"Property *":["العقار *","پراپرٹی *"],
+"Tenant *":["المستأجر *","کرایہ دار *"],
+"Choose tenant":["اختر المستأجر","کرایہ دار منتخب کریں"],
+"Currency":["العملة","کرنسی"],
+"Amount *":["المبلغ *","رقم *"],
+"Payment method *":["طريقة الدفع *","ادائیگی کا طریقہ *"],
+"Choose method":["اختر الطريقة","طریقہ منتخب کریں"],
+"Cash":["نقدًا","نقد"],
+"Bank transfer":["تحويل بنكي","بینک ٹرانسفر"],
+"Card":["بطاقة","کارڈ"],
+"Cheque":["شيك","چیک"],
+"Payment reference":["مرجع الدفع","ادائیگی حوالہ"],
+"Description / purpose *":["الوصف / الغرض *","تفصیل / مقصد *"],
+"👁️ Preview receipt":["👁️ معاينة الإيصال","👁️ رسید کا پیش نظارہ"],
+"✏️ Edit":["✏️ تعديل","✏️ ترمیم"],
+"💾 Save preview":["💾 حفظ المعاينة","💾 پیش نظارہ محفوظ کریں"],
+"EXPENSE WORKSPACE":["مساحة عمل المصروفات","اخراجات ورک اسپیس"],
+"💳 New payment voucher":["💳 سند دفع جديد","💳 نیا ادائیگی واؤچر"],
+"Payment date *":["تاريخ الدفع *","ادائیگی کی تاریخ *"],
+"Payee / vendor *":["المستفيد / المورد *","وصول کنندہ / وینڈر *"],
+"Choose vendor":["اختر المورد","وینڈر منتخب کریں"],
+"Expense category *":["فئة المصروف *","اخراجات کی قسم *"],
+"Choose category":["اختر الفئة","قسم منتخب کریں"],
+"Utilities":["الخدمات والمرافق","یوٹیلٹیز"],
+"Insurance":["التأمين","انشورنس"],
+"Management fees":["رسوم الإدارة","انتظامی فیس"],
+"Government fees":["الرسوم الحكومية","سرکاری فیس"],
+"Supplies":["المستلزمات","سامان"],
+"📎 Supporting document (optional)":["📎 مستند داعم (اختياري)","📎 معاون دستاویز (اختیاری)"],
+"← Back":["← رجوع","← واپس"],
+"PROFILE DETAILS":["تفاصيل الملف الشخصي","پروفائل کی تفصیلات"],
+"Home":["الرئيسية","ہوم"],
+"Properties":["العقارات","پراپرٹیز"],
+"More":["المزيد","مزید"],
+"Phone / WhatsApp *":["الهاتف / واتساب *","فون / واٹس ایپ *"],
+"Profile picture":["الصورة الشخصية","پروفائل تصویر"],
+"English":["الإنجليزية","انگریزی"],
+"Arabic":["العربية","عربی"],
+"Urdu":["الأردية","اردو"]
+};
+const langIndex=()=>document.documentElement.lang==="ar"?0:document.documentElement.lang==="ur"?1:-1;
+const originals=new WeakMap();
+let applying=false;
+function translated(value,idx){
+ const key=value.trim();
+ const pair=phrases[key];
+ return pair&&pair[idx] ? value.replace(key,pair[idx]) : value;
+}
+function translateTextNode(node,idx){
+ if(!node||node.nodeType!==Node.TEXT_NODE||applying)return;
+ let raw=node.nodeValue;
+ let original=originals.get(node);
+ if(original===undefined){original=raw;originals.set(node,original);}
+ const trimmed=original.trim();
+ const pair=phrases[trimmed];
+ let target=original;
+ if(idx>=0&&pair&&pair[idx])target=original.replace(trimmed,pair[idx]);
+ if(node.nodeValue!==target){applying=true;node.nodeValue=target;applying=false;}
+}
+function scan(root,idx){
+ if(!root)return;
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(n){
+  const p=n.parentElement;
+  if(!p||p.closest("script,style,textarea,[contenteditable='true']"))return NodeFilter.FILTER_REJECT;
+  return NodeFilter.FILTER_ACCEPT;
+ }});
+ const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+ nodes.forEach(n=>translateTextNode(n,idx));
+}
+function apply(idx=langIndex()){
+ if(idx<0)idx=-1;
+ scan(document.body,idx);
+ const attrNames=["placeholder","title","aria-label","alt"];
+ document.querySelectorAll("[placeholder],[title],[aria-label],[alt]").forEach(el=>{
+  attrNames.forEach(name=>{
+   if(!el.hasAttribute(name))return;
+   const current=el.getAttribute(name);
+   const base=el.dataset["plOriginal"+name.replace(/[^a-z]/gi,"").toLowerCase()]||current;
+   const prop="plOriginal"+name.replace(/[^a-z]/gi,"").toLowerCase();
+   if(!el.dataset[prop])el.dataset[prop]=base;
+   const original=el.dataset[prop],pair=phrases[original.trim()];
+   el.setAttribute(name,idx>=0&&pair&&pair[idx]?pair[idx]:original);
+  });
+ });
+ document.title=idx===0?"بروبلدجر 2027":idx===1?"پروپلجر 2027":"Propledger 2027";
+}
+window.propledgerApplyTranslations=apply;
+const observer=new MutationObserver(records=>{
+ if(applying)return;
+ const idx=langIndex();
+ for(const rec of records){
+  if(rec.type==="attributes"&&rec.target===document.documentElement&&rec.attributeName==="lang"){apply(idx);continue;}
+  if(rec.type==="characterData")translateTextNode(rec.target,idx);
+  rec.addedNodes&&rec.addedNodes.forEach(n=>{if(n.nodeType===Node.TEXT_NODE)translateTextNode(n,idx);else if(n.nodeType===Node.ELEMENT_NODE)scan(n,idx);});
+ }
+});
+observer.observe(document.documentElement,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:["lang"]});
+apply();
+})();
+</script>
 </body>
 </html>
