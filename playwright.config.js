@@ -21,6 +21,10 @@ module.exports = defineConfig({
     {
       name: "chromium-mobile",
       use: { ...devices["iPhone 13"], defaultBrowserType: "chromium" }
+    },
+    {
+      name: "webkit-mobile",
+      use: { ...devices["iPhone 13"], defaultBrowserType: "webkit" }
     }
   ]
 });
