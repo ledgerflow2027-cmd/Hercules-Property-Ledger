@@ -2294,8 +2294,8 @@ async function stage16BuildPdf(title,subtitle,rows,summary){
     const cards=[["OPENING BALANCE",summary.opening],["RENT BILLED",summary.billed],["RENT RECEIVED",summary.received],["CLOSING BALANCE",summary.closing]];
     cards.forEach((c,j)=>{const x=38+j*131;content+="q 0.93 0.96 0.98 rg "+x+" 592 123 48 re f Q\n0.84 G "+x+" 592 123 48 re S 0 G\nBT /F1 6 Tf 0.38 0.43 0.51 rg 1 0 0 1 "+(x+6)+" 625 Tm ("+c[0]+") Tj ET\nBT /F1 8 Tf 0.09 0.18 0.32 rg 1 0 0 1 "+(x+6)+" 607 Tm ("+stage16PdfEscape(summary.currency+" "+Number(c[1]||0).toFixed(2))+") Tj ET\n"});
    }
-   const bandY=i===0?558:658,headerY=bandY+8;
-   content+="q 0.09 0.18 0.32 rg 38 "+bandY+" 519 20 re f Q\n";
+   const bandY=i===0?558:658,headerY=bandY+10;
+   content+="q 0.09 0.18 0.32 rg 38 "+bandY+" 519 26 re f Q\n";
    labels.forEach((v,j)=>{content+="BT /F1 6 Tf 1 1 1 rg 1 0 0 1 "+cols[j]+" "+headerY+" Tm ("+v+") Tj ET\n"});
    page.forEach((r,j)=>{
     const y=(i===0?530:630)-j*24,vals=[r.kind==="opening"||r.kind==="closing"?"":stage16DisplayDate(r.date)||"",r.description||"",r.reference||"",r.party||"",r.debit?Number(r.debit).toFixed(2):"",r.credit?Number(r.credit).toFixed(2):"",Number(r.balance||0).toFixed(2)];
@@ -2388,7 +2388,7 @@ function stage16ShowPdfPreview(blob,fileName,title,shareText,previewRows,subtitl
    const wrap=document.createElement("div");wrap.style.cssText="overflow-x:auto";
    const table=document.createElement("table");table.style.cssText="width:100%;border-collapse:collapse;min-width:850px;font-size:11px";
    const headers=["Date","Description","Reference","Tenant / Vendor","Debit","Credit","Running balance"],thead=document.createElement("thead"),trh=document.createElement("tr");
-   headers.forEach(label=>{const th=document.createElement("th");th.textContent=label;th.style.cssText="text-align:left;padding:10px 7px;background:#173b60;color:#fff;font-size:10px;white-space:nowrap";trh.appendChild(th)});thead.appendChild(trh);table.appendChild(thead);
+   headers.forEach(label=>{const th=document.createElement("th");th.textContent=label;th.style.cssText="text-align:left;padding:14px 7px;background:#173b60;color:#fff;font-size:10px;white-space:nowrap";trh.appendChild(th)});thead.appendChild(trh);table.appendChild(thead);
    const tbody=document.createElement("tbody");
    rows.slice(page*15,(page+1)*15).forEach((r)=>{const tr=document.createElement("tr");tr.dataset.soaDate=r.date||"";tr.dataset.soaKind=r.kind||"";const vals=[stage16DisplayDate(r.date),r.description||"",r.reference||"",r.party||"",r.debit?Number(r.debit).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—",r.credit?Number(r.credit).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—",Number(r.balance||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})];vals.forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;td.style.cssText="padding:10px 7px;border-bottom:1px solid #e5eaf0;white-space:"+(i===1||i===3?"normal":"nowrap")+";color:"+(i===6?"#173b60":"#27364a")+";font-weight:"+(i===6?"700":"400");tr.appendChild(td)});if(r.kind==="opening"||r.kind==="closing"){tr.style.background="#edf3f8";tr.style.fontWeight="700"}tbody.appendChild(tr)});table.appendChild(tbody);wrap.appendChild(table);sheet.appendChild(wrap);
   }else if(isPL){
