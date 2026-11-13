@@ -34,7 +34,7 @@ jobs:
         run: npm install
 
       - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium webkit
 
       - name: Wait for GitHub Pages deployment to become available
         run: |
