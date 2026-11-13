@@ -2294,10 +2294,10 @@ async function stage16BuildPdf(title,subtitle,rows,summary){
     const cards=[["OPENING BALANCE",summary.opening],["RENT BILLED",summary.billed],["RENT RECEIVED",summary.received],["CLOSING BALANCE",summary.closing]];
     cards.forEach((c,j)=>{const x=38+j*131;content+="q 0.93 0.96 0.98 rg "+x+" 592 123 48 re f Q\n0.84 G "+x+" 592 123 48 re S 0 G\nBT /F1 6 Tf 0.38 0.43 0.51 rg 1 0 0 1 "+(x+6)+" 625 Tm ("+c[0]+") Tj ET\nBT /F1 8 Tf 0.09 0.18 0.32 rg 1 0 0 1 "+(x+6)+" 607 Tm ("+stage16PdfEscape(summary.currency+" "+Number(c[1]||0).toFixed(2))+") Tj ET\n"});
    }
-   content+="q 0.09 0.18 0.32 rg 38 658 519 20 re f Q\n";
-   labels.forEach((v,j)=>{content+="BT /F1 6 Tf 1 1 1 rg 1 0 0 1 "+cols[j]+" 666 Tm ("+v+") Tj ET\n"});
+   const bandY=i===0?558:658,headerY=bandY+8;\n   content+="q 0.09 0.18 0.32 rg 38 "+bandY+" 519 20 re f Q\n";
+   labels.forEach((v,j)=>{content+="BT /F1 6 Tf 1 1 1 rg 1 0 0 1 "+cols[j]+" "+headerY+" Tm ("+v+") Tj ET\n"});
    page.forEach((r,j)=>{
-    const y=(i===0?570:682)-j*24,vals=[r.kind==="opening"||r.kind==="closing"?"":stage16DisplayDate(r.date)||"",r.description||"",r.reference||"",r.party||"",r.debit?Number(r.debit).toFixed(2):"",r.credit?Number(r.credit).toFixed(2):"",Number(r.balance||0).toFixed(2)];
+    const y=(i===0?530:630)-j*24,vals=[r.kind==="opening"||r.kind==="closing"?"":stage16DisplayDate(r.date)||"",r.description||"",r.reference||"",r.party||"",r.debit?Number(r.debit).toFixed(2):"",r.credit?Number(r.credit).toFixed(2):"",Number(r.balance||0).toFixed(2)];
     if(j%2===0)content+="q 0.97 0.98 0.99 rg 38 "+(y-7)+" 519 22 re f Q\n";
     if(r.kind==="opening"||r.kind==="closing")content+="q 0.91 0.95 0.97 rg 38 "+(y-7)+" 519 22 re f Q\n";
     vals.forEach((v,k)=>{const max=[10,17,14,20,12,12,13][k],clean=String(v).length>max?String(v).slice(0,max-1)+"...":String(v);content+="BT /F1 "+(r.kind==="opening"||r.kind==="closing"?7:6)+" Tf "+(k===6?"0.09 0.18 0.32":"0.16 0.21 0.29")+" rg 1 0 0 1 "+cols[k]+" "+y+" Tm ("+stage16PdfEscape(clean)+") Tj ET\n"});
