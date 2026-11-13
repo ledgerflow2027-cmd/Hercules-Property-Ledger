@@ -130,3 +130,31 @@ test("seeded property profile shows aligned property and tenant photos", async (
     fullPage: true
   });
 });
+
+
+test("language switch translates core navigation in Arabic and Urdu and restores English", async ({ page }) => {
+  await unlockWorkspace(page);
+
+  const root = page.locator("html");
+  const quickSwitch = page.locator("#langQuick");
+  const home = page.locator('nav[aria-label="Main navigation"] [data-screen="dashboard"]');
+  const properties = page.locator('nav[aria-label="Main navigation"] [data-screen="properties"]');
+
+  await quickSwitch.click();
+  await expect(root).toHaveAttribute("lang", "ar");
+  await expect(root).toHaveAttribute("dir", "rtl");
+  await expect(home).toContainText("الرئيسية");
+  await expect(properties).toContainText("العقارات");
+
+  await quickSwitch.click();
+  await expect(root).toHaveAttribute("lang", "ur");
+  await expect(root).toHaveAttribute("dir", "rtl");
+  await expect(home).toContainText("ہوم");
+  await expect(properties).toContainText("پراپرٹیز");
+
+  await quickSwitch.click();
+  await expect(root).toHaveAttribute("lang", "en");
+  await expect(root).toHaveAttribute("dir", "ltr");
+  await expect(home).toContainText("Home");
+  await expect(properties).toContainText("Properties");
+});
