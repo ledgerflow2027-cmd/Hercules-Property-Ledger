@@ -746,3 +746,18 @@ This per-change record supplements (and does not replace) the complete stage che
 - Added a browser regression test for English → Arabic → Urdu → English, checking translated Home and Properties navigation labels and RTL/LTR direction.
 - This change does not alter the Statement of Account layout, spacing, or accounting logic.
 - Live Safari verification remains pending; the browser test must pass after GitHub Pages deployment before claiming the language switch is verified.
+
+
+---
+
+## 13 November 2026 — permanent backup and recovery policy
+
+- Owner instruction: every day's successful modifications must have a recoverable backup so a later failed modification can be rolled back to the last successful state.
+- All approved successful source changes are to be saved on GitHub `main`.
+- Before new work, confirm the last known-good checkpoint; after successful stages, update source and this handoff, verify the commit, and retain a dated full-repository Git backup branch.
+- Failed or untested changes must never be labelled successful. Stop and restore the last verified checkpoint if a change fails.
+- Master rules are recorded in [PROPLEGDER_MASTER_INSTRUCTIONS.md](https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/blob/main/PROPLEGDER_MASTER_INSTRUCTIONS.md).
+- Baseline backup branch created: `backup/2026-11-13-pre-backup-policy`, pointing to `32eec10ac2690f770b3f473552c03dbc225cf2e3` (the exact pre-policy `main` state).
+- Master instructions file committed to `main`: `00f75c1f69d44fd1b8f62bba5b8688fc145913cb`.
+- Repository branch backup protects committed source, assets and Git history. It does not back up live database rows, private user uploads, authentication records, browser/device-only data, external storage or secrets. Those require separate secure exports and restore verification; do not place sensitive data or credentials in this public repository.
+- A separate, independently hosted GitHub repository mirror has not been created in this checkpoint; the dated backup branch is a recoverable snapshot within the existing repository, not protection against deletion or loss of the entire GitHub repository.
