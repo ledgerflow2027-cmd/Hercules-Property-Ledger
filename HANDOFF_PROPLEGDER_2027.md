@@ -702,3 +702,18 @@ This per-change record supplements (and does not replace) the complete stage che
 - **Creation status:** A new portrait PDF has **not** yet been created or committed to GitHub. The attempted PDF creation was blocked by temporary data-analysis availability. No application code, live deployment, or GitHub Pages deployment was changed as part of this SOA preview request.
 - **Backup boundary:** This repository contains the application source, project handoff, and the two SOA/logo image assets linked above. It does **not** establish that all private user-entered records stored only on an individual device/browser have been backed up. Do not claim complete live customer/property/transaction data backup until an explicit export/backup file is created and checked into an appropriately secured location. Sensitive identity or financial documents must not be placed in this public repository.
 - **Next steps:** Recreate the portrait SOA preview only from verified source data; retrieve/confirm the full ledger transaction set and balances before calling it complete; then commit the finished sample and update this handoff with its exact filename, commit SHA, and validation status.
+
+
+---
+
+## Latest verified checkpoint — 13 November 2026 (after SOA DATE spacing correction)
+
+- **Current branch:** `main`
+- **Latest application commit:** `c194a6aac57b7b956b0d2b256299ba041f8a8a67`
+- **Commit URL:** https://github.com/ledgerflow2027-cmd/Hercules-Property-Ledger/commit/c194a6aac57b7b956b0d2b256299ba041f8a8a67
+- **Exact change:** In `index.html`, the SOA PDF table's first column x-coordinate was changed from `38` to `44`. This moves the **DATE** heading 6 PDF points inward from the left edge of the navy title band. No other source line was changed in this commit.
+- **Previous SOA spacing work remains in the same application source:** navy title band height and title baseline spacing, plus preview header vertical padding.
+- **Scope of this backup:** The GitHub `main` branch contains the application source, committed project assets (including the SOA sample image and Propledger logo), project documentation, and this handoff file. The latest code change is committed and retrievable from GitHub.
+- **Data-backup limitation — important:** This confirms a GitHub backup of the repository contents, **not** a complete backup of all live Property Ledger records. Private user-entered properties, tenants, transactions, uploaded documents/photos, authentication records, and any data stored only in a browser/device or external database are not proven backed up by this repository. Do not claim those records are safe until separately exported and verified in a secure backup. Do not commit credentials, secrets, or private tenant/owner documents to this public repository.
+- **Deployment/visual validation:** The GitHub source commit is verified. GitHub Pages deployment and the resulting PDF appearance on Safari/iPhone have not been independently confirmed as part of this checkpoint.
+- **Next-session starting point:** Continue from commit `c194a6aac57b7b956b0d2b256299ba041f8a8a67`. Preserve the current design and make no unrelated changes. First visually verify the DATE inset in the actual generated SOA PDF on Safari; then address any further spacing only if explicitly requested.
