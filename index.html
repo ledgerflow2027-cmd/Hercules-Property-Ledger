@@ -2284,7 +2284,7 @@ async function stage16BuildPdf(title,subtitle,rows,summary){
  pages.forEach((page,i)=>{
   const pageObj=4+i*2,streamObj=pageObj+1;let content="";
   if(isSoa){
-   const cols=[38,82,177,257,354,420,486],labels=["DATE","DESCRIPTION","REFERENCE","TENANT / VENDOR","DEBIT","CREDIT","BALANCE"];
+   const cols=[44,82,177,257,354,420,486],labels=["DATE","DESCRIPTION","REFERENCE","TENANT / VENDOR","DEBIT","CREDIT","BALANCE"];
    content="q 0.97 0.98 0.99 rg 0 0 595 842 re f Q\nq 0.09 0.18 0.32 rg 0 824 595 18 re f Q\n";
    if(logo)content+="q 48 0 0 48 38 754 cm /Logo Do Q\n";
    content+="BT /F1 19 Tf 0.09 0.18 0.32 rg 1 0 0 1 98 789 Tm (Propledger 2027) Tj ET\nBT /F1 7 Tf 0.04 0.49 0.51 rg 1 0 0 1 99 775 Tm (PROPERTY MANAGEMENT & ACCOUNTING) Tj ET\nBT /F1 15 Tf 0.09 0.18 0.32 rg 1 0 0 1 38 733 Tm (STATEMENT OF ACCOUNT) Tj ET\n0.78 G 38 722 m 557 722 l S 0 G\nBT /F1 8 Tf 0.18 0.25 0.34 rg 1 0 0 1 38 704 Tm ("+stage16PdfEscape(subtitle)+") Tj ET\n";
