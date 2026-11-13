@@ -2779,6 +2779,32 @@ const phrases={
 "🏘️ Properties":["🏘️ العقارات","🏘️ پراپرٹیز"],
 "⚠️ Tenants with late rent":["⚠️ مستأجرون متأخرون في السداد","⚠️ کرایہ ادا کرنے میں تاخیر والے کرایہ دار"],
 "🧰 Vendors":["🧰 الموردون","🧰 وینڈرز"],
+"Marina View Apartment 101":["شقة مارينا فيو 101","مرینا ویو اپارٹمنٹ 101"],
+"Palm Garden Villa":["فيلا بالم جاردن","پام گارڈن ولا"],
+"Creekside Residences":["مساكن كريك سايد","کریک سائیڈ رہائشی عمارتیں"],
+"Jumeirah Court Residence":["سكن جميرا كورت","جمیرا کورٹ رہائش گاہ"],
+"Sharjah Garden Homes":["منازل حديقة الشارقة","شارجہ گارڈن ہومز"],
+"Gulberg Family Apartment":["شقة عائلية في غولبرغ","گلبرگ فیملی اپارٹمنٹ"],
+"Clifton Corner House":["منزل كليفتون كورنر","کلفٹن کارنر ہاؤس"],
+"DHA Lahore Residence":["سكن هيئة الدفاع في لاهور","ڈی ایچ اے لاہور رہائش گاہ"],
+"Bahria Heights Apartment":["شقة بحريا هايتس","بحریہ ہائٹس اپارٹمنٹ"],
+"Islamabad F-7 House":["منزل إسلام آباد F-7","اسلام آباد ایف 7 ہاؤس"],
+"Cleaning professional":["متخصص تنظيف","صفائی کے ماہر"],
+"House painter":["دهّان منازل","گھروں کا پینٹر"],
+"Landscaping professional":["متخصص تنسيق حدائق","لینڈ اسکیپنگ ماہر"],
+"Plumbing professional":["متخصص سباكة","پلمبنگ کے ماہر"],
+"HVAC technician":["فني تكييف وتبريد","اے سی اور ریفریجریشن ٹیکنیشن"],
+"Carpenter":["نجار","بڑھئی"],
+"Electrician":["كهربائي","الیکٹریشن"],
+"Residential · Sample":["سكني · نموذج","رہائشی · نمونہ"],
+"Multi-unit · Sample":["متعدد الوحدات · نموذج","متعدد یونٹس · نمونہ"],
+"Shared amenities · Sample":["مرافق مشتركة · نموذج","مشترکہ سہولیات · نمونہ"],
+"Property care · Sample":["العناية بالعقارات · نموذج","پراپرٹی کی دیکھ بھال · نمونہ"],
+"Repairs & upkeep · Sample":["الإصلاحات والصيانة · نموذج","مرمت اور دیکھ بھال · نمونہ"],
+"Outdoor maintenance · Sample":["صيانة المساحات الخارجية · نموذج","بیرونی دیکھ بھال · نمونہ"],
+"Plumbing · Sample":["السباكة · نموذج","پلمبنگ · نمونہ"],
+"Climate systems · Sample":["أنظمة التكييف · نموذج","ایئر کنڈیشننگ سسٹمز · نمونہ"],
+"Electrical · Sample":["الأعمال الكهربائية · نموذج","الیکٹریکل کام · نمونہ"],
 "✨ What would you like to do?":["✨ ما الذي ترغب في القيام به؟","✨ آپ کیا کرنا چاہیں گے؟"],
 "Income":["الدخل","آمدنی"],
 "Expenses":["المصروفات","اخراجات"],
@@ -3103,9 +3129,20 @@ function scan(root,idx){
  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
  nodes.forEach(n=>translateTextNode(n,idx));
 }
+function applyDashboardLabels(idx){
+ const targets=document.querySelectorAll("#dashboard .carousel-heading h2,#dashboard .picture-card-copy strong,#dashboard .picture-card-copy small");
+ targets.forEach(el=>{
+  const original=el.dataset.plDashboardOriginal!==undefined?el.dataset.plDashboardOriginal:el.textContent;
+  el.dataset.plDashboardOriginal=original;
+  const pair=phrases[original.trim()];
+  const translated=idx>=0&&pair&&pair[idx]?pair[idx]:original;
+  if(el.textContent!==translated)el.textContent=translated;
+ });
+}
 function apply(idx=langIndex()){
  if(idx<0)idx=-1;
  scan(document.body,idx);
+ applyDashboardLabels(idx);
  const attrNames=["placeholder","title","aria-label","alt"];
  document.querySelectorAll("[placeholder],[title],[aria-label],[alt]").forEach(el=>{
   attrNames.forEach(name=>{
